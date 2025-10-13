@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Wallet, ArrowLeftRight, TrendingUp, Coins, Menu } from "lucide-react";
+import { Wallet, ArrowLeftRight, TrendingUp, Coins, Menu, LineChart } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
@@ -11,6 +11,7 @@ const Navigation = () => {
     { icon: ArrowLeftRight, label: "Swap", path: "/swap" },
     { icon: TrendingUp, label: "Stake", path: "/stake" },
     { icon: Coins, label: "Markets", path: "/markets" },
+    { icon: LineChart, label: "Trade", path: "/trade" },
   ];
 
   const NavLinks = () => (

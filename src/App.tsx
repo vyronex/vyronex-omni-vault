@@ -8,6 +8,7 @@ import Wallet from "./pages/Wallet";
 import Swap from "./pages/Swap";
 import Stake from "./pages/Stake";
 import Markets from "./pages/Markets";
+import Trade from "./pages/Trade";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/swap" element={<Swap />} />
           <Route path="/stake" element={<Stake />} />
           <Route path="/markets" element={<Markets />} />
+          <Route path="/trade" element={<Trade />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
