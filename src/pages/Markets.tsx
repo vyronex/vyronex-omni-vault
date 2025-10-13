@@ -1,0 +1,132 @@
+import Navigation from "@/components/Navigation";
+import PriceCard from "@/components/PriceCard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useVNXPrice } from "@/hooks/useVNXPrice";
+
+const Markets = () => {
+  const { data: vnxPrice } = useVNXPrice();
+
+  // Demo market data (in production, fetch real-time from APIs)
+  const markets = [
+    {
+      symbol: "BTC",
+      name: "Bitcoin",
+      price: 98250.50,
+      change24h: 3.25,
+      volume: "$52.4B",
+    },
+    {
+      symbol: "ETH",
+      name: "Ethereum",
+      price: 3542.75,
+      change24h: 5.12,
+      volume: "$28.1B",
+    },
+    {
+      symbol: "BNB",
+      name: "BNB",
+      price: 678.90,
+      change24h: 2.45,
+      volume: "$2.8B",
+    },
+    {
+      symbol: "SOL",
+      name: "Solana",
+      price: 198.45,
+      change24h: -1.23,
+      volume: "$4.2B",
+    },
+    {
+      symbol: "TRX",
+      name: "Tron",
+      price: 0.2456,
+      change24h: 1.85,
+      volume: "$890M",
+    },
+    {
+      symbol: "FTM",
+      name: "Fantom",
+      price: 0.8923,
+      change24h: 4.67,
+      volume: "$345M",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2">Markets</h1>
+            <p className="text-muted-foreground">Real-time cryptocurrency market data</p>
+          </div>
+
+          {/* VNX Featured */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4">Featured</h2>
+            <PriceCard
+              symbol="VNX"
+              name="Vyronex Token"
+              price={vnxPrice?.price || 0.000542}
+              change24h={vnxPrice?.change24h || 2.45}
+              volume={`$${((vnxPrice?.volume24h || 125000) / 1000).toFixed(1)}K`}
+            />
+          </div>
+
+          {/* Market Overview */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4">Supported Assets</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {markets.map((market) => (
+                <PriceCard
+                  key={market.symbol}
+                  symbol={market.symbol}
+                  name={market.name}
+                  price={market.price}
+                  change24h={market.change24h}
+                  volume={market.volume}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Trading Pairs */}
+          <Card className="shadow-card">
+            <CardHeader>
+              <CardTitle>Top Trading Pairs</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[
+                  { pair: "VNX/USDT", price: "0.000542", change: "+2.45%", volume: "$125K" },
+                  { pair: "VNX/BNB", price: "0.00000080", change: "+1.23%", volume: "$89K" },
+                  { pair: "VNX/BUSD", price: "0.000541", change: "+2.67%", volume: "$67K" },
+                ].map((pair, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-primary transition-smooth"
+                  >
+                    <div>
+                      <p className="font-semibold">{pair.pair}</p>
+                      <p className="text-sm text-muted-foreground">24h Volume: {pair.volume}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">{pair.price}</p>
+                      <p className={`text-sm ${pair.change.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
+                        {pair.change}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Markets;
