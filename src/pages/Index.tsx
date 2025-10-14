@@ -4,6 +4,10 @@ import { ArrowRight, Wallet, TrendingUp, Shield, Zap, LineChart } from "lucide-r
 import Navigation from "@/components/Navigation";
 import PriceCard from "@/components/PriceCard";
 import StatsCard from "@/components/StatsCard";
+import LivePricesTable from "@/components/LivePricesTable";
+import TradingModes from "@/components/TradingModes";
+import QuickSwap from "@/components/QuickSwap";
+import Footer from "@/components/Footer";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 
 const Index = () => {
@@ -149,17 +153,49 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8 mt-20">
+      {/* Live Market Prices Section */}
+      <section className="py-16 bg-card/30">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto text-center text-muted-foreground">
-            <p>© 2025 VyronexVNX. All rights reserved.</p>
-            <p className="text-sm mt-2">
-              Contract: 0xeb55a55c384095ced21587afbe7418b7c9ae40cb
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8 text-center">Live Market Prices</h2>
+            <p className="text-center text-muted-foreground mb-8">
+              Real-time prices for top 50 cryptocurrencies
             </p>
+            <div className="rounded-lg border border-border bg-card overflow-hidden">
+              <LivePricesTable />
+            </div>
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* Trading Modes Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4 text-center">Trading Modes</h2>
+            <p className="text-center text-muted-foreground mb-12">
+              Choose the trading style that fits your strategy
+            </p>
+            <TradingModes />
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Swap Section */}
+      <section className="py-20 bg-card/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold mb-4 text-center">Quick Swap</h2>
+            <p className="text-center text-muted-foreground mb-12">
+              Swap tokens instantly across multiple blockchains
+            </p>
+            <QuickSwap />
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
