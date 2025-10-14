@@ -51,14 +51,22 @@ All colors MUST be HSL.
     --vnx-red: 1 99% 48%;
     --vnx-red-dark: 1 99% 38%;
     --vnx-red-light: 1 99% 58%;
+    --vnx-orange: 25 95% 53%;
+    --vnx-gold: 45 93% 58%;
     
-    --gradient-primary: linear-gradient(135deg, hsl(1 99% 48%) 0%, hsl(1 99% 38%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(1 99% 48%) 0%, hsl(25 95% 53%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(25 95% 53%) 0%, hsl(45 93% 58%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(1 99% 48% / 0.1) 0%, hsl(25 95% 53% / 0.05) 50%, hsl(0 0% 100%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
+    --gradient-glass: linear-gradient(145deg, hsl(0 0% 100% / 0.8) 0%, hsl(0 0% 98% / 0.6) 100%);
     
     --shadow-glow: 0 0 40px hsl(1 99% 48% / 0.3);
+    --shadow-glow-lg: 0 0 80px hsl(1 99% 48% / 0.4), 0 0 40px hsl(25 95% 53% / 0.3);
     --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.08);
+    --shadow-elevated: 0 20px 60px hsl(0 0% 0% / 0.12);
     
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
   .dark {
@@ -100,9 +108,13 @@ All colors MUST be HSL.
     --sidebar-ring: 1 99% 48%;
 
     /* VyronexVNX Dark Mode Tokens */
+    --gradient-hero: linear-gradient(135deg, hsl(1 99% 48% / 0.15) 0%, hsl(25 95% 53% / 0.1) 50%, hsl(0 0% 5%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 8%) 0%, hsl(0 0% 6%) 100%);
+    --gradient-glass: linear-gradient(145deg, hsl(0 0% 12% / 0.8) 0%, hsl(0 0% 8% / 0.6) 100%);
     --shadow-glow: 0 0 60px hsl(1 99% 48% / 0.4);
+    --shadow-glow-lg: 0 0 100px hsl(1 99% 48% / 0.5), 0 0 50px hsl(25 95% 53% / 0.4);
     --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.4);
+    --shadow-elevated: 0 25px 80px hsl(0 0% 0% / 0.6);
   }
 }
 
@@ -147,20 +159,46 @@ All colors MUST be HSL.
     background: var(--gradient-primary);
   }
 
+  .gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
   .gradient-card {
     background: var(--gradient-card);
+  }
+
+  .gradient-glass {
+    background: var(--gradient-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .shadow-glow {
     box-shadow: var(--shadow-glow);
   }
 
+  .shadow-glow-lg {
+    box-shadow: var(--shadow-glow-lg);
+  }
+
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
 
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
   .transition-smooth {
     transition: var(--transition-smooth);
+  }
+
+  .transition-bounce {
+    transition: var(--transition-bounce);
   }
 
   .text-gradient {
@@ -168,5 +206,17 @@ All colors MUST be HSL.
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-glow-lg;
+  }
+
+  .glass-card {
+    @apply gradient-glass border border-border/50 backdrop-blur-xl;
   }
 }

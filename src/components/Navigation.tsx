@@ -31,15 +31,15 @@ const Navigation = () => {
   );
 
   return (
-    <nav className="border-b border-border bg-card/50 backdrop-blur-lg sticky top-0 z-50">
+    <nav className="border-b border-border/50 glass-card backdrop-blur-xl sticky top-0 z-50 shadow-card">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-lg gradient-primary flex items-center justify-center">
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="h-10 w-10 rounded-lg gradient-primary flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all group-hover:scale-110 transition-bounce">
               <span className="text-primary-foreground font-bold text-xl">V</span>
             </div>
             <span className="font-bold text-xl">
-              Vyronex<span className="text-primary">VNX</span>
+              Vyronex<span className="text-gradient">VNX</span>
             </span>
           </Link>
 

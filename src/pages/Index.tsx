@@ -19,30 +19,35 @@ const Index = () => {
       
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-background" />
+        <div className="absolute inset-0 gradient-hero" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(1_99%_48%/0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,hsl(25_95%_53%/0.1),transparent_50%)]" />
         <div className="container mx-auto px-4 relative">
-          <div className="max-w-4xl mx-auto text-center animate-slide-up">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+          <div className="max-w-4xl mx-auto text-center animate-fade-in">
+            <div className="inline-block mb-6 px-4 py-2 rounded-full glass-card text-sm font-semibold">
+              🚀 Multi-Chain DeFi Platform
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               The Future of{" "}
-              <span className="text-gradient">Decentralized Trading</span>
+              <span className="text-gradient animate-pulse-glow">Decentralized Trading</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               VyronexVNX - Your gateway to multi-chain DeFi. Trade, stake, and manage your crypto portfolio with enterprise-grade security.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Link to="/wallet">
-                <Button size="lg" className="gap-2 shadow-glow">
+                <Button size="lg" className="gap-2 shadow-glow-lg hover-glow animate-slide-up">
                   Get Started <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/trade">
-                <Button size="lg" variant="outline" className="gap-2">
+                <Button size="lg" variant="outline" className="gap-2 glass-card hover-lift">
                   <LineChart className="h-5 w-5" />
                   Trade Now
                 </Button>
               </Link>
               <Link to="/markets">
-                <Button size="lg" variant="outline" className="gap-2">
+                <Button size="lg" variant="outline" className="gap-2 glass-card hover-lift">
                   View Markets
                 </Button>
               </Link>
@@ -52,29 +57,41 @@ const Index = () => {
       </section>
 
       {/* VNX Price Section */}
-      <section className="py-12 bg-card/30">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,hsl(1_99%_48%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center">VNX Token</h2>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                <span className="text-gradient">VNX Token</span>
+              </h2>
+              <p className="text-muted-foreground">Real-time token metrics and performance</p>
+            </div>
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <PriceCard
-                symbol="VNX"
-                name="Vyronex Token"
-                price={vnxPrice?.price || 0.000542}
-                change24h={vnxPrice?.change24h || 2.45}
-                volume={`$${((vnxPrice?.volume24h || 125000) / 1000).toFixed(1)}K`}
-              />
+              <div className="hover-lift">
+                <PriceCard
+                  symbol="VNX"
+                  name="Vyronex Token"
+                  price={vnxPrice?.price || 0.000542}
+                  change24h={vnxPrice?.change24h || 2.45}
+                  volume={`$${((vnxPrice?.volume24h || 125000) / 1000).toFixed(1)}K`}
+                />
+              </div>
               <div className="grid grid-cols-2 gap-4">
-                <StatsCard
-                  icon={TrendingUp}
-                  label="Market Cap"
-                  value={`$${((vnxPrice?.marketCap || 5420000) / 1000000).toFixed(2)}M`}
-                />
-                <StatsCard
-                  icon={Wallet}
-                  label="Total Supply"
-                  value="10B VNX"
-                />
+                <div className="hover-lift">
+                  <StatsCard
+                    icon={TrendingUp}
+                    label="Market Cap"
+                    value={`$${((vnxPrice?.marketCap || 5420000) / 1000000).toFixed(2)}M`}
+                  />
+                </div>
+                <div className="hover-lift">
+                  <StatsCard
+                    icon={Wallet}
+                    label="Total Supply"
+                    value="10B VNX"
+                  />
+                </div>
               </div>
             </div>
             <div className="flex flex-wrap gap-4 justify-center">
@@ -102,49 +119,53 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,hsl(25_95%_53%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-12 text-center">
-              Why Choose VyronexVNX?
-            </h2>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                Why Choose <span className="text-gradient">VyronexVNX</span>?
+              </h2>
+              <p className="text-muted-foreground">Enterprise-grade features for modern traders</p>
+            </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="p-6 rounded-lg border border-border hover:border-primary transition-smooth">
-                <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mb-4">
+              <div className="p-6 rounded-lg glass-card hover-lift group">
+                <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mb-4 shadow-glow group-hover:shadow-glow-lg transition-all">
                   <Wallet className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Multi-Chain</h3>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Support for Ethereum, BNB, Tron, Bitcoin, Fantom, and Solana networks.
                 </p>
               </div>
 
-              <div className="p-6 rounded-lg border border-border hover:border-primary transition-smooth">
-                <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mb-4">
+              <div className="p-6 rounded-lg glass-card hover-lift group">
+                <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mb-4 shadow-glow group-hover:shadow-glow-lg transition-all">
                   <TrendingUp className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">DeFi Ready</h3>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Stake, farm, and provide liquidity with VNX token priority.
                 </p>
               </div>
 
-              <div className="p-6 rounded-lg border border-border hover:border-primary transition-smooth">
-                <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mb-4">
+              <div className="p-6 rounded-lg glass-card hover-lift group">
+                <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mb-4 shadow-glow group-hover:shadow-glow-lg transition-all">
                   <Shield className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Secure</h3>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Enterprise-grade encryption with biometric and hardware wallet support.
                 </p>
               </div>
 
-              <div className="p-6 rounded-lg border border-border hover:border-primary transition-smooth">
-                <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mb-4">
+              <div className="p-6 rounded-lg glass-card hover-lift group">
+                <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mb-4 shadow-glow group-hover:shadow-glow-lg transition-all">
                   <Zap className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Real-Time</h3>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Live market data, instant transactions, and real-time price updates.
                 </p>
               </div>
@@ -154,14 +175,19 @@ const Index = () => {
       </section>
 
       {/* Live Market Prices Section */}
-      <section className="py-16 bg-card/30">
-        <div className="container mx-auto px-4">
+      <section className="py-16 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(1_99%_48%/0.05),transparent_70%)]" />
+        <div className="container mx-auto px-4 relative">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-3xl font-bold mb-8 text-center">Live Market Prices</h2>
-            <p className="text-center text-muted-foreground mb-8">
-              Real-time prices for top 50 cryptocurrencies
-            </p>
-            <div className="rounded-lg border border-border bg-card overflow-hidden">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                <span className="text-gradient">Live Market</span> Prices
+              </h2>
+              <p className="text-muted-foreground">
+                Real-time prices for top 50 cryptocurrencies
+              </p>
+            </div>
+            <div className="rounded-lg glass-card overflow-hidden shadow-elevated hover-lift">
               <LivePricesTable />
             </div>
           </div>
@@ -169,27 +195,39 @@ const Index = () => {
       </section>
 
       {/* Trading Modes Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,hsl(45_93%_58%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4 text-center">Trading Modes</h2>
-            <p className="text-center text-muted-foreground mb-12">
-              Choose the trading style that fits your strategy
-            </p>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                <span className="text-gradient">Trading</span> Modes
+              </h2>
+              <p className="text-muted-foreground">
+                Choose the trading style that fits your strategy
+              </p>
+            </div>
             <TradingModes />
           </div>
         </div>
       </section>
 
       {/* Quick Swap Section */}
-      <section className="py-20 bg-card/30">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,hsl(1_99%_48%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold mb-4 text-center">Quick Swap</h2>
-            <p className="text-center text-muted-foreground mb-12">
-              Swap tokens instantly across multiple blockchains
-            </p>
-            <QuickSwap />
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                <span className="text-gradient">Quick</span> Swap
+              </h2>
+              <p className="text-muted-foreground">
+                Swap tokens instantly across multiple blockchains
+              </p>
+            </div>
+            <div className="hover-lift">
+              <QuickSwap />
+            </div>
           </div>
         </div>
       </section>

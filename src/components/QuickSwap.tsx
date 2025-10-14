@@ -28,9 +28,9 @@ const QuickSwap = () => {
   };
 
   return (
-    <Card className="max-w-md mx-auto border-border">
+    <Card className="max-w-md mx-auto glass-card shadow-elevated">
       <CardHeader>
-        <CardTitle>Quick Swap</CardTitle>
+        <CardTitle className="text-2xl">Quick Swap</CardTitle>
         <CardDescription>Instantly swap tokens across multiple chains</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -93,7 +93,7 @@ const QuickSwap = () => {
           </div>
         </div>
 
-        <Button className="w-full" onClick={handleSwap}>
+        <Button className="w-full shadow-glow hover:shadow-glow-lg transition-all" onClick={handleSwap}>
           Swap Now
         </Button>
       </CardContent>
