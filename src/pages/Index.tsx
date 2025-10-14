@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Wallet, TrendingUp, Shield, Zap } from "lucide-react";
+import { ArrowRight, Wallet, TrendingUp, Shield, Zap, LineChart } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import PriceCard from "@/components/PriceCard";
 import StatsCard from "@/components/StatsCard";
@@ -29,6 +29,12 @@ const Index = () => {
               <Link to="/wallet">
                 <Button size="lg" className="gap-2 shadow-glow">
                   Get Started <ArrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/trade">
+                <Button size="lg" variant="outline" className="gap-2">
+                  <LineChart className="h-5 w-5" />
+                  Trade Now
                 </Button>
               </Link>
               <Link to="/markets">
