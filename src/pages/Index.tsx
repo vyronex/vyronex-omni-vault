@@ -325,6 +325,173 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(1_99%_48%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                What <span className="text-gradient">Traders</span> Say
+              </h2>
+              <p className="text-muted-foreground">Trusted by thousands of traders worldwide</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { name: "Alex Chen", role: "Day Trader", text: "Best multi-chain platform I've used. Lightning fast trades and great UI!" },
+                { name: "Sarah Johnson", role: "Crypto Investor", text: "The staking rewards are incredible. I've earned 15% more with VNX staking." },
+                { name: "Michael Rodriguez", role: "DeFi Enthusiast", text: "Finally a platform that supports all my favorite chains in one place!" },
+              ].map((testimonial, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift">
+                  <p className="text-sm text-muted-foreground mb-4 italic">"{testimonial.text}"</p>
+                  <div>
+                    <p className="font-bold">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Security Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_40%,hsl(25_95%_53%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                <span className="text-gradient">Bank-Grade</span> Security
+              </h2>
+              <p className="text-muted-foreground">Your assets are protected with industry-leading security</p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Cold Storage", desc: "95% of funds stored offline" },
+                { title: "2FA Authentication", desc: "Multi-factor authentication" },
+                { title: "Encrypted Data", desc: "AES-256 encryption" },
+                { title: "Insurance Fund", desc: "$100M protection fund" },
+              ].map((item, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift text-center">
+                  <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mx-auto mb-4 shadow-glow">
+                    <Shield className="h-6 w-6 text-primary-foreground" />
+                  </div>
+                  <h3 className="font-bold mb-2">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Partners Section */}
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_60%,hsl(45_93%_58%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                Trusted <span className="text-gradient">Partners</span>
+              </h2>
+              <p className="text-muted-foreground">Integrated with leading blockchain platforms</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+              {["Ethereum", "BNB Chain", "Tron", "Bitcoin", "Fantom", "Solana"].map((partner, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift flex items-center justify-center">
+                  <span className="font-bold text-gradient">{partner}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Token Economics */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_50%,hsl(1_99%_48%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                <span className="text-gradient">Token</span> Economics
+              </h2>
+              <p className="text-muted-foreground">Sustainable tokenomics for long-term growth</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="p-8 rounded-lg glass-card shadow-elevated">
+                <h3 className="text-xl font-bold mb-6">Distribution</h3>
+                <div className="space-y-4">
+                  {[
+                    { label: "Public Sale", percent: "40%", amount: "4B VNX" },
+                    { label: "Staking Rewards", percent: "25%", amount: "2.5B VNX" },
+                    { label: "Team & Advisors", percent: "15%", amount: "1.5B VNX" },
+                    { label: "Liquidity", percent: "10%", amount: "1B VNX" },
+                    { label: "Marketing", percent: "10%", amount: "1B VNX" },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between">
+                      <span className="text-muted-foreground">{item.label}</span>
+                      <div className="text-right">
+                        <span className="font-bold">{item.percent}</span>
+                        <span className="text-sm text-muted-foreground ml-2">({item.amount})</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="p-8 rounded-lg glass-card shadow-elevated">
+                <h3 className="text-xl font-bold mb-6">Utility</h3>
+                <div className="space-y-4">
+                  {[
+                    { title: "Trading Fee Discounts", desc: "Up to 50% off trading fees" },
+                    { title: "Staking Rewards", desc: "Earn 12.5% APR on staked VNX" },
+                    { title: "Governance Rights", desc: "Vote on platform decisions" },
+                    { title: "Premium Features", desc: "Access to advanced tools" },
+                    { title: "Launchpad Access", desc: "Early access to new tokens" },
+                  ].map((item, i) => (
+                    <div key={i}>
+                      <h4 className="font-semibold mb-1">{item.title}</h4>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(25_95%_53%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-4xl mx-auto">
+            <div className="p-8 md:p-12 rounded-lg glass-card shadow-elevated text-center">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+                Stay <span className="text-gradient">Updated</span>
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Get the latest news, updates, and exclusive offers delivered to your inbox
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:border-primary"
+                />
+                <Button size="lg" className="shadow-glow hover-glow">
+                  Subscribe
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4">
+                Join 50,000+ traders receiving weekly insights
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <Footer />
     </div>

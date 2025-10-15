@@ -189,6 +189,69 @@ const Markets = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Market Analysis */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Market Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold mb-2">Market Sentiment</h3>
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1">
+                      <div className="h-3 rounded-full bg-card overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 w-[68%]" />
+                      </div>
+                    </div>
+                    <span className="font-bold text-green-500">68% Bullish</span>
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground mb-1">Fear & Greed Index</p>
+                    <p className="text-2xl font-bold text-green-500">72</p>
+                    <p className="text-sm text-muted-foreground">Greed</p>
+                  </div>
+                  <div className="p-4 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground mb-1">Market Dominance</p>
+                    <p className="text-2xl font-bold">BTC 45.2%</p>
+                    <p className="text-sm text-muted-foreground">ETH 18.8%</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Market News */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Latest News</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[
+                  { title: "Bitcoin reaches new all-time high", time: "2 hours ago", tag: "BTC" },
+                  { title: "Ethereum upgrade scheduled for Q2", time: "5 hours ago", tag: "ETH" },
+                  { title: "VNX announces new partnership", time: "1 day ago", tag: "VNX" },
+                  { title: "DeFi TVL surpasses $100B milestone", time: "2 days ago", tag: "DeFi" },
+                ].map((news, i) => (
+                  <div key={i} className="p-4 rounded-lg border border-border hover:border-primary transition-smooth cursor-pointer">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-1">{news.title}</h4>
+                        <p className="text-sm text-muted-foreground">{news.time}</p>
+                      </div>
+                      <span className="px-2 py-1 rounded text-xs font-semibold bg-primary/10 text-primary">
+                        {news.tag}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

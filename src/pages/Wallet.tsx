@@ -1,7 +1,8 @@
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Wallet as WalletIcon, Copy, Send, Download } from "lucide-react";
+import { Wallet as WalletIcon, Copy, Send, Download, TrendingUp } from "lucide-react";
+import { Link } from "react-router-dom";
 import StatsCard from "@/components/StatsCard";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { toast } from "sonner";
@@ -165,6 +166,71 @@ const Wallet = () => {
                     {network}
                   </Button>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Security Settings */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Security</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+                  <div>
+                    <p className="font-semibold">Two-Factor Authentication</p>
+                    <p className="text-sm text-muted-foreground">Extra security for your account</p>
+                  </div>
+                  <Button size="sm">Enable</Button>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+                  <div>
+                    <p className="font-semibold">Biometric Login</p>
+                    <p className="text-sm text-muted-foreground">Use fingerprint or face ID</p>
+                  </div>
+                  <Button size="sm" variant="outline">Setup</Button>
+                </div>
+                <div className="flex items-center justify-between p-4 rounded-lg border border-border">
+                  <div>
+                    <p className="font-semibold">Hardware Wallet</p>
+                    <p className="text-sm text-muted-foreground">Connect Ledger or Trezor</p>
+                  </div>
+                  <Button size="sm" variant="outline">Connect</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-4">
+                <Link to="/trade">
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    <TrendingUp className="h-4 w-4" />
+                    Trade Crypto
+                  </Button>
+                </Link>
+                <Link to="/stake">
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    <WalletIcon className="h-4 w-4" />
+                    Stake VNX
+                  </Button>
+                </Link>
+                <Link to="/markets">
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    <TrendingUp className="h-4 w-4" />
+                    View Markets
+                  </Button>
+                </Link>
+                <Button variant="outline" className="w-full justify-start gap-2">
+                  <Download className="h-4 w-4" />
+                  Export History
+                </Button>
               </div>
             </CardContent>
           </Card>

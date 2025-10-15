@@ -266,6 +266,68 @@ const Stake = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Staking Calculator */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Staking Calculator</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <Label>Amount to Stake</Label>
+                  <Input type="number" placeholder="100000" className="mt-2" />
+                </div>
+                <div>
+                  <Label>Staking Period</Label>
+                  <select className="w-full mt-2 px-3 py-2 rounded-lg bg-background border border-border">
+                    <option>30 days (12.5% APR)</option>
+                    <option>90 days (18.0% APR)</option>
+                    <option>180 days (25.0% APR)</option>
+                    <option>365 days (30.0% APR)</option>
+                  </select>
+                </div>
+                <div className="p-4 rounded-lg bg-gradient-primary">
+                  <div className="text-primary-foreground/80 mb-2">Estimated Earnings</div>
+                  <div className="text-3xl font-bold text-primary-foreground">12,500 VNX</div>
+                  <div className="text-sm text-primary-foreground/80 mt-1">≈ $6.78 at current price</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Leaderboard */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Top Stakers</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[
+                  { rank: 1, address: "0x742d...2Ab4", amount: "5,000,000 VNX", rewards: "62,500 VNX" },
+                  { rank: 2, address: "0x893f...8Cd2", amount: "3,200,000 VNX", rewards: "40,000 VNX" },
+                  { rank: 3, address: "0x456a...9Ef7", amount: "2,800,000 VNX", rewards: "35,000 VNX" },
+                  { rank: 4, address: "0x123b...4Gh8", amount: "1,900,000 VNX", rewards: "23,750 VNX" },
+                  { rank: 5, address: "0x789c...5Jk9", amount: "1,500,000 VNX", rewards: "18,750 VNX" },
+                ].map((entry, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-lg border border-border">
+                    <div className="flex items-center gap-3">
+                      <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center">
+                        <span className="text-sm font-bold text-primary-foreground">{entry.rank}</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold">{entry.address}</p>
+                        <p className="text-sm text-muted-foreground">Rewards: {entry.rewards}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">{entry.amount}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
