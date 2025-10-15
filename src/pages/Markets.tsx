@@ -123,6 +123,72 @@ const Markets = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Market Insights */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Market Insights</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div>
+                  <h3 className="font-semibold mb-2">Top Gainer (24h)</h3>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-lg">ETH</span>
+                    <span className="text-green-500 font-semibold">+5.12%</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">Top Loser (24h)</h3>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-lg">SOL</span>
+                    <span className="text-red-500 font-semibold">-1.23%</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">Highest Volume</h3>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-lg">BTC</span>
+                    <span className="text-muted-foreground">$52.4B</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Watchlist */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>My Watchlist</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[
+                  { symbol: "VNX", name: "Vyronex", price: 0.000542, change: 2.45 },
+                  { symbol: "BTC", name: "Bitcoin", price: 98250.50, change: 3.25 },
+                  { symbol: "ETH", name: "Ethereum", price: 3542.75, change: 5.12 },
+                ].map((coin, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-primary transition-smooth">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="font-bold text-primary">{coin.symbol[0]}</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold">{coin.symbol}</p>
+                        <p className="text-sm text-muted-foreground">{coin.name}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">${coin.price.toLocaleString()}</p>
+                      <p className={`text-sm ${coin.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {coin.change >= 0 ? '+' : ''}{coin.change}%
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

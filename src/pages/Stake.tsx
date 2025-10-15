@@ -204,6 +204,68 @@ const Stake = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Staking History */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Staking History</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[
+                  { action: "Staked", amount: "100,000 VNX", date: "Oct 10, 2024", status: "Active" },
+                  { action: "Claimed Rewards", amount: "1,250 VNX", date: "Oct 14, 2024", status: "Completed" },
+                  { action: "Staked", amount: "50,000 VNX", date: "Oct 1, 2024", status: "Active" },
+                ].map((entry, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-lg border border-border">
+                    <div>
+                      <p className="font-semibold">{entry.action}</p>
+                      <p className="text-sm text-muted-foreground">{entry.date}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">{entry.amount}</p>
+                      <p className="text-sm text-green-500">{entry.status}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Staking Pools */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Other Staking Pools</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-2 gap-4">
+                {[
+                  { name: "VNX Standard Pool", apr: "12.5%", lockup: "Flexible", tvl: "$5.4M" },
+                  { name: "VNX Premium Pool", apr: "18.0%", lockup: "30 days", tvl: "$2.1M" },
+                  { name: "VNX-BNB LP Pool", apr: "25.5%", lockup: "Flexible", tvl: "$1.8M" },
+                  { name: "VNX Elite Pool", apr: "30.0%", lockup: "90 days", tvl: "$890K" },
+                ].map((pool, i) => (
+                  <div key={i} className="p-4 rounded-lg border border-border hover:border-primary transition-smooth">
+                    <h3 className="font-bold mb-2">{pool.name}</h3>
+                    <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <p className="text-muted-foreground">APR</p>
+                        <p className="font-semibold text-green-500">{pool.apr}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Lock-up</p>
+                        <p className="font-semibold">{pool.lockup}</p>
+                      </div>
+                      <div className="col-span-2">
+                        <p className="text-muted-foreground">TVL</p>
+                        <p className="font-semibold">{pool.tvl}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

@@ -124,6 +124,50 @@ const Wallet = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Transaction History */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Recent Transactions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {[
+                  { type: "Received", amount: "+1,000 VNX", time: "2 hours ago", status: "Confirmed" },
+                  { type: "Sent", amount: "-0.1 ETH", time: "5 hours ago", status: "Confirmed" },
+                  { type: "Swap", amount: "500 VNX → 0.3 BNB", time: "1 day ago", status: "Confirmed" },
+                  { type: "Stake", amount: "+100,000 VNX", time: "2 days ago", status: "Confirmed" },
+                ].map((tx, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-lg border border-border">
+                    <div>
+                      <p className="font-semibold">{tx.type}</p>
+                      <p className="text-sm text-muted-foreground">{tx.time}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold">{tx.amount}</p>
+                      <p className="text-sm text-green-500">{tx.status}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Network Switcher */}
+          <Card className="shadow-card mt-6">
+            <CardHeader>
+              <CardTitle>Networks</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {["BNB Chain", "Ethereum", "Tron", "Bitcoin", "Fantom", "Solana"].map((network) => (
+                  <Button key={network} variant="outline" className="justify-start">
+                    {network}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

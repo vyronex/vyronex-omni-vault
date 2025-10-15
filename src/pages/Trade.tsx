@@ -84,6 +84,22 @@ const Trade = () => {
           If widget is blocked from embedding, use <em>Open in new tab</em>.
         </p>
 
+        {/* Trading Guide */}
+        <div className="grid md:grid-cols-3 gap-4 mb-6">
+          <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h3 className="font-bold mb-2">1. Connect Wallet</h3>
+            <p className="text-sm text-gray-600">Connect your wallet inside the DEX widget when you click Buy/Sell.</p>
+          </div>
+          <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+            <h3 className="font-bold mb-2">2. Set Amount</h3>
+            <p className="text-sm text-gray-600">Enter the amount you want to swap and review the transaction.</p>
+          </div>
+          <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+            <h3 className="font-bold mb-2">3. Confirm Trade</h3>
+            <p className="text-sm text-gray-600">Approve and confirm the transaction in your wallet.</p>
+          </div>
+        </div>
+
         <div className="overflow-auto bg-white rounded-lg border border-gray-200">
           <table className="w-full border-collapse">
             <thead>
