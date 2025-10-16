@@ -1,33 +1,59 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Wallet as WalletIcon, Copy, Send, Download, TrendingUp } from "lucide-react";
+import { Wallet as WalletIcon, Copy, Send, Download, TrendingUp, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import StatsCard from "@/components/StatsCard";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
+import { useAuth } from "@/hooks/useAuth";
+import { useWallets } from "@/hooks/useWallets";
+import { useTransactions } from "@/hooks/useTransactions";
 import { toast } from "sonner";
 
-const Wallet = () => {
+const WalletReal = () => {
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const { data: vnxPrice } = useVNXPrice();
+  const { wallets, balances, loading: walletsLoading } = useWallets();
+  const { transactions, loading: transactionsLoading } = useTransactions();
 
-  // Demo wallet address (in production, this would come from actual wallet)
-  const walletAddress = "0x742d35...2Ab4";
-  const fullAddress = "0x742d35Cc6634C0532925a3b844Bc9e7595f2Ab4";
+  // Redirect to auth if not logged in
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth");
+    }
+  }, [user, authLoading, navigate]);
+
+  if (authLoading || walletsLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
+  const primaryWallet = wallets?.find(w => w.is_primary);
+  const walletAddress = primaryWallet?.address || "No wallet connected";
+  const shortAddress = walletAddress.length > 16 
+    ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
+    : walletAddress;
 
   const copyAddress = () => {
-    navigator.clipboard.writeText(fullAddress);
-    toast.success("Address copied to clipboard!");
+    if (primaryWallet) {
+      navigator.clipboard.writeText(primaryWallet.address);
+      toast.success("Address copied to clipboard!");
+    }
   };
 
-  // Demo balances (in production, these would be fetched from blockchain)
-  const balances = [
-    { chain: "BNB Chain", symbol: "VNX", balance: 1000000, value: 542 },
-    { chain: "BNB Chain", symbol: "BNB", balance: 0.5, value: 315 },
-    { chain: "Ethereum", symbol: "ETH", balance: 0.1, value: 230 },
-    { chain: "Tron", symbol: "TRX", balance: 1000, value: 150 },
-  ];
+  // Calculate total value from balances
+  const totalValue = balances?.reduce((sum, balance) => sum + Number(balance.usd_value), 0) || 0;
 
-  const totalValue = balances.reduce((sum, asset) => sum + asset.value, 0);
+  // Get VNX balance
+  const vnxBalance = balances?.find(b => b.token_symbol === "VNX");
 
   return (
     <div className="min-h-screen bg-background">
@@ -41,7 +67,7 @@ const Wallet = () => {
           </div>
 
           {/* Wallet Overview */}
-          <Card className="shadow-card mb-8">
+          <Card className="shadow-card mb-8 glass-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -53,12 +79,14 @@ const Wallet = () => {
                     <p className="text-3xl font-bold">${totalValue.toFixed(2)}</p>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={copyAddress}>
-                    <Copy className="h-4 w-4 mr-2" />
-                    {walletAddress}
-                  </Button>
-                </div>
+                {primaryWallet && (
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" onClick={copyAddress}>
+                      <Copy className="h-4 w-4 mr-2" />
+                      {shortAddress}
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="flex gap-2">
                 <Button className="flex-1 gap-2">
@@ -78,14 +106,14 @@ const Wallet = () => {
             <StatsCard
               icon={WalletIcon}
               label="Assets"
-              value={balances.length.toString()}
-              change="Across 4 chains"
+              value={(balances?.length || 0).toString()}
+              change={`Across ${wallets?.length || 0} wallets`}
             />
             <StatsCard
               icon={WalletIcon}
               label="VNX Holdings"
-              value="1,000,000"
-              change={`$${(vnxPrice?.price || 0.000542 * 1000000).toFixed(2)}`}
+              value={vnxBalance ? Number(vnxBalance.balance).toLocaleString() : "0"}
+              change={`$${vnxBalance ? Number(vnxBalance.usd_value).toFixed(2) : "0.00"}`}
             />
             <StatsCard
               icon={WalletIcon}
@@ -96,66 +124,83 @@ const Wallet = () => {
           </div>
 
           {/* Assets List */}
-          <Card className="shadow-card">
+          <Card className="shadow-card glass-card">
             <CardHeader>
               <CardTitle>Assets</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {balances.map((asset, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-primary transition-smooth"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="font-bold text-primary">{asset.symbol[0]}</span>
+              {balances && balances.length > 0 ? (
+                <div className="space-y-4">
+                  {balances.map((balance) => (
+                    <div
+                      key={balance.id}
+                      className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-primary transition-smooth"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="font-bold text-primary">{balance.token_symbol[0]}</span>
+                        </div>
+                        <div>
+                          <p className="font-semibold">{balance.token_symbol}</p>
+                          <p className="text-sm text-muted-foreground">Balance</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-semibold">{asset.symbol}</p>
-                        <p className="text-sm text-muted-foreground">{asset.chain}</p>
+                      <div className="text-right">
+                        <p className="font-semibold">{Number(balance.balance).toLocaleString()} {balance.token_symbol}</p>
+                        <p className="text-sm text-muted-foreground">${Number(balance.usd_value).toFixed(2)}</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold">{asset.balance.toLocaleString()} {asset.symbol}</p>
-                      <p className="text-sm text-muted-foreground">${asset.value.toFixed(2)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>No assets found. Connect a wallet to get started.</p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
           {/* Transaction History */}
-          <Card className="shadow-card mt-6">
+          <Card className="shadow-card glass-card mt-6">
             <CardHeader>
               <CardTitle>Recent Transactions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {[
-                  { type: "Received", amount: "+1,000 VNX", time: "2 hours ago", status: "Confirmed" },
-                  { type: "Sent", amount: "-0.1 ETH", time: "5 hours ago", status: "Confirmed" },
-                  { type: "Swap", amount: "500 VNX → 0.3 BNB", time: "1 day ago", status: "Confirmed" },
-                  { type: "Stake", amount: "+100,000 VNX", time: "2 days ago", status: "Confirmed" },
-                ].map((tx, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 rounded-lg border border-border">
-                    <div>
-                      <p className="font-semibold">{tx.type}</p>
-                      <p className="text-sm text-muted-foreground">{tx.time}</p>
+              {transactionsLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-8 w-8 animate-spin" />
+                </div>
+              ) : transactions && transactions.length > 0 ? (
+                <div className="space-y-4">
+                  {transactions.map((tx) => (
+                    <div key={tx.id} className="flex items-center justify-between p-4 rounded-lg border border-border">
+                      <div>
+                        <p className="font-semibold">{tx.tx_type}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(tx.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold">
+                          {Number(tx.amount).toFixed(4)} {tx.token_symbol}
+                        </p>
+                        <p className={`text-sm ${tx.status === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>
+                          {tx.status}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold">{tx.amount}</p>
-                      <p className="text-sm text-green-500">{tx.status}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>No transactions yet</p>
+                </div>
+              )}
             </CardContent>
           </Card>
 
           {/* Network Switcher */}
-          <Card className="shadow-card mt-6">
+          <Card className="shadow-card glass-card mt-6">
             <CardHeader>
               <CardTitle>Networks</CardTitle>
             </CardHeader>
@@ -170,40 +215,8 @@ const Wallet = () => {
             </CardContent>
           </Card>
 
-          {/* Security Settings */}
-          <Card className="shadow-card mt-6">
-            <CardHeader>
-              <CardTitle>Security</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg border border-border">
-                  <div>
-                    <p className="font-semibold">Two-Factor Authentication</p>
-                    <p className="text-sm text-muted-foreground">Extra security for your account</p>
-                  </div>
-                  <Button size="sm">Enable</Button>
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-lg border border-border">
-                  <div>
-                    <p className="font-semibold">Biometric Login</p>
-                    <p className="text-sm text-muted-foreground">Use fingerprint or face ID</p>
-                  </div>
-                  <Button size="sm" variant="outline">Setup</Button>
-                </div>
-                <div className="flex items-center justify-between p-4 rounded-lg border border-border">
-                  <div>
-                    <p className="font-semibold">Hardware Wallet</p>
-                    <p className="text-sm text-muted-foreground">Connect Ledger or Trezor</p>
-                  </div>
-                  <Button size="sm" variant="outline">Connect</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Quick Actions */}
-          <Card className="shadow-card mt-6">
+          <Card className="shadow-card glass-card mt-6">
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
@@ -227,10 +240,12 @@ const Wallet = () => {
                     View Markets
                   </Button>
                 </Link>
-                <Button variant="outline" className="w-full justify-start gap-2">
-                  <Download className="h-4 w-4" />
-                  Export History
-                </Button>
+                <Link to="/swap">
+                  <Button variant="outline" className="w-full justify-start gap-2">
+                    <Download className="h-4 w-4" />
+                    Swap Tokens
+                  </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>
@@ -240,4 +255,4 @@ const Wallet = () => {
   );
 };
 
-export default Wallet;
+export default WalletReal;

@@ -9,9 +9,11 @@ import TradingModes from "@/components/TradingModes";
 import QuickSwap from "@/components/QuickSwap";
 import Footer from "@/components/Footer";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const { data: vnxPrice } = useVNXPrice();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
@@ -35,22 +37,34 @@ const Index = () => {
               VyronexVNX - Your gateway to multi-chain DeFi. Trade, stake, and manage your crypto portfolio with enterprise-grade security.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link to="/wallet">
-                <Button size="lg" className="gap-2 shadow-glow-lg hover-glow animate-slide-up">
-                  Get Started <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to="/trade">
-                <Button size="lg" variant="outline" className="gap-2 glass-card hover-lift">
-                  <LineChart className="h-5 w-5" />
-                  Trade Now
-                </Button>
-              </Link>
-              <Link to="/markets">
-                <Button size="lg" variant="outline" className="gap-2 glass-card hover-lift">
-                  View Markets
-                </Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link to="/wallet">
+                    <Button size="lg" className="gap-2 shadow-glow-lg hover-glow animate-slide-up">
+                      Open Wallet <ArrowRight className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <Link to="/trade">
+                    <Button size="lg" variant="outline" className="gap-2 glass-card hover-lift">
+                      <LineChart className="h-5 w-5" />
+                      Trade Now
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/auth">
+                    <Button size="lg" className="gap-2 shadow-glow-lg hover-glow animate-slide-up">
+                      Get Started <ArrowRight className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <Link to="/markets">
+                    <Button size="lg" variant="outline" className="gap-2 glass-card hover-lift">
+                      View Markets
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

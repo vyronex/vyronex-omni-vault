@@ -1,10 +1,20 @@
-import { Link, useLocation } from "react-router-dom";
-import { Wallet, ArrowLeftRight, TrendingUp, Coins, Menu, LineChart } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
+import { TrendingUp, Wallet, BarChart3, Coins, ArrowLeftRight, LogOut, User, LineChart, Menu } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 const Navigation = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("Signed out successfully");
+    navigate("/");
+  };
 
   const navItems = [
     { icon: Wallet, label: "Wallet", path: "/wallet" },
@@ -46,6 +56,24 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2">
             <NavLinks />
+            {user ? (
+              <div className="flex items-center gap-2 ml-4">
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/wallet">
+                    <User className="h-4 w-4 mr-2" />
+                    Account
+                  </Link>
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button variant="outline" asChild className="shadow-glow hover:shadow-glow-lg ml-4">
+                <Link to="/auth">Sign In</Link>
+              </Button>
+            )}
           </div>
 
           {/* Mobile Navigation */}

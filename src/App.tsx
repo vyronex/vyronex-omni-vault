@@ -9,6 +9,7 @@ import Swap from "./pages/Swap";
 import Stake from "./pages/Stake";
 import Markets from "./pages/Markets";
 import Trade from "./pages/Trade";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/wallet" element={<Wallet />} />
           <Route path="/swap" element={<Swap />} />
           <Route path="/stake" element={<Stake />} />
