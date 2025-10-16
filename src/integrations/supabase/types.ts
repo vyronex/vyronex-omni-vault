@@ -14,16 +14,381 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      balances: {
+        Row: {
+          balance: number
+          id: string
+          last_updated: string | null
+          token_address: string | null
+          token_symbol: string
+          usd_value: number | null
+          user_id: string
+          wallet_id: string
+        }
+        Insert: {
+          balance?: number
+          id?: string
+          last_updated?: string | null
+          token_address?: string | null
+          token_symbol: string
+          usd_value?: number | null
+          user_id: string
+          wallet_id: string
+        }
+        Update: {
+          balance?: number
+          id?: string
+          last_updated?: string | null
+          token_address?: string | null
+          token_symbol?: string
+          usd_value?: number | null
+          user_id?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "balances_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          filled_quantity: number | null
+          id: string
+          order_type: string
+          price: number
+          quantity: number
+          remaining_quantity: number
+          side: string
+          status: string
+          trading_pair_id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          filled_quantity?: number | null
+          id?: string
+          order_type: string
+          price: number
+          quantity: number
+          remaining_quantity: number
+          side: string
+          status?: string
+          trading_pair_id: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          filled_quantity?: number | null
+          id?: string
+          order_type?: string
+          price?: number
+          quantity?: number
+          remaining_quantity?: number
+          side?: string
+          status?: string
+          trading_pair_id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_trading_pair_id_fkey"
+            columns: ["trading_pair_id"]
+            isOneToOne: false
+            referencedRelation: "trading_pairs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      staking_records: {
+        Row: {
+          amount: number
+          apr: number
+          created_at: string | null
+          end_date: string | null
+          id: string
+          lock_period_days: number
+          rewards_earned: number | null
+          start_date: string | null
+          status: string
+          token_symbol: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          apr: number
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          lock_period_days: number
+          rewards_earned?: number | null
+          start_date?: string | null
+          status?: string
+          token_symbol: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          apr?: number
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          lock_period_days?: number
+          rewards_earned?: number | null
+          start_date?: string | null
+          status?: string
+          token_symbol?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trades: {
+        Row: {
+          buyer_id: string
+          created_at: string | null
+          fee: number
+          id: string
+          order_id: string
+          price: number
+          quantity: number
+          seller_id: string
+          total_value: number
+          trading_pair_id: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string | null
+          fee: number
+          id?: string
+          order_id: string
+          price: number
+          quantity: number
+          seller_id: string
+          total_value: number
+          trading_pair_id: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string | null
+          fee?: number
+          id?: string
+          order_id?: string
+          price?: number
+          quantity?: number
+          seller_id?: string
+          total_value?: number
+          trading_pair_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trades_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trades_trading_pair_id_fkey"
+            columns: ["trading_pair_id"]
+            isOneToOne: false
+            referencedRelation: "trading_pairs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trading_pairs: {
+        Row: {
+          base_token: string
+          created_at: string | null
+          fee_percentage: number | null
+          id: string
+          is_active: boolean | null
+          max_order_size: number | null
+          min_order_size: number | null
+          quote_token: string
+        }
+        Insert: {
+          base_token: string
+          created_at?: string | null
+          fee_percentage?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_order_size?: number | null
+          min_order_size?: number | null
+          quote_token: string
+        }
+        Update: {
+          base_token?: string
+          created_at?: string | null
+          fee_percentage?: number | null
+          id?: string
+          is_active?: boolean | null
+          max_order_size?: number | null
+          min_order_size?: number | null
+          quote_token?: string
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          block_number: number | null
+          chain: string
+          confirmed_at: string | null
+          created_at: string | null
+          from_address: string
+          gas_fee: number | null
+          id: string
+          status: string
+          to_address: string
+          token_symbol: string
+          tx_hash: string
+          tx_type: string
+          usd_value: number | null
+          user_id: string
+          wallet_id: string
+        }
+        Insert: {
+          amount: number
+          block_number?: number | null
+          chain: string
+          confirmed_at?: string | null
+          created_at?: string | null
+          from_address: string
+          gas_fee?: number | null
+          id?: string
+          status?: string
+          to_address: string
+          token_symbol: string
+          tx_hash: string
+          tx_type: string
+          usd_value?: number | null
+          user_id: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          block_number?: number | null
+          chain?: string
+          confirmed_at?: string | null
+          created_at?: string | null
+          from_address?: string
+          gas_fee?: number | null
+          id?: string
+          status?: string
+          to_address?: string
+          token_symbol?: string
+          tx_hash?: string
+          tx_type?: string
+          usd_value?: number | null
+          user_id?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallets: {
+        Row: {
+          address: string
+          chain: string
+          created_at: string | null
+          id: string
+          is_primary: boolean | null
+          user_id: string
+        }
+        Insert: {
+          address: string
+          chain: string
+          created_at?: string | null
+          id?: string
+          is_primary?: boolean | null
+          user_id: string
+        }
+        Update: {
+          address?: string
+          chain?: string
+          created_at?: string | null
+          id?: string
+          is_primary?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +515,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
