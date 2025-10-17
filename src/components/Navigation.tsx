@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Wallet, BarChart3, Coins, ArrowLeftRight, LogOut, User, LineChart, Menu } from "lucide-react";
+import { TrendingUp, Wallet, BarChart3, Coins, ArrowLeftRight, LogOut, User, LineChart, Menu, Activity } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -21,6 +21,7 @@ const Navigation = () => {
     { icon: ArrowLeftRight, label: "Swap", path: "/swap" },
     { icon: TrendingUp, label: "Stake", path: "/stake" },
     { icon: Coins, label: "Markets", path: "/markets" },
+    { icon: Activity, label: "Spot", path: "/spot" },
     { icon: LineChart, label: "Trade", path: "/trade" },
   ];
 

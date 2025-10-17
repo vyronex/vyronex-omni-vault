@@ -9,6 +9,7 @@ import Swap from "./pages/Swap";
 import Stake from "./pages/Stake";
 import Markets from "./pages/Markets";
 import Trade from "./pages/Trade";
+import SpotTrading from "./pages/SpotTrading";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/stake" element={<Stake />} />
           <Route path="/markets" element={<Markets />} />
           <Route path="/trade" element={<Trade />} />
+          <Route path="/spot" element={<SpotTrading />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
