@@ -386,6 +386,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      update_balance: {
+        Args: { p_amount: number; p_token_symbol: string; p_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"
