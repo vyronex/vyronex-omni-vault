@@ -5,12 +5,46 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Rate limiting map: IP -> { count, resetTime }
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW = 60000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 30; // 30 requests per minute per IP
+
+function checkRateLimit(clientIp: string): boolean {
+  const now = Date.now();
+  const clientLimit = rateLimitMap.get(clientIp);
+
+  if (!clientLimit || now > clientLimit.resetTime) {
+    rateLimitMap.set(clientIp, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return true;
+  }
+
+  if (clientLimit.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return false;
+  }
+
+  clientLimit.count++;
+  return true;
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
+    // Rate limiting
+    const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+    if (!checkRateLimit(clientIp)) {
+      return new Response(
+        JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+        { 
+          status: 429, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        }
+      );
+    }
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
@@ -26,7 +60,7 @@ Deno.serve(async (req) => {
     // Get buy orders (bids) - highest price first
     const { data: bids } = await supabaseClient
       .from('orders')
-      .select('id, user_id, price, quantity, remaining_quantity, created_at')
+      .select('id, price, quantity, remaining_quantity, created_at')
       .eq('trading_pair_id', trading_pair_id)
       .eq('side', 'buy')
       .eq('status', 'open')
@@ -38,7 +72,7 @@ Deno.serve(async (req) => {
     // Get sell orders (asks) - lowest price first
     const { data: asks } = await supabaseClient
       .from('orders')
-      .select('id, user_id, price, quantity, remaining_quantity, created_at')
+      .select('id, price, quantity, remaining_quantity, created_at')
       .eq('trading_pair_id', trading_pair_id)
       .eq('side', 'sell')
       .eq('status', 'open')
