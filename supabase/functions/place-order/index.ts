@@ -1,9 +1,18 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const orderInputSchema = z.object({
+  trading_pair_id: z.string().uuid('Invalid trading pair ID'),
+  side: z.enum(['buy', 'sell'], { errorMap: () => ({ message: 'Side must be buy or sell' }) }),
+  order_type: z.enum(['limit', 'market'], { errorMap: () => ({ message: 'Order type must be limit or market' }) }),
+  price: z.number().positive().finite().max(1000000).optional(),
+  quantity: z.number().positive().finite().min(0.0001).max(1000000, 'Quantity too high'),
+});
 
 interface Order {
   id: string;
@@ -45,10 +54,25 @@ Deno.serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    const { trading_pair_id, side, order_type, price, quantity } = await req.json();
+    const body = await req.json();
+    
+    // Validate input with zod
+    const validationResult = orderInputSchema.safeParse(body);
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+      console.error('Validation failed:', errors);
+      throw new Error(`Invalid input: ${errors}`);
+    }
 
-    if (!trading_pair_id || !side || !order_type || !quantity) {
-      throw new Error('Missing required fields');
+    const { trading_pair_id, side, order_type, price, quantity } = validationResult.data;
+
+    // Additional validation for limit orders
+    if (order_type === 'limit' && !price) {
+      throw new Error('Price is required for limit orders');
+    }
+
+    if (order_type === 'limit' && price! <= 0) {
+      throw new Error('Price must be positive');
     }
 
     // Validate trading pair exists

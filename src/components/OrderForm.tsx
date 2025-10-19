@@ -4,6 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOrders } from "@/hooks/useOrders";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const orderSchema = z.object({
+  price: z.number().positive().finite().max(1000000, "Price too high"),
+  quantity: z.number().positive().finite().min(0.0001, "Quantity too small").max(1000000, "Quantity too high"),
+});
 
 interface OrderFormProps {
   tradingPairId: string;
@@ -19,24 +26,55 @@ const OrderForm = ({ tradingPairId, baseToken, quoteToken }: OrderFormProps) => 
 
   const handlePlaceOrder = async (side: "buy" | "sell") => {
     if (!quantity) {
+      toast.error("Please enter a quantity");
       return;
     }
 
     if (orderType === "limit" && !price) {
+      toast.error("Please enter a price");
       return;
     }
 
-    await placeOrder.mutateAsync({
-      trading_pair_id: tradingPairId,
-      side,
-      order_type: orderType,
-      price: orderType === "limit" ? parseFloat(price) : undefined,
-      quantity: parseFloat(quantity),
-    });
+    // Validate inputs
+    const parsedQuantity = parseFloat(quantity);
+    const parsedPrice = orderType === "limit" ? parseFloat(price) : undefined;
 
-    // Reset form
-    setPrice("");
-    setQuantity("");
+    if (isNaN(parsedQuantity) || !isFinite(parsedQuantity)) {
+      toast.error("Invalid quantity value");
+      return;
+    }
+
+    if (orderType === "limit" && (isNaN(parsedPrice!) || !isFinite(parsedPrice!))) {
+      toast.error("Invalid price value");
+      return;
+    }
+
+    try {
+      const validation = orderSchema.safeParse({
+        price: parsedPrice || 1, // Use dummy value for market orders
+        quantity: parsedQuantity,
+      });
+
+      if (!validation.success) {
+        const error = validation.error.errors[0];
+        toast.error(error.message);
+        return;
+      }
+
+      await placeOrder.mutateAsync({
+        trading_pair_id: tradingPairId,
+        side,
+        order_type: orderType,
+        price: parsedPrice,
+        quantity: parsedQuantity,
+      });
+
+      // Reset form
+      setPrice("");
+      setQuantity("");
+    } catch (error) {
+      // Error already handled by mutation
+    }
   };
 
   return (
