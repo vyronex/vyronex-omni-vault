@@ -227,29 +227,33 @@ async function updateBalances(supabase: any, trade: any, tradingPair: any) {
   const baseToken = tradingPair.base_token;
   const quoteToken = tradingPair.quote_token;
 
-  // Update buyer balance (add base, subtract quote)
+  // Update buyer balance (add base, subtract quote) with audit trail
   await supabase.rpc('update_balance', {
     p_user_id: trade.buyer_id,
     p_token_symbol: baseToken,
-    p_amount: trade.quantity
+    p_amount: trade.quantity,
+    p_trade_id: trade.id
   });
   
   await supabase.rpc('update_balance', {
     p_user_id: trade.buyer_id,
     p_token_symbol: quoteToken,
-    p_amount: -(trade.total_value + trade.fee)
+    p_amount: -(trade.total_value + trade.fee),
+    p_trade_id: trade.id
   });
 
-  // Update seller balance (subtract base, add quote)
+  // Update seller balance (subtract base, add quote) with audit trail
   await supabase.rpc('update_balance', {
     p_user_id: trade.seller_id,
     p_token_symbol: baseToken,
-    p_amount: -trade.quantity
+    p_amount: -trade.quantity,
+    p_trade_id: trade.id
   });
   
   await supabase.rpc('update_balance', {
     p_user_id: trade.seller_id,
     p_token_symbol: quoteToken,
-    p_amount: trade.total_value - trade.fee
+    p_amount: trade.total_value - trade.fee,
+    p_trade_id: trade.id
   });
 }
