@@ -216,6 +216,54 @@ export type Database = {
         }
         Relationships: []
       }
+      trade_audit_log: {
+        Row: {
+          buyer_id: string
+          created_at: string | null
+          created_by: string | null
+          fee: number
+          id: string
+          notes: string | null
+          price: number
+          quantity: number
+          seller_id: string
+          total_value: number
+          trade_id: string
+          trading_pair_id: string
+          validation_passed: boolean | null
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string | null
+          created_by?: string | null
+          fee: number
+          id?: string
+          notes?: string | null
+          price: number
+          quantity: number
+          seller_id: string
+          total_value: number
+          trade_id: string
+          trading_pair_id: string
+          validation_passed?: boolean | null
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          fee?: number
+          id?: string
+          notes?: string | null
+          price?: number
+          quantity?: number
+          seller_id?: string
+          total_value?: number
+          trade_id?: string
+          trading_pair_id?: string
+          validation_passed?: boolean | null
+        }
+        Relationships: []
+      }
       trades: {
         Row: {
           buyer_id: string
