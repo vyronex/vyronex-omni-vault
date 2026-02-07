@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Twitter, Github, MessageCircle, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -34,33 +33,22 @@ const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">Resources</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/blog" className="hover:text-primary transition-colors">Blog</Link></li>
+              <li><Link to="/about" className="hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
               <li><a href="#" className="hover:text-primary transition-colors">Documentation</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">API Reference</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Whitepaper</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Security</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Blog</a></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-4">Community</h3>
-            <div className="flex gap-3 mb-4">
-              <a href="#" className="h-10 w-10 rounded-lg border border-border hover:border-primary flex items-center justify-center transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="h-10 w-10 rounded-lg border border-border hover:border-primary flex items-center justify-center transition-colors">
-                <Github className="h-5 w-5" />
-              </a>
-              <a href="#" className="h-10 w-10 rounded-lg border border-border hover:border-primary flex items-center justify-center transition-colors">
-                <MessageCircle className="h-5 w-5" />
-              </a>
-              <a href="#" className="h-10 w-10 rounded-lg border border-border hover:border-primary flex items-center justify-center transition-colors">
-                <Mail className="h-5 w-5" />
-              </a>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Join our community and stay updated with the latest news.
-            </p>
+            <h3 className="font-semibold mb-4">Legal</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
+              <li><Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Cookie Policy</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Security</a></li>
+            </ul>
           </div>
         </div>
 
@@ -71,9 +59,10 @@ const Footer = () => {
               <p className="text-xs mt-1">Contract: 0xeb55a55c384095ced21587afbe7418b7c9ae40cb</p>
             </div>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-primary transition-colors">Cookie Policy</a>
+              <a href="#" className="hover:text-primary transition-colors">Twitter</a>
+              <a href="#" className="hover:text-primary transition-colors">Discord</a>
+              <a href="#" className="hover:text-primary transition-colors">Telegram</a>
+              <a href="#" className="hover:text-primary transition-colors">GitHub</a>
             </div>
           </div>
         </div>

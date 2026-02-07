@@ -1,4 +1,3 @@
-import { TrendingUp, TrendingDown } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 
 interface PriceCardProps {
@@ -25,12 +24,9 @@ const PriceCard = ({ symbol, name, price, change24h, volume }: PriceCardProps) =
               isPositive ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"
             }`}
           >
-            {isPositive ? (
-              <TrendingUp className="h-4 w-4" />
-            ) : (
-              <TrendingDown className="h-4 w-4" />
-            )}
-            <span className="text-sm font-medium">{Math.abs(change24h).toFixed(2)}%</span>
+            <span className="text-sm font-medium">
+              {isPositive ? "+" : ""}{Math.abs(change24h).toFixed(2)}%
+            </span>
           </div>
         </div>
         <div className="space-y-2">

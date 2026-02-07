@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatsCard from "@/components/StatsCard";
-import { TrendingUp, Wallet, Clock } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -57,25 +56,21 @@ const Stake = () => {
           {/* Stats */}
           <div className="grid md:grid-cols-4 gap-6 mb-8">
             <StatsCard
-              icon={TrendingUp}
               label="APR"
               value={`${stakingData.apr}%`}
               change="Annual Percentage Rate"
             />
             <StatsCard
-              icon={Wallet}
               label="Total Staked"
               value={`${(stakingData.totalStaked / 1000).toFixed(0)}K`}
               change="VNX Tokens"
             />
             <StatsCard
-              icon={Wallet}
               label="My Staked"
               value={stakingData.myStaked.toLocaleString()}
               change="VNX Tokens"
             />
             <StatsCard
-              icon={Clock}
               label="Rewards"
               value={stakingData.rewards.toLocaleString()}
               change="VNX Earned"

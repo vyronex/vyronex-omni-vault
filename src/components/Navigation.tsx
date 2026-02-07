@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Wallet, BarChart3, Coins, ArrowLeftRight, LogOut, User, LineChart, Menu, Activity } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -17,12 +16,12 @@ const Navigation = () => {
   };
 
   const navItems = [
-    { icon: Wallet, label: "Wallet", path: "/wallet" },
-    { icon: ArrowLeftRight, label: "Swap", path: "/swap" },
-    { icon: TrendingUp, label: "Stake", path: "/stake" },
-    { icon: Coins, label: "Markets", path: "/markets" },
-    { icon: Activity, label: "Spot", path: "/spot" },
-    { icon: LineChart, label: "Trade", path: "/trade" },
+    { label: "Wallet", path: "/wallet" },
+    { label: "Swap", path: "/swap" },
+    { label: "Stake", path: "/stake" },
+    { label: "Markets", path: "/markets" },
+    { label: "Spot", path: "/spot" },
+    { label: "Trade", path: "/trade" },
   ];
 
   const NavLinks = () => (
@@ -31,9 +30,8 @@ const Navigation = () => {
         <Link key={item.path} to={item.path}>
           <Button
             variant={location.pathname === item.path ? "default" : "ghost"}
-            className="w-full justify-start gap-2"
+            className="w-full justify-start"
           >
-            <item.icon className="h-4 w-4" />
             {item.label}
           </Button>
         </Link>
@@ -61,12 +59,10 @@ const Navigation = () => {
               <div className="flex items-center gap-2 ml-4">
                 <Button variant="outline" size="sm" asChild>
                   <Link to="/wallet">
-                    <User className="h-4 w-4 mr-2" />
                     Account
                   </Link>
                 </Button>
                 <Button variant="outline" size="sm" onClick={handleSignOut}>
-                  <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
                 </Button>
               </div>
@@ -80,13 +76,27 @@ const Navigation = () => {
           {/* Mobile Navigation */}
           <Sheet>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
+              <Button variant="ghost" size="sm">
+                Menu
               </Button>
             </SheetTrigger>
             <SheetContent>
               <div className="flex flex-col gap-2 mt-8">
                 <NavLinks />
+                {user ? (
+                  <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border">
+                    <Button variant="outline" size="sm" asChild>
+                      <Link to="/wallet">Account</Link>
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={handleSignOut}>
+                      Sign Out
+                    </Button>
+                  </div>
+                ) : (
+                  <Button variant="outline" asChild className="mt-4">
+                    <Link to="/auth">Sign In</Link>
+                  </Button>
+                )}
               </div>
             </SheetContent>
           </Sheet>
