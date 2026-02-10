@@ -1,10 +1,19 @@
 import { useState } from "react";
+import { z } from "zod";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
+  email: z.string().trim().email("Invalid email").max(255, "Email too long"),
+  subject: z.string().trim().min(1, "Subject is required").max(200, "Subject too long"),
+  message: z.string().trim().min(1, "Message is required").max(2000, "Message too long"),
+});
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -13,11 +22,43 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent! We'll get back to you within 24 hours.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setErrors({});
+
+    const result = contactSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) fieldErrors[err.path[0] as string] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from("contact_submissions")
+        .insert({
+          name: result.data.name,
+          email: result.data.email,
+          subject: result.data.subject,
+          message: result.data.message,
+        });
+
+      if (error) throw error;
+
+      toast.success("Message sent! We'll get back to you within 24 hours.");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -30,10 +71,10 @@ const Contact = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(1_99%_48%/0.15),transparent_50%)]" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+             <h1 className="text-3xl md:text-5xl font-bold mb-6">
               Get In <span className="text-gradient">Touch</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm md:text-[18px] text-muted-foreground max-w-2xl mx-auto">
               Have questions? We're here to help. Reach out to our team anytime.
             </p>
           </div>
@@ -58,6 +99,7 @@ const Contact = () => {
                       placeholder="Your name"
                       required
                     />
+                    {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Email</label>
@@ -68,6 +110,7 @@ const Contact = () => {
                       placeholder="your@email.com"
                       required
                     />
+                    {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Subject</label>
@@ -77,6 +120,7 @@ const Contact = () => {
                       placeholder="How can we help?"
                       required
                     />
+                    {errors.subject && <p className="text-xs text-destructive mt-1">{errors.subject}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Message</label>
@@ -87,9 +131,10 @@ const Contact = () => {
                       rows={5}
                       required
                     />
+                    {errors.message && <p className="text-xs text-destructive mt-1">{errors.message}</p>}
                   </div>
-                  <Button type="submit" className="w-full shadow-glow hover-glow">
-                    Send Message
+                  <Button type="submit" className="w-full shadow-glow hover-glow" disabled={isSubmitting}>
+                    {isSubmitting ? "Sending..." : "Send Message"}
                   </Button>
                 </form>
               </div>
@@ -138,10 +183,10 @@ const Contact = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 <span className="text-gradient">Help</span> Center
               </h2>
-              <p className="text-muted-foreground">Find quick answers to common questions</p>
+              <p className="text-sm text-muted-foreground">Find quick answers to common questions</p>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {[

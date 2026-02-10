@@ -152,6 +152,24 @@ All colors MUST be HSL.
     scroll-behavior: smooth;
   }
 
+  @media (max-width: 768px) {
+    body {
+      font-size: 12px;
+    }
+
+    h1 {
+      @apply text-2xl;
+    }
+
+    h2 {
+      @apply text-xl;
+    }
+
+    h3 {
+      @apply text-base;
+    }
+  }
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
