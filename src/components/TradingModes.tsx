@@ -10,7 +10,7 @@ const TradingModes = () => {
           <div className="h-14 w-14 rounded-full gradient-primary flex items-center justify-center mb-4 shadow-glow group-hover:shadow-glow-lg transition-all group-hover:scale-110 transition-bounce">
             <span className="text-primary-foreground font-bold">SP</span>
           </div>
-          <CardTitle className="text-xl">Spot Trading</CardTitle>
+          <CardTitle className="text-[18px]">Spot Trading</CardTitle>
           <CardDescription>
             Buy and sell cryptocurrencies at current market prices with instant settlement
           </CardDescription>
@@ -29,7 +29,7 @@ const TradingModes = () => {
           <div className="h-14 w-14 rounded-full gradient-primary flex items-center justify-center mb-4 shadow-glow group-hover:shadow-glow-lg transition-all group-hover:scale-110 transition-bounce">
             <span className="text-primary-foreground font-bold">MG</span>
           </div>
-          <CardTitle className="text-xl">Margin Trading</CardTitle>
+          <CardTitle className="text-[18px]">Margin Trading</CardTitle>
           <CardDescription>
             Trade with leverage up to 10x to amplify your potential returns
           </CardDescription>
@@ -48,7 +48,7 @@ const TradingModes = () => {
           <div className="h-14 w-14 rounded-full gradient-primary flex items-center justify-center mb-4 shadow-glow group-hover:shadow-glow-lg transition-all group-hover:scale-110 transition-bounce">
             <span className="text-primary-foreground font-bold">FT</span>
           </div>
-          <CardTitle className="text-xl">Futures Trading</CardTitle>
+          <CardTitle className="text-[18px]">Futures Trading</CardTitle>
           <CardDescription>
             Access perpetual and quarterly futures contracts with advanced tools
           </CardDescription>

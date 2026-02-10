@@ -28,11 +28,11 @@ const Index = () => {
             <div className="inline-block mb-6 px-4 py-2 rounded-full glass-card text-sm font-semibold">
               Multi-Chain DeFi Platform
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
               The Future of{" "}
               <span className="text-gradient animate-pulse-glow">Decentralized Trading</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-[18px] text-muted-foreground mb-8 max-w-2xl mx-auto">
               VyronexVNX - Your gateway to multi-chain DeFi. Trade, stake, and manage your crypto portfolio with enterprise-grade security.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
@@ -74,10 +74,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 <span className="text-gradient">VNX Token</span>
               </h2>
-              <p className="text-muted-foreground">Real-time token metrics and performance</p>
+              <p className="text-muted-foreground text-sm">Real-time token metrics and performance</p>
             </div>
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="hover-lift">
@@ -134,10 +134,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 Why Choose <span className="text-gradient">VyronexVNX</span>?
               </h2>
-              <p className="text-muted-foreground">Enterprise-grade features for modern traders</p>
+              <p className="text-muted-foreground text-sm">Enterprise-grade features for modern traders</p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="p-6 rounded-lg glass-card hover-lift group">
@@ -190,10 +190,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 How It <span className="text-gradient">Works</span>
               </h2>
-              <p className="text-muted-foreground">Get started in just a few simple steps</p>
+              <p className="text-muted-foreground text-sm">Get started in just a few simple steps</p>
             </div>
             <div className="grid md:grid-cols-4 gap-6">
               {[
@@ -204,9 +204,9 @@ const Index = () => {
               ].map((item, i) => (
                 <div key={i} className="p-6 rounded-lg glass-card hover-lift text-center">
                   <div className="h-14 w-14 rounded-full gradient-primary flex items-center justify-center mx-auto mb-4 shadow-glow">
-                    <span className="text-2xl font-bold text-primary-foreground">{item.step}</span>
+                    <span className="text-xl font-bold text-primary-foreground">{item.step}</span>
                   </div>
-                  <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+                  <h3 className="text-[18px] font-bold mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground">{item.desc}</p>
                 </div>
               ))}
@@ -221,10 +221,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 <span className="text-gradient">Live Market</span> Prices
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Real-time prices for top 50 cryptocurrencies
               </p>
             </div>
@@ -241,10 +241,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 <span className="text-gradient">Trading</span> Modes
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Choose the trading style that fits your strategy
               </p>
             </div>
@@ -259,10 +259,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 <span className="text-gradient">Quick</span> Swap
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Swap tokens instantly across multiple blockchains
               </p>
             </div>
@@ -279,23 +279,23 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 Join Our <span className="text-gradient">Community</span>
               </h2>
-              <p className="text-muted-foreground">Connect with traders worldwide</p>
+              <p className="text-muted-foreground text-sm">Connect with traders worldwide</p>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="p-8 rounded-lg glass-card hover-lift text-center">
-                <div className="text-4xl font-bold text-gradient mb-2">50K+</div>
-                <p className="text-muted-foreground">Active Users</p>
+                <div className="text-3xl font-bold text-gradient mb-2">50K+</div>
+                <p className="text-muted-foreground text-sm">Active Users</p>
               </div>
               <div className="p-8 rounded-lg glass-card hover-lift text-center">
-                <div className="text-4xl font-bold text-gradient mb-2">$2.5B+</div>
-                <p className="text-muted-foreground">Trading Volume</p>
+                <div className="text-3xl font-bold text-gradient mb-2">$2.5B+</div>
+                <p className="text-muted-foreground text-sm">Trading Volume</p>
               </div>
               <div className="p-8 rounded-lg glass-card hover-lift text-center">
-                <div className="text-4xl font-bold text-gradient mb-2">6+</div>
-                <p className="text-muted-foreground">Supported Chains</p>
+                <div className="text-3xl font-bold text-gradient mb-2">6+</div>
+                <p className="text-muted-foreground text-sm">Supported Chains</p>
               </div>
             </div>
           </div>
@@ -308,10 +308,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 What <span className="text-gradient">Traders</span> Say
               </h2>
-              <p className="text-muted-foreground">Trusted by thousands of traders worldwide</p>
+              <p className="text-muted-foreground text-sm">Trusted by thousands of traders worldwide</p>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {[
@@ -338,10 +338,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 Frequently Asked <span className="text-gradient">Questions</span>
               </h2>
-              <p className="text-muted-foreground">Common questions about VyronexVNX</p>
+              <p className="text-muted-foreground text-sm">Common questions about VyronexVNX</p>
             </div>
             <div className="space-y-4">
               {[
@@ -368,10 +368,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 <span className="text-gradient">Roadmap</span>
               </h2>
-              <p className="text-muted-foreground">Our journey to revolutionize DeFi</p>
+              <p className="text-muted-foreground text-sm">Our journey to revolutionize DeFi</p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
@@ -382,7 +382,7 @@ const Index = () => {
               ].map((phase, i) => (
                 <div key={i} className="p-6 rounded-lg glass-card hover-lift">
                   <div className="text-sm font-semibold text-primary mb-2">{phase.quarter}</div>
-                  <h3 className="text-xl font-bold mb-4">{phase.title}</h3>
+                  <h3 className="text-[18px] font-bold mb-4">{phase.title}</h3>
                   <ul className="space-y-2">
                     {phase.items.map((item, j) => (
                       <li key={j} className="text-sm text-muted-foreground flex items-center gap-2">
@@ -404,10 +404,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 <span className="text-gradient">Bank-Grade</span> Security
               </h2>
-              <p className="text-muted-foreground">Your assets are protected with industry-leading security</p>
+              <p className="text-muted-foreground text-sm">Your assets are protected with industry-leading security</p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
@@ -435,10 +435,10 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 Trusted <span className="text-gradient">Partners</span>
               </h2>
-              <p className="text-muted-foreground">Integrated with leading blockchain platforms</p>
+              <p className="text-muted-foreground text-sm">Integrated with leading blockchain platforms</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
               {["Ethereum", "BNB Chain", "Tron", "Bitcoin", "Fantom", "Solana"].map((partner, i) => (
@@ -457,14 +457,14 @@ const Index = () => {
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 <span className="text-gradient">Token</span> Economics
               </h2>
-              <p className="text-muted-foreground">Sustainable tokenomics for long-term growth</p>
+              <p className="text-muted-foreground text-sm">Sustainable tokenomics for long-term growth</p>
             </div>
             <div className="grid md:grid-cols-2 gap-8">
               <div className="p-8 rounded-lg glass-card shadow-elevated">
-                <h3 className="text-xl font-bold mb-6">Distribution</h3>
+                <h3 className="text-[18px] font-bold mb-6">Distribution</h3>
                 <div className="space-y-4">
                   {[
                     { label: "Public Sale", percent: "40%", amount: "4B VNX" },
@@ -484,7 +484,7 @@ const Index = () => {
                 </div>
               </div>
               <div className="p-8 rounded-lg glass-card shadow-elevated">
-                <h3 className="text-xl font-bold mb-6">Utility</h3>
+                <h3 className="text-[18px] font-bold mb-6">Utility</h3>
                 <div className="space-y-4">
                   {[
                     { title: "Trading Fee Discounts", desc: "Up to 50% off trading fees" },
@@ -505,16 +505,350 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Supported Assets Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,hsl(1_99%_48%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                Supported <span className="text-gradient">Assets</span>
+              </h2>
+              <p className="text-muted-foreground text-sm">Trade hundreds of tokens across multiple chains</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {[
+                { symbol: "BTC", name: "Bitcoin", chain: "Bitcoin" },
+                { symbol: "ETH", name: "Ethereum", chain: "Ethereum" },
+                { symbol: "BNB", name: "BNB", chain: "BSC" },
+                { symbol: "SOL", name: "Solana", chain: "Solana" },
+                { symbol: "TRX", name: "Tron", chain: "Tron" },
+                { symbol: "FTM", name: "Fantom", chain: "Fantom" },
+                { symbol: "USDT", name: "Tether", chain: "Multi" },
+                { symbol: "USDC", name: "USD Coin", chain: "Multi" },
+                { symbol: "DAI", name: "Dai", chain: "Ethereum" },
+                { symbol: "LINK", name: "Chainlink", chain: "Multi" },
+                { symbol: "UNI", name: "Uniswap", chain: "Ethereum" },
+                { symbol: "VNX", name: "VyronexVNX", chain: "BSC" },
+              ].map((asset, i) => (
+                <div key={i} className="p-4 rounded-lg glass-card hover-lift text-center">
+                  <div className="h-10 w-10 rounded-full gradient-primary flex items-center justify-center mx-auto mb-2">
+                    <span className="text-primary-foreground font-bold text-xs">{asset.symbol.substring(0, 3)}</span>
+                  </div>
+                  <p className="font-bold text-sm">{asset.symbol}</p>
+                  <p className="text-xs text-muted-foreground">{asset.name}</p>
+                  <p className="text-xs text-primary mt-1">{asset.chain}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Earn & Yield Section */}
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,hsl(45_93%_58%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                Earn <span className="text-gradient">Passive Income</span>
+              </h2>
+              <p className="text-muted-foreground text-sm">Multiple ways to grow your portfolio while you sleep</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { title: "Staking", apr: "12.5%", desc: "Lock VNX tokens and earn daily rewards with flexible or fixed terms", badge: "Popular" },
+                { title: "Liquidity Mining", apr: "18.2%", desc: "Provide liquidity to trading pairs and earn a share of trading fees", badge: "High Yield" },
+                { title: "Yield Farming", apr: "24.8%", desc: "Optimize returns across DeFi protocols with automated strategies", badge: "Advanced" },
+              ].map((earn, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-[18px] font-bold">{earn.title}</h3>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold">{earn.badge}</span>
+                  </div>
+                  <div className="text-3xl font-bold text-gradient mb-2">Up to {earn.apr}</div>
+                  <p className="text-sm text-muted-foreground mb-4">{earn.desc}</p>
+                  <Link to="/stake">
+                    <Button variant="outline" size="sm" className="w-full">Start Earning</Button>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Comparison Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,hsl(1_99%_48%/0.06),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                Why <span className="text-gradient">VyronexVNX</span> Stands Out
+              </h2>
+              <p className="text-muted-foreground text-sm">See how we compare to other platforms</p>
+            </div>
+            <div className="rounded-lg glass-card shadow-elevated overflow-hidden">
+              <div className="grid grid-cols-4 gap-0 text-sm">
+                <div className="p-4 font-bold border-b border-border">Feature</div>
+                <div className="p-4 font-bold border-b border-border text-center text-gradient">VyronexVNX</div>
+                <div className="p-4 font-bold border-b border-border text-center text-muted-foreground">CEX</div>
+                <div className="p-4 font-bold border-b border-border text-center text-muted-foreground">Other DEX</div>
+                {[
+                  { feature: "Multi-Chain", vnx: "Yes", cex: "Limited", other: "No" },
+                  { feature: "Self-Custody", vnx: "Yes", cex: "No", other: "Yes" },
+                  { feature: "Low Fees", vnx: "0.1%", cex: "0.2-0.5%", other: "0.3%+" },
+                  { feature: "Staking", vnx: "12.5% APR", cex: "3-5%", other: "Variable" },
+                  { feature: "Fiat On-Ramp", vnx: "Yes", cex: "Yes", other: "No" },
+                  { feature: "No KYC Required", vnx: "Optional", cex: "Required", other: "No" },
+                ].map((row, i) => (
+                  <div key={i} className="contents">
+                    <div className="p-4 border-b border-border/50 text-muted-foreground">{row.feature}</div>
+                    <div className="p-4 border-b border-border/50 text-center font-semibold text-primary">{row.vnx}</div>
+                    <div className="p-4 border-b border-border/50 text-center text-muted-foreground">{row.cex}</div>
+                    <div className="p-4 border-b border-border/50 text-center text-muted-foreground">{row.other}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Governance Section */}
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_60%,hsl(25_95%_53%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                Community <span className="text-gradient">Governance</span>
+              </h2>
+              <p className="text-muted-foreground text-sm">Shape the future of VyronexVNX with your vote</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="p-8 rounded-lg glass-card shadow-elevated">
+                <h3 className="text-[18px] font-bold mb-4">How Governance Works</h3>
+                <div className="space-y-4">
+                  {[
+                    { step: "1", title: "Hold VNX", desc: "Stake VNX tokens to gain voting power" },
+                    { step: "2", title: "Propose", desc: "Submit proposals for platform improvements" },
+                    { step: "3", title: "Vote", desc: "Cast your vote on active proposals" },
+                    { step: "4", title: "Execute", desc: "Approved proposals are implemented" },
+                  ].map((item, i) => (
+                    <div key={i} className="flex gap-3">
+                      <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center shrink-0">
+                        <span className="text-primary-foreground font-bold text-xs">{item.step}</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold">{item.title}</p>
+                        <p className="text-sm text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="p-8 rounded-lg glass-card shadow-elevated">
+                <h3 className="text-[18px] font-bold mb-4">Active Proposals</h3>
+                <div className="space-y-4">
+                  {[
+                    { title: "Reduce Trading Fees to 0.08%", votes: "12,450", status: "Active" },
+                    { title: "Add Avalanche Chain Support", votes: "8,320", status: "Active" },
+                    { title: "Increase Staking APR to 15%", votes: "15,780", status: "Passed" },
+                    { title: "Launch NFT Marketplace", votes: "6,100", status: "Voting" },
+                  ].map((proposal, i) => (
+                    <div key={i} className="p-3 rounded-lg bg-background/50 border border-border/50">
+                      <div className="flex justify-between items-start">
+                        <p className="font-semibold text-sm">{proposal.title}</p>
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${proposal.status === 'Passed' ? 'bg-green-500/10 text-green-500' : 'bg-primary/10 text-primary'}`}>
+                          {proposal.status}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{proposal.votes} votes</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Developer API Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,hsl(1_99%_48%/0.06),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                Built for <span className="text-gradient">Developers</span>
+              </h2>
+              <p className="text-muted-foreground text-sm">Integrate VyronexVNX into your applications with our powerful API</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              {[
+                { title: "REST API", desc: "Full-featured REST endpoints for trading, market data, and account management" },
+                { title: "WebSocket", desc: "Real-time market data streams with sub-millisecond latency" },
+                { title: "SDK Libraries", desc: "Official SDKs for JavaScript, Python, Go, and Rust" },
+              ].map((api, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift">
+                  <div className="h-10 w-10 rounded-full gradient-primary flex items-center justify-center mb-4">
+                    <span className="text-primary-foreground font-bold text-xs">{api.title.substring(0, 2).toUpperCase()}</span>
+                  </div>
+                  <h3 className="text-[18px] font-bold mb-2">{api.title}</h3>
+                  <p className="text-sm text-muted-foreground">{api.desc}</p>
+                </div>
+              ))}
+            </div>
+            <div className="p-6 rounded-lg glass-card shadow-elevated">
+              <pre className="text-sm text-muted-foreground overflow-x-auto">
+                <code>{`// Example: Fetch VNX price
+const response = await fetch('https://api.vyronexvnx.com/v1/market/VNX-USDT');
+const data = await response.json();
+console.log(data.price); // 0.000542`}</code>
+              </pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mobile App Section */}
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(45_93%_58%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                  Trade <span className="text-gradient">Anywhere</span>
+                </h2>
+                <p className="text-muted-foreground text-sm mb-6">
+                  Access your portfolio, execute trades, and monitor markets from any device with our mobile-optimized platform.
+                </p>
+                <div className="space-y-4 mb-8">
+                  {[
+                    "Real-time price alerts and notifications",
+                    "Biometric authentication for secure access",
+                    "One-tap trading with customizable shortcuts",
+                    "Offline portfolio tracking and analytics",
+                  ].map((feature, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="h-2 w-2 rounded-full bg-primary shrink-0" />
+                      <p className="text-sm text-muted-foreground">{feature}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-3">
+                  <Button className="shadow-glow hover-glow">Download App</Button>
+                  <Button variant="outline">Web Version</Button>
+                </div>
+              </div>
+              <div className="p-8 rounded-lg glass-card shadow-elevated text-center">
+                <div className="space-y-4">
+                  <div className="text-3xl font-bold text-gradient">4.8 / 5.0</div>
+                  <p className="text-sm text-muted-foreground">Average Rating</p>
+                  <div className="grid grid-cols-3 gap-4 pt-4">
+                    <div>
+                      <div className="text-xl font-bold">100K+</div>
+                      <p className="text-xs text-muted-foreground">Downloads</p>
+                    </div>
+                    <div>
+                      <div className="text-xl font-bold">99.9%</div>
+                      <p className="text-xs text-muted-foreground">Uptime</p>
+                    </div>
+                    <div>
+                      <div className="text-xl font-bold">&lt;50ms</div>
+                      <p className="text-xs text-muted-foreground">Latency</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Referral Program Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_80%,hsl(25_95%_53%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                <span className="text-gradient">Referral</span> Program
+              </h2>
+              <p className="text-muted-foreground text-sm">Earn rewards by inviting friends to VyronexVNX</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              {[
+                { tier: "Bronze", referrals: "1-10", reward: "10% Commission", bonus: "500 VNX" },
+                { tier: "Silver", referrals: "11-50", reward: "15% Commission", bonus: "2,500 VNX" },
+                { tier: "Gold", referrals: "51+", reward: "20% Commission", bonus: "10,000 VNX" },
+              ].map((tier, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift text-center">
+                  <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mx-auto mb-4 shadow-glow">
+                    <span className="text-primary-foreground font-bold text-xs">{tier.tier.substring(0, 2).toUpperCase()}</span>
+                  </div>
+                  <h3 className="text-[18px] font-bold mb-1">{tier.tier}</h3>
+                  <p className="text-xs text-muted-foreground mb-3">{tier.referrals} referrals</p>
+                  <div className="text-xl font-bold text-gradient mb-1">{tier.reward}</div>
+                  <p className="text-sm text-muted-foreground">+ {tier.bonus} bonus</p>
+                </div>
+              ))}
+            </div>
+            <div className="text-center">
+              <Link to="/auth">
+                <Button size="lg" className="shadow-glow hover-glow">Start Referring</Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Learning Center Section */}
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_50%,hsl(1_99%_48%/0.06),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                Learning <span className="text-gradient">Center</span>
+              </h2>
+              <p className="text-muted-foreground text-sm">Level up your trading knowledge with expert resources</p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { title: "Beginner Guides", count: "24 Articles", desc: "Start your crypto journey with step-by-step tutorials" },
+                { title: "Trading Strategies", count: "18 Lessons", desc: "Learn proven strategies from professional traders" },
+                { title: "DeFi Deep Dives", count: "12 Guides", desc: "Understand yield farming, liquidity pools, and more" },
+                { title: "Security Best Practices", count: "8 Resources", desc: "Protect your assets with essential security tips" },
+              ].map((resource, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift">
+                  <h3 className="text-[18px] font-bold mb-1">{resource.title}</h3>
+                  <p className="text-xs text-primary font-semibold mb-3">{resource.count}</p>
+                  <p className="text-sm text-muted-foreground">{resource.desc}</p>
+                  <Link to="/blog" className="text-sm text-primary font-semibold mt-4 inline-block hover:underline">
+                    Explore
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Newsletter Section */}
       <section className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(25_95%_53%/0.08),transparent_50%)]" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto">
             <div className="p-8 md:p-12 rounded-lg glass-card shadow-elevated text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
                 Stay <span className="text-gradient">Updated</span>
               </h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground text-sm mb-6">
                 Get the latest news, updates, and exclusive offers delivered to your inbox
               </p>
               <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">

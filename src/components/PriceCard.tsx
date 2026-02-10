@@ -16,7 +16,7 @@ const PriceCard = ({ symbol, name, price, change24h, volume }: PriceCardProps) =
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className="text-2xl font-bold">{symbol}</h3>
+            <h3 className="text-xl font-bold">{symbol}</h3>
             <p className="text-sm text-muted-foreground">{name}</p>
           </div>
           <div
@@ -30,7 +30,7 @@ const PriceCard = ({ symbol, name, price, change24h, volume }: PriceCardProps) =
           </div>
         </div>
         <div className="space-y-2">
-          <div className="text-3xl font-bold">${price.toFixed(6)}</div>
+          <div className="text-2xl font-bold">${price.toFixed(6)}</div>
           {volume && (
             <div className="text-sm text-muted-foreground">
               24h Volume: {volume}

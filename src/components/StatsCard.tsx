@@ -16,7 +16,7 @@ const StatsCard = ({ label, value, change }: StatsCardProps) => {
           </div>
           <div className="flex-1">
             <p className="text-sm text-muted-foreground">{label}</p>
-            <p className="text-2xl font-bold">{value}</p>
+            <p className="text-xl font-bold">{value}</p>
             {change && (
               <p className="text-xs text-muted-foreground mt-1">{change}</p>
             )}
