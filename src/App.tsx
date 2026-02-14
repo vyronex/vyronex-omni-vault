@@ -9,6 +9,7 @@ import Swap from "./pages/Swap";
 import Stake from "./pages/Stake";
 import Markets from "./pages/Markets";
 import Trade from "./pages/Trade";
+import Futures from "./pages/Futures";
 import SpotTrading from "./pages/SpotTrading";
 import Auth from "./pages/Auth";
 import About from "./pages/About";
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/stake" element={<Stake />} />
           <Route path="/markets" element={<Markets />} />
           <Route path="/trade" element={<Trade />} />
+          <Route path="/futures" element={<Futures />} />
           <Route path="/spot" element={<SpotTrading />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />

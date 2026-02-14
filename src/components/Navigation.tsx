@@ -22,6 +22,7 @@ const Navigation = () => {
     { label: "Markets", path: "/markets" },
     { label: "Spot", path: "/spot" },
     { label: "Trade", path: "/trade" },
+    { label: "Futures", path: "/futures" },
   ];
 
   const NavLinks = () => (
