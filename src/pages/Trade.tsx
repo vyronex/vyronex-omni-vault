@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Navigation from "@/components/Navigation";
+import { fetchCoinGeckoData } from "@/hooks/useCoinGecko";
 
 const Trade = () => {
   const [coins, setCoins] = useState<any[]>([]);
@@ -19,8 +20,10 @@ const Trade = () => {
 
   async function loadTop50() {
     try {
-      const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false');
-      const data = await res.json();
+      const data = await fetchCoinGeckoData(
+        "coins/markets",
+        "vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false"
+      );
       setCoins(data);
       setLoading(false);
     } catch (err) {
@@ -35,8 +38,7 @@ const Trade = () => {
     setIframeLoaded(false);
 
     try {
-      const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coingeckoId}`);
-      const details = await res.json();
+      const details = await fetchCoinGeckoData(`coins/${coingeckoId}`, "");
       setCurrentCoin(details);
 
       const platforms = details.platforms || {};
