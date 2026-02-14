@@ -1,67 +1,61 @@
 import Navigation from "@/components/Navigation";
 import PriceCard from "@/components/PriceCard";
+import StatsCard from "@/components/StatsCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
+import { useMarketData, useGlobalData, useTrending } from "@/hooks/useCoinGecko";
+import { TrendingUp, TrendingDown, Flame, Globe, BarChart3 } from "lucide-react";
 
 const Markets = () => {
   const { data: vnxPrice } = useVNXPrice();
+  const { data: coins, isLoading: coinsLoading } = useMarketData(20);
+  const { data: globalData } = useGlobalData();
+  const { data: trending } = useTrending();
 
-  // Demo market data (in production, fetch real-time from APIs)
-  const markets = [
-    {
-      symbol: "BTC",
-      name: "Bitcoin",
-      price: 98250.50,
-      change24h: 3.25,
-      volume: "$52.4B",
-    },
-    {
-      symbol: "ETH",
-      name: "Ethereum",
-      price: 3542.75,
-      change24h: 5.12,
-      volume: "$28.1B",
-    },
-    {
-      symbol: "BNB",
-      name: "BNB",
-      price: 678.90,
-      change24h: 2.45,
-      volume: "$2.8B",
-    },
-    {
-      symbol: "SOL",
-      name: "Solana",
-      price: 198.45,
-      change24h: -1.23,
-      volume: "$4.2B",
-    },
-    {
-      symbol: "TRX",
-      name: "Tron",
-      price: 0.2456,
-      change24h: 1.85,
-      volume: "$890M",
-    },
-    {
-      symbol: "FTM",
-      name: "Fantom",
-      price: 0.8923,
-      change24h: 4.67,
-      volume: "$345M",
-    },
-  ];
+  const global = globalData?.data;
+  const trendingCoins = trending?.coins?.slice(0, 6) || [];
+
+  // Derive top gainer / loser from live data
+  const topGainer = coins?.reduce((best: any, c: any) =>
+    !best || (c.price_change_percentage_24h || 0) > (best.price_change_percentage_24h || 0) ? c : best, null);
+  const topLoser = coins?.reduce((worst: any, c: any) =>
+    !worst || (c.price_change_percentage_24h || 0) < (worst.price_change_percentage_24h || 0) ? c : worst, null);
+  const highestVol = coins?.reduce((best: any, c: any) =>
+    !best || (c.total_volume || 0) > (best.total_volume || 0) ? c : best, null);
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      
+
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-2">Markets</h1>
-            <p className="text-muted-foreground">Real-time cryptocurrency market data</p>
+            <p className="text-muted-foreground">Real-time cryptocurrency market data powered by CoinGecko</p>
           </div>
+
+          {/* Global Stats */}
+          {global && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <StatsCard
+                label="Total Market Cap"
+                value={`$${(global.total_market_cap?.usd / 1e12).toFixed(2)}T`}
+                change={`${global.market_cap_change_percentage_24h_usd?.toFixed(2)}% (24h)`}
+              />
+              <StatsCard
+                label="24h Volume"
+                value={`$${(global.total_volume?.usd / 1e9).toFixed(1)}B`}
+              />
+              <StatsCard
+                label="BTC Dominance"
+                value={`${global.market_cap_percentage?.btc?.toFixed(1)}%`}
+              />
+              <StatsCard
+                label="Active Coins"
+                value={global.active_cryptocurrencies?.toLocaleString() || "—"}
+              />
+            </div>
+          )}
 
           {/* VNX Featured */}
           <div className="mb-8">
@@ -75,186 +69,176 @@ const Markets = () => {
             />
           </div>
 
-          {/* Market Overview */}
+          {/* Trending Coins */}
+          {trendingCoins.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                <Flame className="h-5 w-5 text-primary" /> Trending
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {trendingCoins.map((t: any, i: number) => {
+                  const item = t.item;
+                  return (
+                    <Card key={i} className="shadow-card hover:shadow-glow transition-smooth">
+                      <CardContent className="p-4 text-center">
+                        <img src={item.thumb} alt={item.symbol} className="w-8 h-8 rounded-full mx-auto mb-2" />
+                        <p className="font-semibold text-sm">{item.symbol}</p>
+                        <p className="text-xs text-muted-foreground">{item.name}</p>
+                        <p className="text-xs text-muted-foreground mt-1">Rank #{item.market_cap_rank || "—"}</p>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Live Market Table */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">Supported Assets</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {markets.map((market) => (
-                <PriceCard
-                  key={market.symbol}
-                  symbol={market.symbol}
-                  name={market.name}
-                  price={market.price}
-                  change24h={market.change24h}
-                  volume={market.volume}
-                />
-              ))}
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-primary" /> Top Assets
+            </h2>
+            <div className="overflow-x-auto rounded-lg border border-border">
+              <table className="w-full">
+                <thead className="bg-card border-b border-border">
+                  <tr className="text-left">
+                    <th className="p-3 font-semibold text-sm">#</th>
+                    <th className="p-3 font-semibold text-sm">Name</th>
+                    <th className="p-3 font-semibold text-sm">Price</th>
+                    <th className="p-3 font-semibold text-sm">1h %</th>
+                    <th className="p-3 font-semibold text-sm">24h %</th>
+                    <th className="p-3 font-semibold text-sm">7d %</th>
+                    <th className="p-3 font-semibold text-sm hidden md:table-cell">Market Cap</th>
+                    <th className="p-3 font-semibold text-sm hidden lg:table-cell">Volume (24h)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {coinsLoading ? (
+                    <tr><td colSpan={8} className="p-8 text-center text-muted-foreground">Loading live data…</td></tr>
+                  ) : coins?.map((c: any, i: number) => (
+                    <tr key={c.id} className="border-b border-border/50 hover:bg-accent/5 transition-colors">
+                      <td className="p-3 text-muted-foreground">{i + 1}</td>
+                      <td className="p-3">
+                        <div className="flex items-center gap-2">
+                          <img src={c.image} alt={c.symbol} className="w-6 h-6 rounded-full" />
+                          <div>
+                            <div className="font-semibold text-sm">{c.name}</div>
+                            <div className="text-xs text-muted-foreground uppercase">{c.symbol}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-3 font-mono text-sm">${Number(c.current_price).toLocaleString()}</td>
+                      <td className="p-3">
+                        <PctBadge value={c.price_change_percentage_1h_in_currency} />
+                      </td>
+                      <td className="p-3">
+                        <PctBadge value={c.price_change_percentage_24h} />
+                      </td>
+                      <td className="p-3">
+                        <PctBadge value={c.price_change_percentage_7d_in_currency} />
+                      </td>
+                      <td className="p-3 hidden md:table-cell text-muted-foreground text-sm">
+                        ${(c.market_cap / 1e9).toFixed(2)}B
+                      </td>
+                      <td className="p-3 hidden lg:table-cell text-muted-foreground text-sm">
+                        ${(c.total_volume / 1e6).toFixed(1)}M
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
 
-          {/* Trading Pairs */}
+          {/* Market Insights — live */}
           <Card className="shadow-card">
             <CardHeader>
-              <CardTitle>Top Trading Pairs</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[
-                  { pair: "VNX/USDT", price: "0.000542", change: "+2.45%", volume: "$125K" },
-                  { pair: "VNX/BNB", price: "0.00000080", change: "+1.23%", volume: "$89K" },
-                  { pair: "VNX/BUSD", price: "0.000541", change: "+2.67%", volume: "$67K" },
-                ].map((pair, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-primary transition-smooth"
-                  >
-                    <div>
-                      <p className="font-semibold">{pair.pair}</p>
-                      <p className="text-sm text-muted-foreground">24h Volume: {pair.volume}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">{pair.price}</p>
-                      <p className={`text-sm ${pair.change.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
-                        {pair.change}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Market Insights */}
-          <Card className="shadow-card mt-6">
-            <CardHeader>
-              <CardTitle>Market Insights</CardTitle>
+              <CardTitle>Market Insights (Live)</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-6">
                 <div>
                   <h3 className="font-semibold mb-2">Top Gainer (24h)</h3>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-lg">ETH</span>
-                    <span className="text-green-500 font-semibold">+5.12%</span>
-                  </div>
+                  {topGainer ? (
+                    <div className="flex items-center gap-2">
+                      <img src={topGainer.image} alt="" className="w-6 h-6 rounded-full" />
+                      <span className="font-bold text-lg">{topGainer.symbol?.toUpperCase()}</span>
+                      <span className="text-green-500 font-semibold">
+                        +{topGainer.price_change_percentage_24h?.toFixed(2)}%
+                      </span>
+                    </div>
+                  ) : <span className="text-muted-foreground">—</span>}
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Top Loser (24h)</h3>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-lg">SOL</span>
-                    <span className="text-red-500 font-semibold">-1.23%</span>
-                  </div>
+                  {topLoser ? (
+                    <div className="flex items-center gap-2">
+                      <img src={topLoser.image} alt="" className="w-6 h-6 rounded-full" />
+                      <span className="font-bold text-lg">{topLoser.symbol?.toUpperCase()}</span>
+                      <span className="text-red-500 font-semibold">
+                        {topLoser.price_change_percentage_24h?.toFixed(2)}%
+                      </span>
+                    </div>
+                  ) : <span className="text-muted-foreground">—</span>}
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Highest Volume</h3>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-lg">BTC</span>
-                    <span className="text-muted-foreground">$52.4B</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Watchlist */}
-          <Card className="shadow-card mt-6">
-            <CardHeader>
-              <CardTitle>My Watchlist</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[
-                  { symbol: "VNX", name: "Vyronex", price: 0.000542, change: 2.45 },
-                  { symbol: "BTC", name: "Bitcoin", price: 98250.50, change: 3.25 },
-                  { symbol: "ETH", name: "Ethereum", price: 3542.75, change: 5.12 },
-                ].map((coin, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-primary transition-smooth">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="font-bold text-primary">{coin.symbol[0]}</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold">{coin.symbol}</p>
-                        <p className="text-sm text-muted-foreground">{coin.name}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">${coin.price.toLocaleString()}</p>
-                      <p className={`text-sm ${coin.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                        {coin.change >= 0 ? '+' : ''}{coin.change}%
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Market Analysis */}
-          <Card className="shadow-card mt-6">
-            <CardHeader>
-              <CardTitle>Market Analysis</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-semibold mb-2">Market Sentiment</h3>
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <div className="h-3 rounded-full bg-card overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 w-[68%]" />
-                      </div>
-                    </div>
-                    <span className="font-bold text-green-500">68% Bullish</span>
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-lg border border-border">
-                    <p className="text-sm text-muted-foreground mb-1">Fear & Greed Index</p>
-                    <p className="text-2xl font-bold text-green-500">72</p>
-                    <p className="text-sm text-muted-foreground">Greed</p>
-                  </div>
-                  <div className="p-4 rounded-lg border border-border">
-                    <p className="text-sm text-muted-foreground mb-1">Market Dominance</p>
-                    <p className="text-2xl font-bold">BTC 45.2%</p>
-                    <p className="text-sm text-muted-foreground">ETH 18.8%</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Market News */}
-          <Card className="shadow-card mt-6">
-            <CardHeader>
-              <CardTitle>Latest News</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[
-                  { title: "Bitcoin reaches new all-time high", time: "2 hours ago", tag: "BTC" },
-                  { title: "Ethereum upgrade scheduled for Q2", time: "5 hours ago", tag: "ETH" },
-                  { title: "VNX announces new partnership", time: "1 day ago", tag: "VNX" },
-                  { title: "DeFi TVL surpasses $100B milestone", time: "2 days ago", tag: "DeFi" },
-                ].map((news, i) => (
-                  <div key={i} className="p-4 rounded-lg border border-border hover:border-primary transition-smooth cursor-pointer">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <h4 className="font-semibold mb-1">{news.title}</h4>
-                        <p className="text-sm text-muted-foreground">{news.time}</p>
-                      </div>
-                      <span className="px-2 py-1 rounded text-xs font-semibold bg-primary/10 text-primary">
-                        {news.tag}
+                  {highestVol ? (
+                    <div className="flex items-center gap-2">
+                      <img src={highestVol.image} alt="" className="w-6 h-6 rounded-full" />
+                      <span className="font-bold text-lg">{highestVol.symbol?.toUpperCase()}</span>
+                      <span className="text-muted-foreground">
+                        ${(highestVol.total_volume / 1e9).toFixed(2)}B
                       </span>
                     </div>
-                  </div>
-                ))}
+                  ) : <span className="text-muted-foreground">—</span>}
+                </div>
               </div>
             </CardContent>
           </Card>
+
+          {/* Market Dominance from global */}
+          {global && (
+            <Card className="shadow-card mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5 text-primary" /> Market Dominance
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="p-4 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground mb-1">BTC Dominance</p>
+                    <p className="text-2xl font-bold">{global.market_cap_percentage?.btc?.toFixed(1)}%</p>
+                    <div className="mt-2 h-2 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full bg-primary rounded-full" style={{ width: `${global.market_cap_percentage?.btc || 0}%` }} />
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-lg border border-border">
+                    <p className="text-sm text-muted-foreground mb-1">ETH Dominance</p>
+                    <p className="text-2xl font-bold">{global.market_cap_percentage?.eth?.toFixed(1)}%</p>
+                    <div className="mt-2 h-2 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full bg-primary rounded-full" style={{ width: `${global.market_cap_percentage?.eth || 0}%` }} />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
+  );
+};
+
+const PctBadge = ({ value }: { value?: number | null }) => {
+  if (value == null) return <span className="text-muted-foreground text-sm">—</span>;
+  const isPositive = value >= 0;
+  return (
+    <span className={`flex items-center gap-0.5 text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}>
+      {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+      {Math.abs(value).toFixed(2)}%
+    </span>
   );
 };
 
