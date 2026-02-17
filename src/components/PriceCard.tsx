@@ -12,7 +12,7 @@ const PriceCard = ({ symbol, name, price, change24h, volume }: PriceCardProps) =
   const isPositive = change24h >= 0;
 
   return (
-    <Card className="shadow-card hover:shadow-glow transition-smooth">
+    <Card className="shadow-card hover:shadow-glow transition-smooth hover-scale animate-fade-in">
       <CardContent className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div>
@@ -30,7 +30,7 @@ const PriceCard = ({ symbol, name, price, change24h, volume }: PriceCardProps) =
           </div>
         </div>
         <div className="space-y-2">
-          <div className="text-2xl font-bold">${price.toFixed(6)}</div>
+          <div className="text-2xl font-bold animate-count-up">${price.toFixed(6)}</div>
           {volume && (
             <div className="text-sm text-muted-foreground">
               24h Volume: {volume}

@@ -1,8 +1,23 @@
+import { useEffect, useRef } from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { useMarketData } from "@/hooks/useCoinGecko";
 
 const LivePricesTable = () => {
   const { data: coins, isLoading: loading } = useMarketData(50);
+  const prevPrices = useRef<Record<string, number>>({});
+
+  // Track previous prices for flash animation
+  useEffect(() => {
+    if (coins) {
+      // Delay storing so current render can compare against old values
+      const timeout = setTimeout(() => {
+        const map: Record<string, number> = {};
+        coins.forEach((c: any) => { map[c.id] = c.current_price; });
+        prevPrices.current = map;
+      }, 1100); // slightly longer than flash animation
+      return () => clearTimeout(timeout);
+    }
+  }, [coins]);
 
   if (loading) {
     return (
@@ -28,8 +43,17 @@ const LivePricesTable = () => {
         <tbody>
           {(coins || []).map((coin: any, idx: number) => {
             const isPositive = (coin.price_change_percentage_24h || 0) >= 0;
+            const prev = prevPrices.current[coin.id];
+            const flashClass = prev != null && prev !== coin.current_price
+              ? coin.current_price > prev ? "price-flash-up" : "price-flash-down"
+              : "";
+
             return (
-              <tr key={coin.id} className="border-b border-border/50 hover:bg-accent/5 transition-colors">
+              <tr
+                key={coin.id}
+                className="border-b border-border/50 hover:bg-accent/5 transition-colors animate-fade-in"
+                style={{ animationDelay: `${idx * 30}ms`, animationFillMode: "both" }}
+              >
                 <td className="p-3 text-muted-foreground">{idx + 1}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
@@ -40,7 +64,9 @@ const LivePricesTable = () => {
                     </div>
                   </div>
                 </td>
-                <td className="p-3 font-mono">${coin.current_price?.toLocaleString()}</td>
+                <td className={`p-3 font-mono transition-colors ${flashClass}`}>
+                  ${coin.current_price?.toLocaleString()}
+                </td>
                 <td className="p-3">
                   <div className={`flex items-center gap-1 font-semibold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
                     {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}

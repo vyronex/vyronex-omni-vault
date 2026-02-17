@@ -255,4 +255,31 @@ All colors MUST be HSL.
   .glass-card {
     @apply gradient-glass border border-border/50 backdrop-blur-xl;
   }
+
+  @keyframes price-flash-green {
+    0% { background-color: hsla(142, 71%, 45%, 0.25); }
+    100% { background-color: transparent; }
+  }
+
+  @keyframes price-flash-red {
+    0% { background-color: hsla(0, 84%, 60%, 0.25); }
+    100% { background-color: transparent; }
+  }
+
+  .price-flash-up {
+    animation: price-flash-green 1s ease-out;
+  }
+
+  .price-flash-down {
+    animation: price-flash-red 1s ease-out;
+  }
+
+  @keyframes count-up {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-count-up {
+    animation: count-up 0.4s ease-out;
+  }
 }

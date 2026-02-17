@@ -66,7 +66,7 @@ const PriceChart = ({ coinId, coinName }: PriceChartProps) => {
   };
 
   return (
-    <Card className="shadow-card">
+    <Card className="shadow-card animate-fade-in">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
@@ -74,7 +74,7 @@ const PriceChart = ({ coinId, coinName }: PriceChartProps) => {
               {coinName || coinId} Price Chart
             </CardTitle>
             {chartData.length > 0 && (
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-2 mt-1 animate-count-up" key={chartData[chartData.length - 1]?.price}>
                 <span className="text-xl font-bold font-mono">
                   {formatPrice(chartData[chartData.length - 1].price)}
                 </span>
@@ -110,7 +110,7 @@ const PriceChart = ({ coinId, coinName }: PriceChartProps) => {
             No chart data available
           </div>
         ) : (
-          <ChartContainer config={chartConfig} className="h-[260px] w-full">
+          <ChartContainer config={chartConfig} className="h-[260px] w-full animate-fade-in">
             <AreaChart data={chartData} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id={`gradient-${coinId}`} x1="0" y1="0" x2="0" y2="1">
@@ -152,7 +152,8 @@ const PriceChart = ({ coinId, coinName }: PriceChartProps) => {
                 strokeWidth={2}
                 fill={`url(#gradient-${coinId})`}
                 dot={false}
-                animationDuration={500}
+                animationDuration={1200}
+                animationEasing="ease-in-out"
               />
             </AreaChart>
           </ChartContainer>
