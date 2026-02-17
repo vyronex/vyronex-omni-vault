@@ -1,6 +1,8 @@
+import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import PriceCard from "@/components/PriceCard";
 import StatsCard from "@/components/StatsCard";
+import PriceChart from "@/components/PriceChart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useMarketData, useGlobalData, useTrending } from "@/hooks/useCoinGecko";
@@ -11,6 +13,7 @@ const Markets = () => {
   const { data: coins, isLoading: coinsLoading } = useMarketData(20);
   const { data: globalData } = useGlobalData();
   const { data: trending } = useTrending();
+  const [chartCoinId, setChartCoinId] = useState("bitcoin");
 
   const global = globalData?.data;
   const trendingCoins = trending?.coins?.slice(0, 6) || [];
@@ -66,6 +69,33 @@ const Markets = () => {
               price={vnxPrice?.price || 0.000542}
               change24h={vnxPrice?.change24h || 2.45}
               volume={`$${((vnxPrice?.volume24h || 125000) / 1000).toFixed(1)}K`}
+            />
+          </div>
+
+          {/* Price Chart */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-primary" /> Price Chart
+            </h2>
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
+              {(coins || []).slice(0, 10).map((c: any) => (
+                <button
+                  key={c.id}
+                  onClick={() => setChartCoinId(c.id)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+                    chartCoinId === c.id
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border text-foreground hover:bg-accent"
+                  }`}
+                >
+                  <img src={c.image} alt={c.symbol} className="w-4 h-4 rounded-full" />
+                  {c.symbol?.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <PriceChart
+              coinId={chartCoinId}
+              coinName={coins?.find((c: any) => c.id === chartCoinId)?.name || chartCoinId}
             />
           </div>
 
