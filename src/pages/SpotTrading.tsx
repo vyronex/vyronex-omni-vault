@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import OrderBook from "@/components/OrderBook";
 import OrderForm from "@/components/OrderForm";
 import TradeHistory from "@/components/TradeHistory";
+import PriceChart from "@/components/PriceChart";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -97,15 +98,14 @@ const SpotTrading = () => {
 
             {/* Center Column - Chart Placeholder & Order Form */}
             <div className="lg:col-span-1 space-y-6">
-              {/* Price Chart Placeholder */}
-              <div className="glass-card rounded-lg p-6 shadow-card">
-                <h3 className="text-lg font-semibold mb-4">
-                  {currentPair.base_token}/{currentPair.quote_token} Chart
-                </h3>
-                <div className="h-64 flex items-center justify-center border border-border/50 rounded-lg bg-muted/20">
-                  <p className="text-muted-foreground">Price chart coming soon</p>
-                </div>
-              </div>
+              {/* Price Chart */}
+              <PriceChart
+                coinId={currentPair.base_token.toLowerCase() === "btc" ? "bitcoin" :
+                        currentPair.base_token.toLowerCase() === "eth" ? "ethereum" :
+                        currentPair.base_token.toLowerCase() === "bnb" ? "binancecoin" :
+                        currentPair.base_token.toLowerCase()}
+                coinName={`${currentPair.base_token}/${currentPair.quote_token}`}
+              />
 
               {/* Order Form */}
               <OrderForm 
