@@ -17,6 +17,7 @@ import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Blog from "./pages/Blog";
+import CoinDetail from "./pages/CoinDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/swap" element={<Swap />} />
           <Route path="/stake" element={<Stake />} />
           <Route path="/markets" element={<Markets />} />
+          <Route path="/coin/:coinId" element={<CoinDetail />} />
           <Route path="/trade" element={<Trade />} />
           <Route path="/futures" element={<Futures />} />
           <Route path="/spot" element={<SpotTrading />} />
