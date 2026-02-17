@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import PriceCard from "@/components/PriceCard";
 import StatsCard from "@/components/StatsCard";
@@ -9,6 +10,7 @@ import { useMarketData, useGlobalData, useTrending } from "@/hooks/useCoinGecko"
 import { TrendingUp, TrendingDown, Flame, Globe, BarChart3 } from "lucide-react";
 
 const Markets = () => {
+  const navigate = useNavigate();
   const { data: vnxPrice } = useVNXPrice();
   const { data: coins, isLoading: coinsLoading } = useMarketData(20);
   const { data: globalData } = useGlobalData();
@@ -65,10 +67,10 @@ const Markets = () => {
             <h2 className="text-2xl font-bold mb-4">Featured</h2>
             <PriceCard
               symbol="VNX"
-              name="Vyronex Token"
-              price={vnxPrice?.price || 0.000542}
-              change24h={vnxPrice?.change24h || 2.45}
-              volume={`$${((vnxPrice?.volume24h || 125000) / 1000).toFixed(1)}K`}
+              name="VyronexVNX Token"
+              price={vnxPrice?.price || 0}
+              change24h={vnxPrice?.change24h || 0}
+              volume={vnxPrice?.volume24h ? `$${(vnxPrice.volume24h / 1000).toFixed(1)}K` : "$0"}
             />
           </div>
 
@@ -146,7 +148,12 @@ const Markets = () => {
                   {coinsLoading ? (
                     <tr><td colSpan={8} className="p-8 text-center text-muted-foreground">Loading live data…</td></tr>
                   ) : coins?.map((c: any, i: number) => (
-                    <tr key={c.id} className="border-b border-border/50 hover:bg-accent/5 transition-colors">
+                    <tr
+                      key={c.id}
+                      className="border-b border-border/50 hover:bg-accent/5 transition-colors cursor-pointer animate-fade-in"
+                      style={{ animationDelay: `${i * 25}ms`, animationFillMode: "both" }}
+                      onClick={() => navigate(`/coin/${c.id}`)}
+                    >
                       <td className="p-3 text-muted-foreground">{i + 1}</td>
                       <td className="p-3">
                         <div className="flex items-center gap-2">
