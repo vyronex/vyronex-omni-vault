@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Swap = () => {
@@ -62,6 +63,7 @@ const Swap = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

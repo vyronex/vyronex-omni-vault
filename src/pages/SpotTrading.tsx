@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import OrderBook from "@/components/OrderBook";
 import OrderForm from "@/components/OrderForm";
 import TradeHistory from "@/components/TradeHistory";
@@ -122,6 +123,7 @@ const SpotTrading = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

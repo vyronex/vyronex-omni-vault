@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -325,6 +326,7 @@ const Stake = () => {
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

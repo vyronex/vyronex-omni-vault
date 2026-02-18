@@ -26,6 +26,7 @@ const Footer = () => {
               <li><Link to="/swap" className="hover:text-primary transition-colors">Swap</Link></li>
               <li><Link to="/stake" className="hover:text-primary transition-colors">Stake</Link></li>
               <li><Link to="/trade" className="hover:text-primary transition-colors">Trade</Link></li>
+              <li><Link to="/vnx" className="hover:text-primary transition-colors">VNX Token</Link></li>
               <li><Link to="/markets" className="hover:text-primary transition-colors">Markets</Link></li>
             </ul>
           </div>

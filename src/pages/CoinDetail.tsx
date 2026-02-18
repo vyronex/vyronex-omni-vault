@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import PriceChart from "@/components/PriceChart";
 import { useCoinDetail } from "@/hooks/useCoinGecko";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -187,6 +188,7 @@ const CoinDetail = () => {
           </Card>
         )}
       </div>
+      <Footer />
     </div>
   );
 };
