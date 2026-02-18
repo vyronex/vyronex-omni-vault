@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import StatsCard from "@/components/StatsCard";
@@ -239,6 +240,7 @@ const WalletReal = () => {
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

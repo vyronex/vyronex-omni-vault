@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import PriceCard from "@/components/PriceCard";
 import StatsCard from "@/components/StatsCard";
 import PriceChart from "@/components/PriceChart";
@@ -264,6 +265,7 @@ const Markets = () => {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

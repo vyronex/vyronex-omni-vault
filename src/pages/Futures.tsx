@@ -1,4 +1,5 @@
 import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDerivatives, useDerivativesExchanges } from "@/hooks/useCoinGecko";
 import { TrendingUp, TrendingDown, Activity } from "lucide-react";
@@ -114,6 +115,7 @@ const Futures = () => {
           </Card>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

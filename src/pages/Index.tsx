@@ -740,28 +740,100 @@ console.log(data.price); // 0.000542`}</code>
                     </div>
                   ))}
                 </div>
-                <div className="flex gap-3">
-                  <Button className="shadow-glow hover-glow">Download App</Button>
-                  <Button variant="outline">Web Version</Button>
+                <div className="flex gap-4 flex-wrap">
+                  <a href="#" className="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-foreground text-background hover:opacity-90 transition-opacity">
+                    <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.32 2.32-1.55 4.3-3.74 4.25z"/></svg>
+                    <div className="text-left">
+                      <div className="text-[10px] leading-none opacity-80">Download on the</div>
+                      <div className="text-base font-semibold leading-tight">App Store</div>
+                    </div>
+                  </a>
+                  <a href="#" className="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-foreground text-background hover:opacity-90 transition-opacity">
+                    <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current"><path d="M3.18 23.49c-.41-.2-.68-.6-.68-1.04V1.55c0-.44.27-.84.68-1.04l11.3 11.49L3.18 23.49zm1.4-22.2L15.58 12 4.58 22.71V1.29zm.72-.3L17.16 10.6l-2.83 2.89L5.3.99zM17.89 11.27l2.6 1.5c.65.37.65 1.1 0 1.47l-2.6 1.5-3.14-2.23 3.14-2.24zM5.3 23.01l12.86-7.43-2.58-2.58L5.3 23.01z"/></svg>
+                    <div className="text-left">
+                      <div className="text-[10px] leading-none opacity-80">GET IT ON</div>
+                      <div className="text-base font-semibold leading-tight">Google Play</div>
+                    </div>
+                  </a>
                 </div>
               </div>
-              <div className="p-8 rounded-lg glass-card shadow-elevated text-center">
-                <div className="space-y-4">
-                  <div className="text-3xl font-bold text-gradient">4.8 / 5.0</div>
-                  <p className="text-sm text-muted-foreground">Average Rating</p>
-                  <div className="grid grid-cols-3 gap-4 pt-4">
-                    <div>
-                      <div className="text-xl font-bold">100K+</div>
-                      <p className="text-xs text-muted-foreground">Downloads</p>
+              <div className="relative">
+                {/* Phone mockup */}
+                <div className="mx-auto w-[260px] md:w-[300px] relative">
+                  <div className="rounded-[2.5rem] border-[6px] border-foreground/20 bg-card shadow-elevated overflow-hidden aspect-[9/19]">
+                    <div className="h-full w-full p-4 flex flex-col">
+                      {/* Status bar */}
+                      <div className="flex justify-between items-center mb-3 px-1">
+                        <span className="text-[10px] font-semibold">9:41</span>
+                        <div className="flex gap-1">
+                          <div className="w-3 h-2 rounded-sm bg-foreground/40" />
+                          <div className="w-3 h-2 rounded-sm bg-foreground/40" />
+                          <div className="w-5 h-2 rounded-sm bg-primary" />
+                        </div>
+                      </div>
+                      {/* App header */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="h-7 w-7 rounded-lg gradient-primary flex items-center justify-center">
+                          <span className="text-primary-foreground font-bold text-xs">V</span>
+                        </div>
+                        <span className="text-xs font-bold">VyronexVNX</span>
+                      </div>
+                      {/* Portfolio card */}
+                      <div className="p-3 rounded-xl gradient-primary mb-3">
+                        <p className="text-[10px] text-primary-foreground/80">Total Balance</p>
+                        <p className="text-lg font-bold text-primary-foreground">$24,856.40</p>
+                        <p className="text-[10px] text-primary-foreground/80 mt-0.5">+5.23% today</p>
+                      </div>
+                      {/* Quick actions */}
+                      <div className="grid grid-cols-4 gap-2 mb-3">
+                        {["Send", "Swap", "Stake", "Buy"].map(a => (
+                          <div key={a} className="text-center">
+                            <div className="h-8 w-8 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-1">
+                              <div className="h-3 w-3 rounded-full bg-primary/50" />
+                            </div>
+                            <p className="text-[8px] text-muted-foreground">{a}</p>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Coin list */}
+                      <div className="space-y-2 flex-1">
+                        {[
+                          { sym: "BTC", val: "$68,240", pct: "+2.1%" },
+                          { sym: "ETH", val: "$3,520", pct: "+1.8%" },
+                          { sym: "VNX", val: "$0.00054", pct: "+5.2%" },
+                        ].map(c => (
+                          <div key={c.sym} className="flex justify-between items-center p-2 rounded-lg bg-background/50">
+                            <div className="flex items-center gap-2">
+                              <div className="h-6 w-6 rounded-full gradient-primary flex items-center justify-center">
+                                <span className="text-[8px] font-bold text-primary-foreground">{c.sym[0]}</span>
+                              </div>
+                              <span className="text-[10px] font-semibold">{c.sym}</span>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-[10px] font-semibold">{c.val}</p>
+                              <p className="text-[8px] text-green-500">{c.pct}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-xl font-bold">99.9%</div>
-                      <p className="text-xs text-muted-foreground">Uptime</p>
-                    </div>
-                    <div>
-                      <div className="text-xl font-bold">&lt;50ms</div>
-                      <p className="text-xs text-muted-foreground">Latency</p>
-                    </div>
+                  </div>
+                  {/* Glow effect */}
+                  <div className="absolute -inset-4 bg-[radial-gradient(circle_at_50%_50%,hsl(1_99%_48%/0.2),transparent_70%)] -z-10 blur-xl" />
+                </div>
+                {/* Stats under phone */}
+                <div className="grid grid-cols-3 gap-4 mt-6 text-center">
+                  <div>
+                    <div className="text-xl font-bold animate-count-up">100K+</div>
+                    <p className="text-xs text-muted-foreground">Downloads</p>
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold animate-count-up">4.8★</div>
+                    <p className="text-xs text-muted-foreground">Rating</p>
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold animate-count-up">&lt;50ms</div>
+                    <p className="text-xs text-muted-foreground">Latency</p>
                   </div>
                 </div>
               </div>
