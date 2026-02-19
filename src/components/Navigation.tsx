@@ -46,9 +46,6 @@ const Navigation = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="h-10 w-10 rounded-lg gradient-primary flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all group-hover:scale-110 transition-bounce">
-              <span className="text-primary-foreground font-bold text-xl">V</span>
-            </div>
             <span className="font-bold text-xl">
               Vyronex<span className="text-gradient">VNX</span>
             </span>
