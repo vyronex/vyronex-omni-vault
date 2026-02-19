@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+
 
 const Navigation = () => {
   const location = useLocation();
@@ -73,32 +73,17 @@ const Navigation = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <Sheet>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="sm">
-                Menu
+          <div className="md:hidden flex items-center gap-2">
+            {user ? (
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                Sign Out
               </Button>
-            </SheetTrigger>
-            <SheetContent>
-              <div className="flex flex-col gap-2 mt-8">
-                <NavLinks />
-                {user ? (
-                  <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border">
-                    <Button variant="outline" size="sm" asChild>
-                      <Link to="/wallet">Account</Link>
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={handleSignOut}>
-                      Sign Out
-                    </Button>
-                  </div>
-                ) : (
-                  <Button variant="outline" asChild className="mt-4">
-                    <Link to="/auth">Sign In</Link>
-                  </Button>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
+            ) : (
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/auth">Sign In</Link>
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </nav>
