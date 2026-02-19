@@ -911,9 +911,152 @@ console.log(data.price); // 0.000542`}</code>
         </div>
       </section>
 
+      {/* Launchpad Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_30%,hsl(0_84%_50%/0.08),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                VNX <span className="text-gradient">Launchpad</span>
+              </h2>
+              <p className="text-muted-foreground text-sm">Be early to the next big project — exclusive token launches for VNX holders</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { name: "MetaForge", ticker: "MFG", raised: "$1.2M", target: "$2M", status: "Live", progress: 60 },
+                { name: "ChainGuard", ticker: "CGD", raised: "$800K", target: "$1.5M", status: "Upcoming", progress: 0 },
+                { name: "NeuraNet", ticker: "NRT", raised: "$3M", target: "$3M", status: "Completed", progress: 100 },
+              ].map((project, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-[18px] font-bold">{project.name}</h3>
+                      <span className="text-xs text-muted-foreground">${project.ticker}</span>
+                    </div>
+                    <span className={`text-xs px-2 py-1 rounded-full font-semibold ${project.status === 'Live' ? 'bg-primary/10 text-primary' : project.status === 'Completed' ? 'bg-green-500/10 text-green-500' : 'bg-muted text-muted-foreground'}`}>
+                      {project.status}
+                    </span>
+                  </div>
+                  <div className="mb-3">
+                    <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                      <span>{project.raised}</span>
+                      <span>{project.target}</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full rounded-full gradient-primary transition-all" style={{ width: `${project.progress}%` }} />
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full" disabled={project.status === 'Completed'}>
+                    {project.status === 'Completed' ? 'Ended' : project.status === 'Live' ? 'Participate' : 'Notify Me'}
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Global Reach Section */}
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(0_84%_50%/0.06),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                <span className="text-gradient">Global</span> Reach
+              </h2>
+              <p className="text-muted-foreground text-sm">Serving traders in 120+ countries with 24/7 uptime</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+              {[
+                { region: "North America", users: "12K+", volume: "$450M" },
+                { region: "Europe", users: "18K+", volume: "$620M" },
+                { region: "Asia Pacific", users: "15K+", volume: "$780M" },
+                { region: "Rest of World", users: "5K+", volume: "$150M" },
+              ].map((r, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift text-center">
+                  <h3 className="font-bold mb-2">{r.region}</h3>
+                  <div className="text-xl font-bold text-gradient">{r.users}</div>
+                  <p className="text-xs text-muted-foreground">Vol: {r.volume}</p>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+              {["English", "中文", "Español", "العربية", "Français", "日本語"].map((lang, i) => (
+                <div key={i} className="p-3 rounded-lg glass-card text-center text-sm font-semibold">{lang}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Press & Media Section */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,hsl(0_84%_50%/0.06),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                In The <span className="text-gradient">Press</span>
+              </h2>
+              <p className="text-muted-foreground text-sm">What the media is saying about VyronexVNX</p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { source: "CoinTelegraph", quote: "VyronexVNX is redefining multi-chain DeFi with its seamless user experience and robust security.", date: "Jan 2025" },
+                { source: "CryptoSlate", quote: "The VNX token has shown impressive utility, making it a standout in the crowded DeFi landscape.", date: "Dec 2024" },
+                { source: "The Block", quote: "With 50K+ active users and growing, VyronexVNX is one to watch in the multi-chain DEX space.", date: "Nov 2024" },
+              ].map((article, i) => (
+                <div key={i} className="p-6 rounded-lg glass-card hover-lift">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="font-bold text-gradient">{article.source}</span>
+                    <span className="text-xs text-muted-foreground">{article.date}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground italic">"{article.quote}"</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Achievements Section */}
+      <section className="py-20 bg-card/30 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,hsl(0_84%_50%/0.06),transparent_50%)]" />
+        <div className="container mx-auto px-4 relative">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                Earn <span className="text-gradient">Badges</span>
+              </h2>
+              <p className="text-muted-foreground text-sm">Complete milestones and unlock exclusive rewards</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {[
+                { badge: "First Trade", xp: "100 XP" },
+                { badge: "Diamond Hands", xp: "500 XP" },
+                { badge: "Whale", xp: "1,000 XP" },
+                { badge: "Staker", xp: "250 XP" },
+                { badge: "Referral King", xp: "750 XP" },
+                { badge: "OG Member", xp: "2,000 XP" },
+              ].map((b, i) => (
+                <div key={i} className="p-4 rounded-lg glass-card hover-lift text-center">
+                  <div className="h-12 w-12 rounded-full gradient-primary flex items-center justify-center mx-auto mb-3 shadow-glow">
+                    <span className="text-primary-foreground font-bold text-xs">{b.badge.substring(0, 2).toUpperCase()}</span>
+                  </div>
+                  <p className="font-bold text-sm mb-1">{b.badge}</p>
+                  <p className="text-xs text-primary font-semibold">{b.xp}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Newsletter Section */}
       <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(25_95%_53%/0.08),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(0_84%_50%/0.08),transparent_50%)]" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-4xl mx-auto">
             <div className="p-8 md:p-12 rounded-lg glass-card shadow-elevated text-center">
