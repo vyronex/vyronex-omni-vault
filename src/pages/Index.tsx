@@ -9,13 +9,15 @@ import QuickSwap from "@/components/QuickSwap";
 import Footer from "@/components/Footer";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useAuth } from "@/hooks/useAuth";
+import { useScrollRevealContainer } from "@/hooks/useScrollReveal";
 
 const Index = () => {
   const { data: vnxPrice } = useVNXPrice();
   const { user } = useAuth();
+  const scrollRef = useScrollRevealContainer();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div ref={scrollRef} className="min-h-screen bg-background">
       <Navigation />
       
       {/* Hero Section */}
