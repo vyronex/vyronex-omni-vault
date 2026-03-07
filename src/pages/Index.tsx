@@ -9,6 +9,7 @@ import QuickSwap from "@/components/QuickSwap";
 import Footer from "@/components/Footer";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useAuth } from "@/hooks/useAuth";
+import { useScrollRevealContainer } from "@/hooks/useScrollReveal";
 
 const Index = () => {
   const { data: vnxPrice } = useVNXPrice();
