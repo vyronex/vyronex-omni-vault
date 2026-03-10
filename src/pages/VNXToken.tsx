@@ -178,14 +178,14 @@ const VNXToken = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {[
-                      { icon: <Coins className="h-5 w-5 text-primary" />, title: "Trading Fee Discounts", desc: "Up to 50% off all trading fees" },
-                      { icon: <TrendingUp className="h-5 w-5 text-primary" />, title: "Staking Rewards", desc: "Earn up to 12.5% APR on staked VNX" },
-                      { icon: <Vote className="h-5 w-5 text-primary" />, title: "Governance", desc: "Vote on platform proposals and upgrades" },
-                      { icon: <Shield className="h-5 w-5 text-primary" />, title: "Premium Access", desc: "Unlock advanced trading tools and analytics" },
-                      { icon: <Zap className="h-5 w-5 text-primary" />, title: "Launchpad", desc: "Early access to new token listings" },
+                      { title: "Trading Fee Discounts", desc: "Up to 50% off all trading fees" },
+                      { title: "Staking Rewards", desc: "Earn up to 12.5% APR on staked VNX" },
+                      { title: "Governance", desc: "Vote on platform proposals and upgrades" },
+                      { title: "Premium Access", desc: "Unlock advanced trading tools and analytics" },
+                      { title: "Launchpad", desc: "Early access to new token listings" },
                     ].map((item, i) => (
                       <div key={i} className="flex gap-3 p-3 rounded-lg bg-background/50 hover-lift">
-                        {item.icon}
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0 mt-2" />
                         <div>
                           <p className="font-semibold text-sm">{item.title}</p>
                           <p className="text-xs text-muted-foreground">{item.desc}</p>
