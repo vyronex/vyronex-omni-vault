@@ -381,13 +381,12 @@ const Index = () => {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: "🏦", title: "Cold Storage", desc: "95% of funds stored offline" },
-                { icon: "🔐", title: "2FA Auth", desc: "Multi-factor authentication" },
-                { icon: "🔒", title: "Encrypted", desc: "AES-256 encryption" },
-                { icon: "🛡️", title: "Insurance", desc: "$100M protection fund" },
+                { title: "Cold Storage", desc: "95% of funds stored offline" },
+                { title: "2FA Auth", desc: "Multi-factor authentication" },
+                { title: "Encrypted", desc: "AES-256 encryption" },
+                { title: "Insurance", desc: "$100M protection fund" },
               ].map((item, i) => (
                 <div key={i} className="card-modern text-center">
-                  <div className="text-3xl mb-4">{item.icon}</div>
                   <h3 className="font-bold mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground">{item.desc}</p>
                 </div>
