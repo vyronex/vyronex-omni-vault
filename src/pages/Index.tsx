@@ -800,12 +800,11 @@ console.log(data.price); // 0.000542`}</code>
             </div>
             <div className="grid md:grid-cols-3 gap-6 mb-10">
               {[
-                { tier: "Bronze", referrals: "1-10", reward: "10% Commission", bonus: "500 VNX", icon: "🥉" },
-                { tier: "Silver", referrals: "11-50", reward: "15% Commission", bonus: "2,500 VNX", icon: "🥈" },
-                { tier: "Gold", referrals: "51+", reward: "20% Commission", bonus: "10,000 VNX", icon: "🥇" },
+                { tier: "Bronze", referrals: "1-10", reward: "10% Commission", bonus: "500 VNX" },
+                { tier: "Silver", referrals: "11-50", reward: "15% Commission", bonus: "2,500 VNX" },
+                { tier: "Gold", referrals: "51+", reward: "20% Commission", bonus: "10,000 VNX" },
               ].map((tier, i) => (
                 <div key={i} className="card-modern text-center">
-                  <div className="text-4xl mb-3">{tier.icon}</div>
                   <h3 className="text-lg font-bold mb-1">{tier.tier}</h3>
                   <p className="text-xs text-muted-foreground mb-4">{tier.referrals} referrals</p>
                   <div className="text-2xl font-bold text-gradient mb-1">{tier.reward}</div>
