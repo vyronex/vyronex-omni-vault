@@ -112,7 +112,6 @@ const VNXToken = () => {
             </h2>
             <div className="glass-card rounded-lg p-4 shadow-elevated">
               <div className="text-center py-12 text-muted-foreground">
-                <TrendingUp className="h-12 w-12 mx-auto mb-4 text-primary/40" />
                 <p className="font-semibold mb-2">VNX Price Chart</p>
                 <p className="text-sm">View real-time charts on DexScreener for detailed analysis</p>
                 <a
