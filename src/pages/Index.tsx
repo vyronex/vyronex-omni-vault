@@ -28,7 +28,7 @@ const Index = () => {
         <div className="section-container relative">
           <div className="max-w-4xl mx-auto text-center">
             <div className="section-badge animate-fade-in">
-              🚀 Multi-Chain DeFi Platform
+              Multi-Chain DeFi Platform
             </div>
             <h1 className="mb-6 animate-fade-in">
               Trade Smarter with{" "}
