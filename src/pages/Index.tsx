@@ -690,9 +690,7 @@ console.log(data.price); // 0.000542`}</code>
                     "Offline portfolio tracking and analytics",
                   ].map((feature, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <span className="text-primary text-xs">✓</span>
-                      </div>
+                      <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0" />
                       <p className="text-sm text-muted-foreground">{feature}</p>
                     </div>
                   ))}
