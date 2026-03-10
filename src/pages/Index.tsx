@@ -559,12 +559,12 @@ const Index = () => {
                 <div className="p-5 font-bold border-b border-border/40 text-center text-muted-foreground">CEX</div>
                 <div className="p-5 font-bold border-b border-border/40 text-center text-muted-foreground">Other DEX</div>
                 {[
-                  { feature: "Multi-Chain", vnx: "✅ Yes", cex: "Limited", other: "No" },
-                  { feature: "Self-Custody", vnx: "✅ Yes", cex: "No", other: "Yes" },
-                  { feature: "Low Fees", vnx: "✅ 0.1%", cex: "0.2-0.5%", other: "0.3%+" },
-                  { feature: "Staking", vnx: "✅ 12.5%", cex: "3-5%", other: "Variable" },
-                  { feature: "Fiat On-Ramp", vnx: "✅ Yes", cex: "Yes", other: "No" },
-                  { feature: "No KYC", vnx: "✅ Optional", cex: "Required", other: "No" },
+                  { feature: "Multi-Chain", vnx: "Yes", cex: "Limited", other: "No" },
+                  { feature: "Self-Custody", vnx: "Yes", cex: "No", other: "Yes" },
+                  { feature: "Low Fees", vnx: "0.1%", cex: "0.2-0.5%", other: "0.3%+" },
+                  { feature: "Staking", vnx: "12.5%", cex: "3-5%", other: "Variable" },
+                  { feature: "Fiat On-Ramp", vnx: "Yes", cex: "Yes", other: "No" },
+                  { feature: "No KYC", vnx: "Optional", cex: "Required", other: "No" },
                 ].map((row, i) => (
                   <div key={i} className="contents">
                     <div className="p-4 border-b border-border/20 text-muted-foreground">{row.feature}</div>
