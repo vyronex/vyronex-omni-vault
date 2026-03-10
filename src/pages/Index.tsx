@@ -141,13 +141,12 @@ const Index = () => {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: "🔗", title: "Multi-Chain", desc: "Support for Ethereum, BNB, Tron, Bitcoin, Fantom, and Solana networks." },
-                { icon: "💎", title: "DeFi Ready", desc: "Stake, farm, and provide liquidity with VNX token priority." },
-                { icon: "🛡️", title: "Secure", desc: "Enterprise-grade encryption with biometric and hardware wallet support." },
-                { icon: "⚡", title: "Real-Time", desc: "Live market data, instant transactions, and real-time price updates." },
+                { title: "Multi-Chain", desc: "Support for Ethereum, BNB, Tron, Bitcoin, Fantom, and Solana networks." },
+                { title: "DeFi Ready", desc: "Stake, farm, and provide liquidity with VNX token priority." },
+                { title: "Secure", desc: "Enterprise-grade encryption with biometric and hardware wallet support." },
+                { title: "Real-Time", desc: "Live market data, instant transactions, and real-time price updates." },
               ].map((item, i) => (
                 <div key={i} className="card-modern group">
-                  <div className="text-3xl mb-4">{item.icon}</div>
                   <h3 className="text-lg font-bold mb-2 group-hover:text-gradient transition-all">{item.title}</h3>
                   <p className="text-muted-foreground text-sm">{item.desc}</p>
                 </div>
