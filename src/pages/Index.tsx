@@ -647,12 +647,11 @@ const Index = () => {
             </div>
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               {[
-                { icon: "🔌", title: "REST API", desc: "Full-featured REST endpoints for trading, market data, and account management" },
-                { icon: "📡", title: "WebSocket", desc: "Real-time market data streams with sub-millisecond latency" },
-                { icon: "📦", title: "SDK Libraries", desc: "Official SDKs for JavaScript, Python, Go, and Rust" },
+                { title: "REST API", desc: "Full-featured REST endpoints for trading, market data, and account management" },
+                { title: "WebSocket", desc: "Real-time market data streams with sub-millisecond latency" },
+                { title: "SDK Libraries", desc: "Official SDKs for JavaScript, Python, Go, and Rust" },
               ].map((api, i) => (
                 <div key={i} className="card-modern">
-                  <div className="text-3xl mb-4">{api.icon}</div>
                   <h3 className="text-lg font-bold mb-2">{api.title}</h3>
                   <p className="text-sm text-muted-foreground">{api.desc}</p>
                 </div>
