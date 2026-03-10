@@ -7,7 +7,7 @@ import StatsCard from "@/components/StatsCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
-import { ExternalLink, Copy, Shield, Coins, Vote, Zap, TrendingUp, BarChart3 } from "lucide-react";
+import { ExternalLink, Copy } from "lucide-react";
 import { toast } from "sonner";
 
 const CONTRACT = "0xeb55a55c384095ced21587afbe7418b7c9ae40cb";
