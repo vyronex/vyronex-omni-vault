@@ -832,13 +832,12 @@ console.log(data.price); // 0.000542`}</code>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { title: "Beginner Guides", count: "24 Articles", desc: "Start your crypto journey with step-by-step tutorials", icon: "📖" },
-                { title: "Trading Strategies", count: "18 Lessons", desc: "Learn proven strategies from professional traders", icon: "📊" },
-                { title: "DeFi Deep Dives", count: "12 Guides", desc: "Understand yield farming, liquidity pools, and more", icon: "🔬" },
-                { title: "Security Tips", count: "8 Resources", desc: "Protect your assets with essential security tips", icon: "🔐" },
+                { title: "Beginner Guides", count: "24 Articles", desc: "Start your crypto journey with step-by-step tutorials" },
+                { title: "Trading Strategies", count: "18 Lessons", desc: "Learn proven strategies from professional traders" },
+                { title: "DeFi Deep Dives", count: "12 Guides", desc: "Understand yield farming, liquidity pools, and more" },
+                { title: "Security Tips", count: "8 Resources", desc: "Protect your assets with essential security tips" },
               ].map((resource, i) => (
                 <div key={i} className="card-modern">
-                  <div className="text-2xl mb-3">{resource.icon}</div>
                   <h3 className="text-base font-bold mb-1">{resource.title}</h3>
                   <p className="text-xs text-primary font-semibold mb-3">{resource.count}</p>
                   <p className="text-sm text-muted-foreground mb-4">{resource.desc}</p>
