@@ -452,14 +452,14 @@ const Index = () => {
                 <h3 className="text-lg font-bold mb-6">Utility</h3>
                 <div className="space-y-5">
                   {[
-                    { title: "Trading Fee Discounts", desc: "Up to 50% off trading fees", icon: "💰" },
-                    { title: "Staking Rewards", desc: "Earn 12.5% APR on staked VNX", icon: "📈" },
-                    { title: "Governance Rights", desc: "Vote on platform decisions", icon: "🗳️" },
-                    { title: "Premium Features", desc: "Access to advanced tools", icon: "⭐" },
-                    { title: "Launchpad Access", desc: "Early access to new tokens", icon: "🚀" },
+                    { title: "Trading Fee Discounts", desc: "Up to 50% off trading fees" },
+                    { title: "Staking Rewards", desc: "Earn 12.5% APR on staked VNX" },
+                    { title: "Governance Rights", desc: "Vote on platform decisions" },
+                    { title: "Premium Features", desc: "Access to advanced tools" },
+                    { title: "Launchpad Access", desc: "Early access to new tokens" },
                   ].map((item, i) => (
                     <div key={i} className="flex gap-3 items-start">
-                      <span className="text-xl shrink-0">{item.icon}</span>
+                      <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0 mt-2" />
                       <div>
                         <h4 className="font-semibold text-sm mb-0.5">{item.title}</h4>
                         <p className="text-sm text-muted-foreground">{item.desc}</p>
