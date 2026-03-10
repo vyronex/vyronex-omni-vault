@@ -44,14 +44,15 @@ const SpotTrading = () => {
     return (
       <div className="min-h-screen bg-background">
         <Navigation />
-        <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-4xl font-bold mb-4">Spot Trading</h1>
-          <p className="text-muted-foreground mb-8">
-            Please sign in to access spot trading
-          </p>
-          <Button onClick={() => navigate("/auth")} className="shadow-glow">
-            Sign In
-          </Button>
+        <div className="section-container py-24 text-center">
+          <div className="max-w-md mx-auto animate-slide-up">
+            <span className="section-badge">Spot</span>
+            <h1 className="text-4xl font-bold mb-4 mt-4">Spot Trading</h1>
+            <p className="text-muted-foreground mb-8">Please sign in to access spot trading</p>
+            <Button onClick={() => navigate("/auth")} className="rounded-xl gradient-primary shadow-glow hover:shadow-glow-lg active-press transition-all h-12 px-8">
+              Sign In
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -62,20 +63,22 @@ const SpotTrading = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
+
+      <div className="section-container py-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4 animate-slide-up">
           <div>
-            <h1 className="text-3xl font-bold text-gradient">Spot Trading</h1>
-            <p className="text-muted-foreground mt-1">
-              Real-time order matching with live order book
-            </p>
+            <span className="section-badge">Live</span>
+            <h1 className="text-3xl font-bold mt-2" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+              Spot <span className="text-gradient">Trading</span>
+            </h1>
+            <p className="text-muted-foreground text-sm mt-1">Real-time order matching with live order book</p>
           </div>
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-muted-foreground">Trading Pair:</label>
+          <div className="flex items-center gap-3">
+            <label className="text-xs text-muted-foreground uppercase tracking-wider">Trading Pair:</label>
             <select
               value={selectedPair}
               onChange={(e) => setSelectedPair(e.target.value)}
-              className="px-4 py-2 rounded-lg border border-border bg-card text-foreground"
+              className="px-4 py-2.5 rounded-xl border border-border/40 bg-card text-foreground text-sm focus:border-primary/40 focus:ring-1 focus:ring-primary/20 transition-all"
             >
               {tradingPairs.map((pair) => (
                 <option key={pair.id} value={pair.id}>
@@ -87,38 +90,40 @@ const SpotTrading = () => {
         </div>
 
         {!currentPair ? (
-          <div className="glass-card rounded-lg p-8 text-center">
+          <div className="card-modern text-center py-12 animate-slide-up stagger-1">
             <p className="text-muted-foreground">No trading pairs available</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Order Book - Left Column */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 animate-slide-up stagger-1">
             <div className="lg:col-span-1">
-              <OrderBook tradingPairId={selectedPair} />
+              <div className="rounded-2xl bg-card border border-border/40 shadow-card overflow-hidden">
+                <OrderBook tradingPairId={selectedPair} />
+              </div>
             </div>
 
-            {/* Center Column - Chart Placeholder & Order Form */}
-            <div className="lg:col-span-1 space-y-6">
-              {/* Price Chart */}
-              <PriceChart
-                coinId={currentPair.base_token.toLowerCase() === "btc" ? "bitcoin" :
-                        currentPair.base_token.toLowerCase() === "eth" ? "ethereum" :
-                        currentPair.base_token.toLowerCase() === "bnb" ? "binancecoin" :
-                        currentPair.base_token.toLowerCase()}
-                coinName={`${currentPair.base_token}/${currentPair.quote_token}`}
-              />
-
-              {/* Order Form */}
-              <OrderForm 
-                tradingPairId={selectedPair}
-                baseToken={currentPair.base_token}
-                quoteToken={currentPair.quote_token}
-              />
+            <div className="lg:col-span-1 space-y-5">
+              <div className="rounded-2xl bg-card border border-border/40 shadow-card overflow-hidden">
+                <PriceChart
+                  coinId={currentPair.base_token.toLowerCase() === "btc" ? "bitcoin" :
+                          currentPair.base_token.toLowerCase() === "eth" ? "ethereum" :
+                          currentPair.base_token.toLowerCase() === "bnb" ? "binancecoin" :
+                          currentPair.base_token.toLowerCase()}
+                  coinName={`${currentPair.base_token}/${currentPair.quote_token}`}
+                />
+              </div>
+              <div className="rounded-2xl bg-card border border-border/40 shadow-card overflow-hidden">
+                <OrderForm
+                  tradingPairId={selectedPair}
+                  baseToken={currentPair.base_token}
+                  quoteToken={currentPair.quote_token}
+                />
+              </div>
             </div>
 
-            {/* Trade History - Right Column */}
             <div className="lg:col-span-1">
-              <TradeHistory tradingPairId={selectedPair} />
+              <div className="rounded-2xl bg-card border border-border/40 shadow-card overflow-hidden">
+                <TradeHistory tradingPairId={selectedPair} />
+              </div>
             </div>
           </div>
         )}

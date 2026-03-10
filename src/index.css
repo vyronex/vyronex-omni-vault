@@ -284,4 +284,76 @@
   .animate-float {
     animation: float 4s ease-in-out infinite;
   }
+
+  /* Page-level micro-interactions */
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-slide-up {
+    animation: slide-up 0.5s ease-out both;
+  }
+
+  .stagger-1 { animation-delay: 50ms; }
+  .stagger-2 { animation-delay: 100ms; }
+  .stagger-3 { animation-delay: 150ms; }
+  .stagger-4 { animation-delay: 200ms; }
+  .stagger-5 { animation-delay: 250ms; }
+  .stagger-6 { animation-delay: 300ms; }
+
+  .hover-scale-subtle {
+    @apply transition-transform duration-200 hover:scale-[1.02];
+  }
+
+  .hover-border-glow {
+    @apply transition-all duration-300 hover:border-primary/40 hover:shadow-glow;
+  }
+
+  .active-press {
+    @apply transition-transform duration-100 active:scale-[0.97];
+  }
+
+  .page-header {
+    @apply relative overflow-hidden py-12 md:py-16;
+  }
+
+  .page-header-content {
+    @apply section-container relative;
+  }
+
+  .page-title {
+    @apply mb-2;
+  }
+
+  .page-subtitle {
+    @apply text-muted-foreground text-lg max-w-2xl;
+  }
+
+  .data-card {
+    @apply p-5 md:p-6 rounded-2xl bg-card border border-border/40 shadow-card;
+  }
+
+  .data-row {
+    @apply flex items-center justify-between p-4 rounded-xl border border-border/30 transition-all duration-200 hover:border-primary/20 hover:bg-primary/[0.02];
+  }
+
+  .table-modern {
+    @apply w-full;
+  }
+  .table-modern thead {
+    @apply bg-card/80 border-b border-border/40;
+  }
+  .table-modern th {
+    @apply p-3.5 text-left font-semibold text-sm text-muted-foreground uppercase tracking-wider text-xs;
+  }
+  .table-modern td {
+    @apply p-3.5;
+  }
+  .table-modern tbody tr {
+    @apply border-b border-border/20 transition-all duration-200 hover:bg-primary/[0.02];
+  }
+
+  .stat-highlight {
+    @apply text-4xl md:text-5xl font-bold text-gradient;
+  }
 }
