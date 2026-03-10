@@ -966,15 +966,14 @@ console.log(data.price); // 0.000542`}</code>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {[
-                { badge: "First Trade", xp: "100 XP", icon: "🎯" },
-                { badge: "Diamond Hands", xp: "500 XP", icon: "💎" },
-                { badge: "Whale", xp: "1,000 XP", icon: "🐋" },
-                { badge: "Staker", xp: "250 XP", icon: "🏆" },
-                { badge: "Referral King", xp: "750 XP", icon: "👑" },
-                { badge: "OG Member", xp: "2,000 XP", icon: "⭐" },
+                { badge: "First Trade", xp: "100 XP" },
+                { badge: "Diamond Hands", xp: "500 XP" },
+                { badge: "Whale", xp: "1,000 XP" },
+                { badge: "Staker", xp: "250 XP" },
+                { badge: "Referral King", xp: "750 XP" },
+                { badge: "OG Member", xp: "2,000 XP" },
               ].map((b, i) => (
                 <div key={i} className="card-modern text-center py-6">
-                  <div className="text-3xl mb-3">{b.icon}</div>
                   <p className="font-bold text-sm mb-1">{b.badge}</p>
                   <p className="text-xs text-primary font-semibold">{b.xp}</p>
                 </div>
