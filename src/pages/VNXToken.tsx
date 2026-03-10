@@ -145,7 +145,7 @@ const VNXToken = () => {
               {/* Distribution */}
               <Card className="shadow-elevated glass-card">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Coins className="h-5 w-5 text-primary" /> Distribution</CardTitle>
+                  <CardTitle>Distribution</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
