@@ -251,12 +251,11 @@ const Index = () => {
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                { value: "50K+", label: "Active Users", icon: "👥" },
-                { value: "$2.5B+", label: "Trading Volume", icon: "📊" },
-                { value: "6+", label: "Supported Chains", icon: "⛓️" },
+                { value: "50K+", label: "Active Users" },
+                { value: "$2.5B+", label: "Trading Volume" },
+                { value: "6+", label: "Supported Chains" },
               ].map((stat, i) => (
                 <div key={i} className="card-modern text-center">
-                  <div className="text-3xl mb-3">{stat.icon}</div>
                   <div className="text-4xl font-bold text-gradient mb-2">{stat.value}</div>
                   <p className="text-muted-foreground">{stat.label}</p>
                 </div>
