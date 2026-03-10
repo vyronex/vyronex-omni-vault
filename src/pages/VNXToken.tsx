@@ -107,8 +107,8 @@ const VNXToken = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(25_95%_53%/0.06),transparent_50%)]" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2">
-              <BarChart3 className="h-6 w-6 text-primary" /> Price <span className="text-gradient">Chart</span>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+              Price <span className="text-gradient">Chart</span>
             </h2>
             <div className="glass-card rounded-lg p-4 shadow-elevated">
               <div className="text-center py-12 text-muted-foreground">
