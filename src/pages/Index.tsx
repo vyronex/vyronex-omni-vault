@@ -28,7 +28,7 @@ const Index = () => {
         <div className="section-container relative">
           <div className="max-w-4xl mx-auto text-center">
             <div className="section-badge animate-fade-in">
-              🚀 Multi-Chain DeFi Platform
+              Multi-Chain DeFi Platform
             </div>
             <h1 className="mb-6 animate-fade-in">
               Trade Smarter with{" "}
@@ -141,13 +141,12 @@ const Index = () => {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: "🔗", title: "Multi-Chain", desc: "Support for Ethereum, BNB, Tron, Bitcoin, Fantom, and Solana networks." },
-                { icon: "💎", title: "DeFi Ready", desc: "Stake, farm, and provide liquidity with VNX token priority." },
-                { icon: "🛡️", title: "Secure", desc: "Enterprise-grade encryption with biometric and hardware wallet support." },
-                { icon: "⚡", title: "Real-Time", desc: "Live market data, instant transactions, and real-time price updates." },
+                { title: "Multi-Chain", desc: "Support for Ethereum, BNB, Tron, Bitcoin, Fantom, and Solana networks." },
+                { title: "DeFi Ready", desc: "Stake, farm, and provide liquidity with VNX token priority." },
+                { title: "Secure", desc: "Enterprise-grade encryption with biometric and hardware wallet support." },
+                { title: "Real-Time", desc: "Live market data, instant transactions, and real-time price updates." },
               ].map((item, i) => (
                 <div key={i} className="card-modern group">
-                  <div className="text-3xl mb-4">{item.icon}</div>
                   <h3 className="text-lg font-bold mb-2 group-hover:text-gradient transition-all">{item.title}</h3>
                   <p className="text-muted-foreground text-sm">{item.desc}</p>
                 </div>
@@ -252,12 +251,11 @@ const Index = () => {
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                { value: "50K+", label: "Active Users", icon: "👥" },
-                { value: "$2.5B+", label: "Trading Volume", icon: "📊" },
-                { value: "6+", label: "Supported Chains", icon: "⛓️" },
+                { value: "50K+", label: "Active Users" },
+                { value: "$2.5B+", label: "Trading Volume" },
+                { value: "6+", label: "Supported Chains" },
               ].map((stat, i) => (
                 <div key={i} className="card-modern text-center">
-                  <div className="text-3xl mb-3">{stat.icon}</div>
                   <div className="text-4xl font-bold text-gradient mb-2">{stat.value}</div>
                   <p className="text-muted-foreground">{stat.label}</p>
                 </div>
@@ -287,7 +285,7 @@ const Index = () => {
                 <div key={i} className="card-modern">
                   <div className="flex gap-0.5 mb-4">
                     {Array.from({ length: t.rating }).map((_, j) => (
-                      <span key={j} className="text-accent">★</span>
+                      <span key={j} className="text-accent font-bold">*</span>
                     ))}
                   </div>
                   <p className="text-foreground mb-6 leading-relaxed">"{t.text}"</p>
@@ -383,13 +381,12 @@ const Index = () => {
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: "🏦", title: "Cold Storage", desc: "95% of funds stored offline" },
-                { icon: "🔐", title: "2FA Auth", desc: "Multi-factor authentication" },
-                { icon: "🔒", title: "Encrypted", desc: "AES-256 encryption" },
-                { icon: "🛡️", title: "Insurance", desc: "$100M protection fund" },
+                { title: "Cold Storage", desc: "95% of funds stored offline" },
+                { title: "2FA Auth", desc: "Multi-factor authentication" },
+                { title: "Encrypted", desc: "AES-256 encryption" },
+                { title: "Insurance", desc: "$100M protection fund" },
               ].map((item, i) => (
                 <div key={i} className="card-modern text-center">
-                  <div className="text-3xl mb-4">{item.icon}</div>
                   <h3 className="font-bold mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground">{item.desc}</p>
                 </div>
@@ -455,14 +452,14 @@ const Index = () => {
                 <h3 className="text-lg font-bold mb-6">Utility</h3>
                 <div className="space-y-5">
                   {[
-                    { title: "Trading Fee Discounts", desc: "Up to 50% off trading fees", icon: "💰" },
-                    { title: "Staking Rewards", desc: "Earn 12.5% APR on staked VNX", icon: "📈" },
-                    { title: "Governance Rights", desc: "Vote on platform decisions", icon: "🗳️" },
-                    { title: "Premium Features", desc: "Access to advanced tools", icon: "⭐" },
-                    { title: "Launchpad Access", desc: "Early access to new tokens", icon: "🚀" },
+                    { title: "Trading Fee Discounts", desc: "Up to 50% off trading fees" },
+                    { title: "Staking Rewards", desc: "Earn 12.5% APR on staked VNX" },
+                    { title: "Governance Rights", desc: "Vote on platform decisions" },
+                    { title: "Premium Features", desc: "Access to advanced tools" },
+                    { title: "Launchpad Access", desc: "Early access to new tokens" },
                   ].map((item, i) => (
                     <div key={i} className="flex gap-3 items-start">
-                      <span className="text-xl shrink-0">{item.icon}</span>
+                      <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0 mt-2" />
                       <div>
                         <h4 className="font-semibold text-sm mb-0.5">{item.title}</h4>
                         <p className="text-sm text-muted-foreground">{item.desc}</p>
@@ -562,12 +559,12 @@ const Index = () => {
                 <div className="p-5 font-bold border-b border-border/40 text-center text-muted-foreground">CEX</div>
                 <div className="p-5 font-bold border-b border-border/40 text-center text-muted-foreground">Other DEX</div>
                 {[
-                  { feature: "Multi-Chain", vnx: "✅ Yes", cex: "Limited", other: "No" },
-                  { feature: "Self-Custody", vnx: "✅ Yes", cex: "No", other: "Yes" },
-                  { feature: "Low Fees", vnx: "✅ 0.1%", cex: "0.2-0.5%", other: "0.3%+" },
-                  { feature: "Staking", vnx: "✅ 12.5%", cex: "3-5%", other: "Variable" },
-                  { feature: "Fiat On-Ramp", vnx: "✅ Yes", cex: "Yes", other: "No" },
-                  { feature: "No KYC", vnx: "✅ Optional", cex: "Required", other: "No" },
+                  { feature: "Multi-Chain", vnx: "Yes", cex: "Limited", other: "No" },
+                  { feature: "Self-Custody", vnx: "Yes", cex: "No", other: "Yes" },
+                  { feature: "Low Fees", vnx: "0.1%", cex: "0.2-0.5%", other: "0.3%+" },
+                  { feature: "Staking", vnx: "12.5%", cex: "3-5%", other: "Variable" },
+                  { feature: "Fiat On-Ramp", vnx: "Yes", cex: "Yes", other: "No" },
+                  { feature: "No KYC", vnx: "Optional", cex: "Required", other: "No" },
                 ].map((row, i) => (
                   <div key={i} className="contents">
                     <div className="p-4 border-b border-border/20 text-muted-foreground">{row.feature}</div>
@@ -650,12 +647,11 @@ const Index = () => {
             </div>
             <div className="grid md:grid-cols-3 gap-6 mb-8">
               {[
-                { icon: "🔌", title: "REST API", desc: "Full-featured REST endpoints for trading, market data, and account management" },
-                { icon: "📡", title: "WebSocket", desc: "Real-time market data streams with sub-millisecond latency" },
-                { icon: "📦", title: "SDK Libraries", desc: "Official SDKs for JavaScript, Python, Go, and Rust" },
+                { title: "REST API", desc: "Full-featured REST endpoints for trading, market data, and account management" },
+                { title: "WebSocket", desc: "Real-time market data streams with sub-millisecond latency" },
+                { title: "SDK Libraries", desc: "Official SDKs for JavaScript, Python, Go, and Rust" },
               ].map((api, i) => (
                 <div key={i} className="card-modern">
-                  <div className="text-3xl mb-4">{api.icon}</div>
                   <h3 className="text-lg font-bold mb-2">{api.title}</h3>
                   <p className="text-sm text-muted-foreground">{api.desc}</p>
                 </div>
@@ -694,9 +690,7 @@ console.log(data.price); // 0.000542`}</code>
                     "Offline portfolio tracking and analytics",
                   ].map((feature, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <span className="text-primary text-xs">✓</span>
-                      </div>
+                      <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0" />
                       <p className="text-sm text-muted-foreground">{feature}</p>
                     </div>
                   ))}
@@ -806,12 +800,11 @@ console.log(data.price); // 0.000542`}</code>
             </div>
             <div className="grid md:grid-cols-3 gap-6 mb-10">
               {[
-                { tier: "Bronze", referrals: "1-10", reward: "10% Commission", bonus: "500 VNX", icon: "🥉" },
-                { tier: "Silver", referrals: "11-50", reward: "15% Commission", bonus: "2,500 VNX", icon: "🥈" },
-                { tier: "Gold", referrals: "51+", reward: "20% Commission", bonus: "10,000 VNX", icon: "🥇" },
+                { tier: "Bronze", referrals: "1-10", reward: "10% Commission", bonus: "500 VNX" },
+                { tier: "Silver", referrals: "11-50", reward: "15% Commission", bonus: "2,500 VNX" },
+                { tier: "Gold", referrals: "51+", reward: "20% Commission", bonus: "10,000 VNX" },
               ].map((tier, i) => (
                 <div key={i} className="card-modern text-center">
-                  <div className="text-4xl mb-3">{tier.icon}</div>
                   <h3 className="text-lg font-bold mb-1">{tier.tier}</h3>
                   <p className="text-xs text-muted-foreground mb-4">{tier.referrals} referrals</p>
                   <div className="text-2xl font-bold text-gradient mb-1">{tier.reward}</div>
@@ -839,13 +832,12 @@ console.log(data.price); // 0.000542`}</code>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { title: "Beginner Guides", count: "24 Articles", desc: "Start your crypto journey with step-by-step tutorials", icon: "📖" },
-                { title: "Trading Strategies", count: "18 Lessons", desc: "Learn proven strategies from professional traders", icon: "📊" },
-                { title: "DeFi Deep Dives", count: "12 Guides", desc: "Understand yield farming, liquidity pools, and more", icon: "🔬" },
-                { title: "Security Tips", count: "8 Resources", desc: "Protect your assets with essential security tips", icon: "🔐" },
+                { title: "Beginner Guides", count: "24 Articles", desc: "Start your crypto journey with step-by-step tutorials" },
+                { title: "Trading Strategies", count: "18 Lessons", desc: "Learn proven strategies from professional traders" },
+                { title: "DeFi Deep Dives", count: "12 Guides", desc: "Understand yield farming, liquidity pools, and more" },
+                { title: "Security Tips", count: "8 Resources", desc: "Protect your assets with essential security tips" },
               ].map((resource, i) => (
                 <div key={i} className="card-modern">
-                  <div className="text-2xl mb-3">{resource.icon}</div>
                   <h3 className="text-base font-bold mb-1">{resource.title}</h3>
                   <p className="text-xs text-primary font-semibold mb-3">{resource.count}</p>
                   <p className="text-sm text-muted-foreground mb-4">{resource.desc}</p>
@@ -974,15 +966,14 @@ console.log(data.price); // 0.000542`}</code>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {[
-                { badge: "First Trade", xp: "100 XP", icon: "🎯" },
-                { badge: "Diamond Hands", xp: "500 XP", icon: "💎" },
-                { badge: "Whale", xp: "1,000 XP", icon: "🐋" },
-                { badge: "Staker", xp: "250 XP", icon: "🏆" },
-                { badge: "Referral King", xp: "750 XP", icon: "👑" },
-                { badge: "OG Member", xp: "2,000 XP", icon: "⭐" },
+                { badge: "First Trade", xp: "100 XP" },
+                { badge: "Diamond Hands", xp: "500 XP" },
+                { badge: "Whale", xp: "1,000 XP" },
+                { badge: "Staker", xp: "250 XP" },
+                { badge: "Referral King", xp: "750 XP" },
+                { badge: "OG Member", xp: "2,000 XP" },
               ].map((b, i) => (
                 <div key={i} className="card-modern text-center py-6">
-                  <div className="text-3xl mb-3">{b.icon}</div>
                   <p className="font-bold text-sm mb-1">{b.badge}</p>
                   <p className="text-xs text-primary font-semibold">{b.xp}</p>
                 </div>

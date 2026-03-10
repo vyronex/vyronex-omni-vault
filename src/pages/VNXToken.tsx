@@ -7,7 +7,7 @@ import StatsCard from "@/components/StatsCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
-import { ExternalLink, Copy, Shield, Coins, Vote, Zap, TrendingUp, BarChart3 } from "lucide-react";
+import { ExternalLink, Copy } from "lucide-react";
 import { toast } from "sonner";
 
 const CONTRACT = "0xeb55a55c384095ced21587afbe7418b7c9ae40cb";
@@ -107,12 +107,11 @@ const VNXToken = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(25_95%_53%/0.06),transparent_50%)]" />
         <div className="container mx-auto px-4 relative">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 flex items-center gap-2">
-              <BarChart3 className="h-6 w-6 text-primary" /> Price <span className="text-gradient">Chart</span>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6">
+              Price <span className="text-gradient">Chart</span>
             </h2>
             <div className="glass-card rounded-lg p-4 shadow-elevated">
               <div className="text-center py-12 text-muted-foreground">
-                <TrendingUp className="h-12 w-12 mx-auto mb-4 text-primary/40" />
                 <p className="font-semibold mb-2">VNX Price Chart</p>
                 <p className="text-sm">View real-time charts on DexScreener for detailed analysis</p>
                 <a
@@ -146,7 +145,7 @@ const VNXToken = () => {
               {/* Distribution */}
               <Card className="shadow-elevated glass-card">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Coins className="h-5 w-5 text-primary" /> Distribution</CardTitle>
+                  <CardTitle>Distribution</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -174,19 +173,19 @@ const VNXToken = () => {
               {/* Utility */}
               <Card className="shadow-elevated glass-card">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Zap className="h-5 w-5 text-primary" /> Utility</CardTitle>
+                  <CardTitle>Utility</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {[
-                      { icon: <Coins className="h-5 w-5 text-primary" />, title: "Trading Fee Discounts", desc: "Up to 50% off all trading fees" },
-                      { icon: <TrendingUp className="h-5 w-5 text-primary" />, title: "Staking Rewards", desc: "Earn up to 12.5% APR on staked VNX" },
-                      { icon: <Vote className="h-5 w-5 text-primary" />, title: "Governance", desc: "Vote on platform proposals and upgrades" },
-                      { icon: <Shield className="h-5 w-5 text-primary" />, title: "Premium Access", desc: "Unlock advanced trading tools and analytics" },
-                      { icon: <Zap className="h-5 w-5 text-primary" />, title: "Launchpad", desc: "Early access to new token listings" },
+                      { title: "Trading Fee Discounts", desc: "Up to 50% off all trading fees" },
+                      { title: "Staking Rewards", desc: "Earn up to 12.5% APR on staked VNX" },
+                      { title: "Governance", desc: "Vote on platform proposals and upgrades" },
+                      { title: "Premium Access", desc: "Unlock advanced trading tools and analytics" },
+                      { title: "Launchpad", desc: "Early access to new token listings" },
                     ].map((item, i) => (
                       <div key={i} className="flex gap-3 p-3 rounded-lg bg-background/50 hover-lift">
-                        {item.icon}
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0 mt-2" />
                         <div>
                           <p className="font-semibold text-sm">{item.title}</p>
                           <p className="text-xs text-muted-foreground">{item.desc}</p>
@@ -302,10 +301,10 @@ const VNXToken = () => {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: "BSCScan", url: `https://bscscan.com/token/${CONTRACT}`, icon: "🔍" },
-                { label: "PancakeSwap", url: `https://pancakeswap.finance/swap?outputCurrency=${CONTRACT}`, icon: "🥞" },
-                { label: "DexScreener", url: `https://dexscreener.com/bsc/${CONTRACT}`, icon: "📊" },
-                { label: "ApeSpace", url: `https://apespace.io/bsc/${CONTRACT}`, icon: "🦍" },
+                { label: "BSCScan", url: `https://bscscan.com/token/${CONTRACT}` },
+                { label: "PancakeSwap", url: `https://pancakeswap.finance/swap?outputCurrency=${CONTRACT}` },
+                { label: "DexScreener", url: `https://dexscreener.com/bsc/${CONTRACT}` },
+                { label: "ApeSpace", url: `https://apespace.io/bsc/${CONTRACT}` },
               ].map((link, i) => (
                 <a
                   key={i}
@@ -314,7 +313,6 @@ const VNXToken = () => {
                   rel="noopener noreferrer"
                   className="p-4 rounded-lg glass-card hover-lift text-center group"
                 >
-                  <div className="text-2xl mb-2">{link.icon}</div>
                   <p className="font-semibold text-sm group-hover:text-primary transition-colors">{link.label}</p>
                   <ExternalLink className="h-3 w-3 mx-auto mt-1 text-muted-foreground" />
                 </a>
