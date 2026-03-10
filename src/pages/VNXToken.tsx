@@ -302,10 +302,10 @@ const VNXToken = () => {
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: "BSCScan", url: `https://bscscan.com/token/${CONTRACT}`, icon: "🔍" },
-                { label: "PancakeSwap", url: `https://pancakeswap.finance/swap?outputCurrency=${CONTRACT}`, icon: "🥞" },
-                { label: "DexScreener", url: `https://dexscreener.com/bsc/${CONTRACT}`, icon: "📊" },
-                { label: "ApeSpace", url: `https://apespace.io/bsc/${CONTRACT}`, icon: "🦍" },
+                { label: "BSCScan", url: `https://bscscan.com/token/${CONTRACT}` },
+                { label: "PancakeSwap", url: `https://pancakeswap.finance/swap?outputCurrency=${CONTRACT}` },
+                { label: "DexScreener", url: `https://dexscreener.com/bsc/${CONTRACT}` },
+                { label: "ApeSpace", url: `https://apespace.io/bsc/${CONTRACT}` },
               ].map((link, i) => (
                 <a
                   key={i}
@@ -314,7 +314,6 @@ const VNXToken = () => {
                   rel="noopener noreferrer"
                   className="p-4 rounded-lg glass-card hover-lift text-center group"
                 >
-                  <div className="text-2xl mb-2">{link.icon}</div>
                   <p className="font-semibold text-sm group-hover:text-primary transition-colors">{link.label}</p>
                   <ExternalLink className="h-3 w-3 mx-auto mt-1 text-muted-foreground" />
                 </a>
