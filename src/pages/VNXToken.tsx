@@ -173,7 +173,7 @@ const VNXToken = () => {
               {/* Utility */}
               <Card className="shadow-elevated glass-card">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2"><Zap className="h-5 w-5 text-primary" /> Utility</CardTitle>
+                  <CardTitle>Utility</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
