@@ -176,6 +176,7 @@ const Blog = () => {
 
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

@@ -137,6 +137,7 @@ const Auth = () => {
         </CardContent>
       </Card>
     </div>
+    </PageTransition>
   );
 };
 

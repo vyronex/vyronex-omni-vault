@@ -326,6 +326,7 @@ const VNXToken = () => {
 
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

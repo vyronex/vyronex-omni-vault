@@ -273,6 +273,7 @@ const Trade = () => {
 
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

@@ -28,6 +28,7 @@ const NotFound = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

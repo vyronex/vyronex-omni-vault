@@ -212,6 +212,7 @@ const Contact = () => {
 
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

@@ -57,7 +57,8 @@ const SpotTrading = () => {
           </div>
         </div>
       </div>
-    );
+    </PageTransition>
+  );
   }
 
   const currentPair = tradingPairs.find((p) => p.id === selectedPair);
@@ -132,6 +133,7 @@ const SpotTrading = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

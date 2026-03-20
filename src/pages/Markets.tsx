@@ -256,6 +256,7 @@ const Markets = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

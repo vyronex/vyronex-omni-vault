@@ -30,7 +30,8 @@ const WalletReal = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
-    );
+    </PageTransition>
+  );
   }
 
   if (!user) return null;
@@ -229,6 +230,7 @@ const WalletReal = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

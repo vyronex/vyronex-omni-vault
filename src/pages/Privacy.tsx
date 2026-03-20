@@ -136,6 +136,7 @@ const Privacy = () => {
 
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

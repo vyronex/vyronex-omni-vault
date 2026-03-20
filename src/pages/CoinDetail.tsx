@@ -24,7 +24,8 @@ const StatBlock = ({ label, value, sub }: { label: string; value: string; sub?: 
     <p className="text-lg font-bold font-mono">{value}</p>
     {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
   </div>
-);
+    </PageTransition>
+  );
 
 const CoinDetail = () => {
   const { coinId } = useParams<{ coinId: string }>();
@@ -46,7 +47,8 @@ const CoinDetail = () => {
           </div>
         </div>
       </div>
-    );
+    </PageTransition>
+  );
   }
 
   if (!coin || coin.error) {
@@ -60,7 +62,8 @@ const CoinDetail = () => {
           </Button>
         </div>
       </div>
-    );
+    </PageTransition>
+  );
   }
 
   const md = coin.market_data;
@@ -192,6 +195,7 @@ const CoinDetail = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

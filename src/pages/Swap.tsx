@@ -76,6 +76,7 @@ const Swap = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

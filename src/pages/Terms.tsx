@@ -125,6 +125,7 @@ const Terms = () => {
 
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

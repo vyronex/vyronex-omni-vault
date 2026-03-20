@@ -133,6 +133,7 @@ const Futures = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

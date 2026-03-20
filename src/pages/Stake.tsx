@@ -293,6 +293,7 @@ const Stake = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 
