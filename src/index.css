@@ -313,6 +313,11 @@
     @apply transition-transform duration-100 active:scale-[0.97];
   }
 
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
   .page-header {
     @apply relative overflow-hidden py-12 md:py-16;
   }

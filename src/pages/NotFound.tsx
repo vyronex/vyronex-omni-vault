@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import PageTransition from "@/components/PageTransition";
 
 const NotFound = () => {
   const location = useLocation();
@@ -12,7 +13,8 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <PageTransition>
+      <div className="min-h-screen bg-background flex flex-col">
       <Navigation />
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center animate-fade-in">
@@ -26,6 +28,7 @@ const NotFound = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

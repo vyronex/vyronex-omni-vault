@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useWallets } from "@/hooks/useWallets";
 import { useTransactions } from "@/hooks/useTransactions";
 import { toast } from "sonner";
+import PageTransition from "@/components/PageTransition";
 
 const WalletReal = () => {
   const navigate = useNavigate();
@@ -25,10 +26,12 @@ const WalletReal = () => {
 
   if (authLoading || walletsLoading) {
     return (
+      <PageTransition>
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
-    );
+    </PageTransition>
+  );
   }
 
   if (!user) return null;
@@ -227,6 +230,7 @@ const WalletReal = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

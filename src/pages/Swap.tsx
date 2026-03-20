@@ -1,10 +1,12 @@
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import PageTransition from "@/components/PageTransition";
 
 const Swap = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <PageTransition>
+      <div className="min-h-screen bg-background">
       <Navigation />
 
       {/* Page Header */}
@@ -74,6 +76,7 @@ const Swap = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

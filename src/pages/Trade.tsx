@@ -3,6 +3,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { fetchCoinGeckoData } from "@/hooks/useCoinGecko";
+import PageTransition from "@/components/PageTransition";
 
 const Trade = () => {
   const [coins, setCoins] = useState<any[]>([]);
@@ -74,7 +75,8 @@ const Trade = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <PageTransition>
+      <div className="min-h-screen bg-background text-foreground">
       <Navigation />
 
       {/* Page Header */}
@@ -271,6 +273,7 @@ const Trade = () => {
 
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

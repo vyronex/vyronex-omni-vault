@@ -8,6 +8,7 @@ import PriceChart from "@/components/PriceChart";
 import { Card, CardContent } from "@/components/ui/card";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useMarketData, useGlobalData, useTrending } from "@/hooks/useCoinGecko";
+import PageTransition from "@/components/PageTransition";
 
 const Markets = () => {
   const navigate = useNavigate();
@@ -28,7 +29,8 @@ const Markets = () => {
     !best || (c.total_volume || 0) > (best.total_volume || 0) ? c : best, null);
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageTransition>
+      <div className="min-h-screen bg-background">
       <Navigation />
 
       {/* Page Header */}
@@ -254,6 +256,7 @@ const Markets = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

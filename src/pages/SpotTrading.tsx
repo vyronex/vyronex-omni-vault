@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import PageTransition from "@/components/PageTransition";
 
 interface TradingPair {
   id: string;
@@ -42,6 +43,7 @@ const SpotTrading = () => {
 
   if (!user) {
     return (
+      <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="section-container py-24 text-center">
@@ -55,7 +57,8 @@ const SpotTrading = () => {
           </div>
         </div>
       </div>
-    );
+    </PageTransition>
+  );
   }
 
   const currentPair = tradingPairs.find((p) => p.id === selectedPair);
@@ -130,6 +133,7 @@ const SpotTrading = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

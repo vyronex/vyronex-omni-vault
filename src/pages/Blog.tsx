@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import PageTransition from "@/components/PageTransition";
 
 const blogPosts = [
   {
@@ -58,7 +59,8 @@ const categories = ["All", "Announcements", "Education", "Security", "Updates"];
 
 const Blog = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <PageTransition>
+      <div className="min-h-screen bg-background">
       <Navigation />
       
       {/* Hero Section */}
@@ -174,6 +176,7 @@ const Blog = () => {
 
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

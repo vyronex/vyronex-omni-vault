@@ -2,13 +2,15 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDerivatives, useDerivativesExchanges } from "@/hooks/useCoinGecko";
+import PageTransition from "@/components/PageTransition";
 
 const Futures = () => {
   const { data: derivatives, isLoading } = useDerivatives();
   const { data: exchanges } = useDerivativesExchanges();
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageTransition>
+      <div className="min-h-screen bg-background">
       <Navigation />
 
       {/* Page Header */}
@@ -131,6 +133,7 @@ const Futures = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

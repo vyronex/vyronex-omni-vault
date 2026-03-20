@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatsCard from "@/components/StatsCard";
 import { useState } from "react";
 import { toast } from "sonner";
+import PageTransition from "@/components/PageTransition";
 
 const Stake = () => {
   const [stakeAmount, setStakeAmount] = useState("");
@@ -42,7 +43,8 @@ const Stake = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageTransition>
+      <div className="min-h-screen bg-background">
       <Navigation />
 
       {/* Page Header */}
@@ -291,6 +293,7 @@ const Stake = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Globe, BarChart3 } from "lucide-react";
+import PageTransition from "@/components/PageTransition";
 
 const fmt = (n: number | undefined | null, decimals = 2) => {
   if (n == null) return "—";
@@ -23,7 +24,8 @@ const StatBlock = ({ label, value, sub }: { label: string; value: string; sub?: 
     <p className="text-lg font-bold font-mono">{value}</p>
     {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
   </div>
-);
+    </PageTransition>
+  );
 
 const CoinDetail = () => {
   const { coinId } = useParams<{ coinId: string }>();
@@ -32,6 +34,7 @@ const CoinDetail = () => {
 
   if (isLoading) {
     return (
+      <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
@@ -44,7 +47,8 @@ const CoinDetail = () => {
           </div>
         </div>
       </div>
-    );
+    </PageTransition>
+  );
   }
 
   if (!coin || coin.error) {
@@ -58,7 +62,8 @@ const CoinDetail = () => {
           </Button>
         </div>
       </div>
-    );
+    </PageTransition>
+  );
   }
 
   const md = coin.market_data;
@@ -190,6 +195,7 @@ const CoinDetail = () => {
       </div>
       <Footer />
     </div>
+    </PageTransition>
   );
 };
 
