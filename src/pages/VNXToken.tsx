@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { ExternalLink, Copy } from "lucide-react";
 import { toast } from "sonner";
+import PageTransition from "@/components/PageTransition";
 
 const CONTRACT = "0xeb55a55c384095ced21587afbe7418b7c9ae40cb";
 
@@ -21,7 +22,8 @@ const VNXToken = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <PageTransition>
+      <div className="min-h-screen bg-background">
       <Navigation />
 
       {/* Hero */}

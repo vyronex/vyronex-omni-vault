@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import PageTransition from "@/components/PageTransition";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -60,7 +61,8 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+    <PageTransition>
+      <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
       <Card className="w-full max-w-md glass-card shadow-elevated">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-3xl font-bold text-gradient">VNX Exchange</CardTitle>

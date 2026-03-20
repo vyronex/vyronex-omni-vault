@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Globe, BarChart3 } from "lucide-react";
+import PageTransition from "@/components/PageTransition";
 
 const fmt = (n: number | undefined | null, decimals = 2) => {
   if (n == null) return "—";
@@ -32,6 +33,7 @@ const CoinDetail = () => {
 
   if (isLoading) {
     return (
+      <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
