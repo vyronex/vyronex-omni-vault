@@ -52,6 +52,7 @@ const CoinDetail = () => {
 
   if (!coin || coin.error) {
     return (
+      <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-20 text-center">
@@ -61,8 +62,8 @@ const CoinDetail = () => {
           </Button>
         </div>
       </div>
-    </PageTransition>
-  );
+      </PageTransition>
+    );
   }
 
   const md = coin.market_data;
