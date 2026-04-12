@@ -71,6 +71,7 @@ const CoinDetail = () => {
   const isPositive = (pct24h || 0) >= 0;
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="container mx-auto px-4 py-8 max-w-6xl">
