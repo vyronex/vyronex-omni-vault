@@ -53,6 +53,7 @@ const WalletReal = () => {
   const vnxBalance = balances?.find(b => b.token_symbol === "VNX");
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-background">
       <Navigation />
 
