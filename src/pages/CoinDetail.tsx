@@ -24,8 +24,7 @@ const StatBlock = ({ label, value, sub }: { label: string; value: string; sub?: 
     <p className="text-lg font-bold font-mono">{value}</p>
     {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
   </div>
-    </PageTransition>
-  );
+);
 
 const CoinDetail = () => {
   const { coinId } = useParams<{ coinId: string }>();
@@ -53,6 +52,7 @@ const CoinDetail = () => {
 
   if (!coin || coin.error) {
     return (
+      <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
         <div className="container mx-auto px-4 py-20 text-center">
@@ -62,8 +62,8 @@ const CoinDetail = () => {
           </Button>
         </div>
       </div>
-    </PageTransition>
-  );
+      </PageTransition>
+    );
   }
 
   const md = coin.market_data;
@@ -71,6 +71,7 @@ const CoinDetail = () => {
   const isPositive = (pct24h || 0) >= 0;
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="container mx-auto px-4 py-8 max-w-6xl">

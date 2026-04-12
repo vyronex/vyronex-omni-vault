@@ -64,6 +64,7 @@ const SpotTrading = () => {
   const currentPair = tradingPairs.find((p) => p.id === selectedPair);
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-background">
       <Navigation />
 

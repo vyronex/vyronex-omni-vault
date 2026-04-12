@@ -35,122 +35,99 @@ const Index = () => {
       <div ref={scrollRef} className="min-h-screen bg-background">
         <Navigation />
 
-        {/* ═══ HERO — Split asymmetric layout ═══ */}
-        <section className="relative overflow-hidden min-h-[90vh] flex items-center">
-          <div className="absolute inset-0">
-            <div className="absolute top-0 right-0 w-[60%] h-full bg-gradient-to-l from-primary/[0.07] to-transparent" />
-            <div className="absolute bottom-0 left-0 w-[40%] h-[60%] bg-gradient-to-tr from-accent/[0.04] to-transparent" />
-            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-primary/[0.03] blur-[150px]" />
+        {/* ═══ HERO — Cinematic centered layout ═══ */}
+        <section className="relative overflow-hidden min-h-[95vh] flex flex-col items-center justify-center">
+          {/* Animated orb background */}
+          <div className="absolute inset-0 pointer-events-none">
+            <motion.div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full"
+              style={{ background: 'radial-gradient(circle, hsl(0 84% 55% / 0.12) 0%, hsl(25 95% 55% / 0.06) 40%, transparent 70%)' }}
+              animate={{ scale: [1, 1.15, 1], rotate: [0, 180, 360] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            />
+            <div className="absolute top-[20%] left-[15%] w-1 h-1 rounded-full bg-primary/40 animate-pulse" />
+            <div className="absolute top-[30%] right-[20%] w-1.5 h-1.5 rounded-full bg-accent/30 animate-pulse" style={{ animationDelay: '1s' }} />
+            <div className="absolute bottom-[25%] left-[25%] w-1 h-1 rounded-full bg-primary/30 animate-pulse" style={{ animationDelay: '2s' }} />
+            <div className="absolute bottom-[35%] right-[15%] w-0.5 h-0.5 rounded-full bg-accent/40 animate-pulse" style={{ animationDelay: '0.5s' }} />
           </div>
 
-          <div className="section-container relative w-full">
-            <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
-              {/* Left — Big type */}
-              <motion.div
-                className="lg:col-span-3"
-                initial="hidden"
-                animate="visible"
-                variants={staggerContainer}
-              >
-                <motion.div variants={fadeUp} custom={0} className="mb-6">
-                  <span className="inline-block px-4 py-1.5 rounded-full text-[11px] font-bold tracking-[0.2em] uppercase border border-primary/20 bg-primary/5 text-primary">
-                    Multi-Chain DeFi
-                  </span>
-                </motion.div>
-
-                <motion.h1 variants={fadeUp} custom={1} className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95] mb-8" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
-                  The future
-                  <br />
-                  of trading
-                  <br />
-                  is <span className="text-gradient">here.</span>
-                </motion.h1>
-
-                <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-muted-foreground max-w-md leading-relaxed mb-10">
-                  Trade, stake, and earn across 6 blockchains. Enterprise security meets DeFi freedom.
-                </motion.p>
-
-                <motion.div variants={fadeUp} custom={3} className="flex flex-wrap gap-4">
-                  {user ? (
-                    <>
-                      <Link to="/wallet">
-                        <Button size="lg" className="rounded-full px-10 h-14 text-base gradient-primary shadow-glow hover:shadow-glow-lg transition-all active-press">
-                          Open Wallet
-                        </Button>
-                      </Link>
-                      <Link to="/trade">
-                        <Button size="lg" variant="outline" className="rounded-full px-10 h-14 text-base hover-border-glow active-press">
-                          Trade Now
-                        </Button>
-                      </Link>
-                    </>
-                  ) : (
-                    <>
-                      <Link to="/auth">
-                        <Button size="lg" className="rounded-full px-10 h-14 text-base gradient-primary shadow-glow hover:shadow-glow-lg transition-all active-press">
-                          Start Trading
-                        </Button>
-                      </Link>
-                      <Link to="/markets">
-                        <Button size="lg" variant="outline" className="rounded-full px-10 h-14 text-base hover-border-glow active-press">
-                          Explore Markets
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                </motion.div>
+          <div className="relative text-center max-w-4xl mx-auto px-4">
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
+              className="space-y-8"
+            >
+              <motion.div variants={fadeUp} custom={0}>
+                <span className="inline-block px-5 py-2 rounded-full text-[11px] font-bold tracking-[0.2em] uppercase border border-primary/20 bg-primary/5 text-primary">
+                  Multi-Chain DeFi Protocol
+                </span>
               </motion.div>
 
-              {/* Right — Bento stats cluster */}
-              <motion.div
-                className="lg:col-span-2"
-                initial="hidden"
-                animate="visible"
-                variants={staggerContainer}
+              <motion.h1
+                variants={fadeUp}
+                custom={1}
+                className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight leading-[1.05]"
+                style={{ fontFamily: "'Space Grotesk', system-ui" }}
               >
-                <div className="grid grid-cols-2 gap-3">
-                  <motion.div variants={fadeUp} custom={2} className="col-span-2 p-6 rounded-2xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">VNX Token</p>
-                        <p className="text-3xl font-bold mt-1" style={{ fontFamily: "'Space Grotesk'" }}>
-                          ${(vnxPrice?.price || 0.000542).toFixed(6)}
-                        </p>
-                      </div>
-                      <span className={`text-sm font-bold px-3 py-1 rounded-full ${(vnxPrice?.change24h || 2.45) >= 0 ? 'bg-[hsl(var(--vnx-green))]/10 text-[hsl(var(--vnx-green))]' : 'bg-destructive/10 text-destructive'}`}>
-                        {(vnxPrice?.change24h || 2.45) >= 0 ? '+' : ''}{(vnxPrice?.change24h || 2.45).toFixed(2)}%
-                      </span>
-                    </div>
-                    <div className="h-px bg-border/40 my-3" />
-                    <div className="flex gap-6 text-xs text-muted-foreground">
-                      <span>Vol: ${((vnxPrice?.volume24h || 125000) / 1000).toFixed(1)}K</span>
-                      <span>MCap: ${((vnxPrice?.marketCap || 5420000) / 1e6).toFixed(2)}M</span>
-                    </div>
-                  </motion.div>
+                Trade without
+                <br />
+                <span className="text-gradient">boundaries.</span>
+              </motion.h1>
 
-                  <motion.div variants={fadeUp} custom={3} className="p-5 rounded-2xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-2">Users</p>
-                    <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>50K+</p>
-                  </motion.div>
+              <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
+                One platform. Six blockchains. Enterprise-grade security meets permissionless finance.
+              </motion.p>
 
-                  <motion.div variants={fadeUp} custom={4} className="p-5 rounded-2xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-2">Volume</p>
-                    <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>$2.5B+</p>
-                  </motion.div>
-
-                  <motion.div variants={fadeUp} custom={5} className="p-5 rounded-2xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-2">Chains</p>
-                    <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>6</p>
-                  </motion.div>
-
-                  <motion.div variants={fadeUp} custom={6} className="p-5 rounded-2xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
-                    <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-2">Uptime</p>
-                    <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>99.9%</p>
-                  </motion.div>
-                </div>
+              <motion.div variants={fadeUp} custom={3} className="flex flex-wrap justify-center gap-4 pt-2">
+                {user ? (
+                  <>
+                    <Link to="/wallet">
+                      <Button size="lg" className="rounded-full px-10 h-14 text-base gradient-primary shadow-glow hover:shadow-glow-lg transition-all active-press">
+                        Open Wallet
+                      </Button>
+                    </Link>
+                    <Link to="/trade">
+                      <Button size="lg" variant="outline" className="rounded-full px-10 h-14 text-base hover-border-glow active-press">
+                        Trade Now
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/auth">
+                      <Button size="lg" className="rounded-full px-10 h-14 text-base gradient-primary shadow-glow hover:shadow-glow-lg transition-all active-press">
+                        Start Trading
+                      </Button>
+                    </Link>
+                    <Link to="/markets">
+                      <Button size="lg" variant="outline" className="rounded-full px-10 h-14 text-base hover-border-glow active-press">
+                        Explore Markets
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </motion.div>
-            </div>
+
+              {/* Stats ribbon */}
+              <motion.div variants={fadeUp} custom={4} className="pt-12 flex flex-wrap justify-center gap-8 md:gap-16">
+                {[
+                  { label: "Trading Volume", value: "$2.5B+" },
+                  { label: "Active Users", value: "50K+" },
+                  { label: "Blockchains", value: "6" },
+                  { label: "Uptime", value: "99.9%" },
+                ].map((stat) => (
+                  <div key={stat.label} className="text-center">
+                    <p className="text-2xl md:text-3xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>{stat.value}</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{stat.label}</p>
+                  </div>
+                ))}
+              </motion.div>
+            </motion.div>
           </div>
+
+          {/* Bottom fade line */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border/40 to-transparent" />
         </section>
 
         {/* ═══ MARQUEE — Scrolling chain logos ═══ */}
