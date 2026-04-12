@@ -3,11 +3,10 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import PriceChart from "@/components/PriceChart";
 import { useCoinDetail } from "@/hooks/useCoinGecko";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Globe, BarChart3 } from "lucide-react";
 import PageTransition from "@/components/PageTransition";
+import { motion } from "framer-motion";
 
 const fmt = (n: number | undefined | null, decimals = 2) => {
   if (n == null) return "—";
@@ -19,12 +18,18 @@ const fmt = (n: number | undefined | null, decimals = 2) => {
 };
 
 const StatBlock = ({ label, value, sub }: { label: string; value: string; sub?: string }) => (
-  <div className="p-4 rounded-lg border border-border bg-card animate-fade-in">
-    <p className="text-xs text-muted-foreground mb-1">{label}</p>
-    <p className="text-lg font-bold font-mono">{value}</p>
-    {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
+  <div className="p-5 rounded-2xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
+    <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">{label}</p>
+    <p className="text-lg font-bold" style={{ fontFamily: "'Space Grotesk'" }}>{value}</p>
+    {sub && <p className="text-xs text-muted-foreground mt-1">{sub}</p>}
   </div>
 );
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] } }),
+};
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.05 } } };
 
 const CoinDetail = () => {
   const { coinId } = useParams<{ coinId: string }>();
@@ -34,34 +39,34 @@ const CoinDetail = () => {
   if (isLoading) {
     return (
       <PageTransition>
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
-          <Skeleton className="h-10 w-48" />
-          <Skeleton className="h-[300px] w-full rounded-lg" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="h-24 rounded-lg" />
-            ))}
+        <div className="min-h-screen bg-background">
+          <Navigation />
+          <div className="section-container py-12 max-w-6xl mx-auto space-y-6">
+            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-[300px] w-full rounded-2xl" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-24 rounded-2xl" />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </PageTransition>
-  );
+      </PageTransition>
+    );
   }
 
   if (!coin || coin.error) {
     return (
       <PageTransition>
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <div className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-3xl font-bold mb-4">Coin not found</h1>
-          <Button onClick={() => navigate("/markets")} variant="outline">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Back to Markets
-          </Button>
+        <div className="min-h-screen bg-background">
+          <Navigation />
+          <div className="section-container py-24 text-center">
+            <h1 className="text-3xl font-bold mb-4" style={{ fontFamily: "'Space Grotesk'" }}>Coin not found</h1>
+            <Button onClick={() => navigate("/markets")} variant="outline" className="rounded-xl active-press">
+              Back to Markets
+            </Button>
+          </div>
         </div>
-      </div>
       </PageTransition>
     );
   }
@@ -72,130 +77,135 @@ const CoinDetail = () => {
 
   return (
     <PageTransition>
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="min-h-screen bg-background">
+        <Navigation />
+
         {/* Header */}
-        <div className="flex items-start justify-between mb-6 animate-fade-in">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/markets")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <img
-              src={coin.image?.large || coin.image?.small}
-              alt={coin.name}
-              className="w-12 h-12 rounded-full"
-            />
-            <div>
-              <h1 className="text-3xl font-bold flex items-center gap-2">
-                {coin.name}
-                <span className="text-lg text-muted-foreground font-normal uppercase">
-                  {coin.symbol}
-                </span>
-                {coin.market_cap_rank && (
-                  <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
-                    Rank #{coin.market_cap_rank}
-                  </span>
+        <section className="py-8 border-b border-border/30">
+          <div className="section-container max-w-6xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <button onClick={() => navigate("/markets")} className="text-muted-foreground hover:text-foreground transition-colors text-sm">
+                  Markets /
+                </button>
+                <img src={coin.image?.large || coin.image?.small} alt={coin.name} className="w-10 h-10 rounded-full" />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-2xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>{coin.name}</h1>
+                    <span className="text-sm text-muted-foreground uppercase">{coin.symbol}</span>
+                    {coin.market_cap_rank && (
+                      <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                        #{coin.market_cap_rank}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-2xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>{fmt(md?.current_price?.usd)}</span>
+                    {pct24h != null && (
+                      <span className={`text-sm font-bold px-2.5 py-0.5 rounded-full ${isPositive ? 'bg-[hsl(var(--vnx-green))]/10 text-[hsl(var(--vnx-green))]' : 'bg-destructive/10 text-destructive'}`}>
+                        {isPositive ? '+' : ''}{pct24h.toFixed(2)}%
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                {coin.links?.homepage?.[0] && (
+                  <Button variant="outline" size="sm" className="rounded-xl" asChild>
+                    <a href={coin.links.homepage[0]} target="_blank" rel="noopener noreferrer">Website</a>
+                  </Button>
                 )}
-              </h1>
-              <div className="flex items-center gap-3 mt-1">
-                <span className="text-2xl font-bold font-mono animate-count-up">
-                  {fmt(md?.current_price?.usd)}
-                </span>
-                {pct24h != null && (
-                  <span
-                    className={`flex items-center gap-1 text-sm font-semibold ${isPositive ? "text-green-500" : "text-red-500"}`}
-                  >
-                    {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
-                    {Math.abs(pct24h).toFixed(2)}% (24h)
-                  </span>
+                {coin.links?.blockchain_site?.[0] && (
+                  <Button variant="outline" size="sm" className="rounded-xl" asChild>
+                    <a href={coin.links.blockchain_site[0]} target="_blank" rel="noopener noreferrer">Explorer</a>
+                  </Button>
                 )}
               </div>
-            </div>
+            </motion.div>
           </div>
-          <div className="flex gap-2">
-            {coin.links?.homepage?.[0] && (
-              <Button variant="outline" size="sm" asChild>
-                <a href={coin.links.homepage[0]} target="_blank" rel="noopener noreferrer">
-                  <Globe className="h-4 w-4 mr-1" /> Website
-                </a>
-              </Button>
-            )}
-            {coin.links?.blockchain_site?.[0] && (
-              <Button variant="outline" size="sm" asChild>
-                <a href={coin.links.blockchain_site[0]} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4 mr-1" /> Explorer
-                </a>
-              </Button>
-            )}
-          </div>
-        </div>
+        </section>
 
         {/* Chart */}
-        <div className="mb-6">
-          <PriceChart coinId={coinId || ""} coinName={coin.name} />
-        </div>
+        <section className="py-8">
+          <div className="section-container max-w-6xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.5 }}>
+              <PriceChart coinId={coinId || ""} coinName={coin.name} />
+            </motion.div>
+          </div>
+        </section>
 
-        {/* Key Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <StatBlock label="Market Cap" value={fmt(md?.market_cap?.usd)} />
-          <StatBlock label="24h Volume" value={fmt(md?.total_volume?.usd)} />
-          <StatBlock label="Circulating Supply" value={md?.circulating_supply ? `${(md.circulating_supply / 1e6).toFixed(2)}M` : "—"} sub={coin.symbol?.toUpperCase()} />
-          <StatBlock label="Total Supply" value={md?.total_supply ? `${(md.total_supply / 1e6).toFixed(2)}M` : "∞"} />
-          <StatBlock label="24h High" value={fmt(md?.high_24h?.usd)} />
-          <StatBlock label="24h Low" value={fmt(md?.low_24h?.usd)} />
-          <StatBlock label="ATH" value={fmt(md?.ath?.usd)} sub={md?.ath_date?.usd ? new Date(md.ath_date.usd).toLocaleDateString() : undefined} />
-          <StatBlock label="ATL" value={fmt(md?.atl?.usd)} sub={md?.atl_date?.usd ? new Date(md.atl_date.usd).toLocaleDateString() : undefined} />
-        </div>
+        {/* Stats */}
+        <section className="py-8">
+          <div className="section-container max-w-6xl mx-auto">
+            <motion.div initial="hidden" animate="visible" variants={stagger} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { label: "Market Cap", value: fmt(md?.market_cap?.usd) },
+                { label: "24h Volume", value: fmt(md?.total_volume?.usd) },
+                { label: "Circulating", value: md?.circulating_supply ? `${(md.circulating_supply / 1e6).toFixed(2)}M` : "—", sub: coin.symbol?.toUpperCase() },
+                { label: "Total Supply", value: md?.total_supply ? `${(md.total_supply / 1e6).toFixed(2)}M` : "∞" },
+                { label: "24h High", value: fmt(md?.high_24h?.usd) },
+                { label: "24h Low", value: fmt(md?.low_24h?.usd) },
+                { label: "ATH", value: fmt(md?.ath?.usd), sub: md?.ath_date?.usd ? new Date(md.ath_date.usd).toLocaleDateString() : undefined },
+                { label: "ATL", value: fmt(md?.atl?.usd), sub: md?.atl_date?.usd ? new Date(md.atl_date.usd).toLocaleDateString() : undefined },
+              ].map((s, i) => (
+                <motion.div key={s.label} variants={fadeUp} custom={i}>
+                  <StatBlock label={s.label} value={s.value} sub={s.sub} />
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
 
         {/* Price Changes */}
-        <Card className="shadow-card mb-6 animate-fade-in">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-primary" /> Price Change
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {[
-                { label: "1h", val: md?.price_change_percentage_1h_in_currency?.usd },
-                { label: "24h", val: md?.price_change_percentage_24h },
-                { label: "7d", val: md?.price_change_percentage_7d },
-                { label: "30d", val: md?.price_change_percentage_30d },
-                { label: "1y", val: md?.price_change_percentage_1y },
-              ].map(({ label, val }) => (
-                <div key={label} className="text-center p-3 rounded-lg border border-border">
-                  <p className="text-xs text-muted-foreground mb-1">{label}</p>
-                  {val != null ? (
-                    <p className={`font-bold ${val >= 0 ? "text-green-500" : "text-red-500"}`}>
-                      {val >= 0 ? "+" : ""}{val.toFixed(2)}%
-                    </p>
-                  ) : (
-                    <p className="text-muted-foreground">—</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <section className="py-8">
+          <div className="section-container max-w-6xl mx-auto">
+            <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+              className="p-6 rounded-2xl bg-card border border-border/40 shadow-card"
+            >
+              <h3 className="font-bold mb-5" style={{ fontFamily: "'Space Grotesk'" }}>Price Change</h3>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                {[
+                  { label: "1h", val: md?.price_change_percentage_1h_in_currency?.usd },
+                  { label: "24h", val: md?.price_change_percentage_24h },
+                  { label: "7d", val: md?.price_change_percentage_7d },
+                  { label: "30d", val: md?.price_change_percentage_30d },
+                  { label: "1y", val: md?.price_change_percentage_1y },
+                ].map(({ label, val }) => (
+                  <div key={label} className="text-center p-4 rounded-xl bg-background border border-border/30">
+                    <p className="text-xs text-muted-foreground mb-1">{label}</p>
+                    {val != null ? (
+                      <p className={`font-bold ${val >= 0 ? 'text-[hsl(var(--vnx-green))]' : 'text-destructive'}`}>
+                        {val >= 0 ? "+" : ""}{val.toFixed(2)}%
+                      </p>
+                    ) : (
+                      <p className="text-muted-foreground">—</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
 
         {/* Description */}
         {coin.description?.en && (
-          <Card className="shadow-card animate-fade-in">
-            <CardHeader>
-              <CardTitle>About {coin.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div
-                className="prose prose-sm max-w-none text-foreground/80 [&_a]:text-primary [&_a]:underline"
-                dangerouslySetInnerHTML={{ __html: coin.description.en.split(". ").slice(0, 8).join(". ") + "." }}
-              />
-            </CardContent>
-          </Card>
+          <section className="py-8 pb-16">
+            <div className="section-container max-w-6xl mx-auto">
+              <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}
+                className="p-6 rounded-2xl bg-card border border-border/40 shadow-card"
+              >
+                <h3 className="font-bold mb-4" style={{ fontFamily: "'Space Grotesk'" }}>About {coin.name}</h3>
+                <div
+                  className="prose prose-sm max-w-none text-muted-foreground leading-relaxed [&_a]:text-primary [&_a]:underline"
+                  dangerouslySetInnerHTML={{ __html: coin.description.en.split(". ").slice(0, 8).join(". ") + "." }}
+                />
+              </motion.div>
+            </div>
+          </section>
         )}
+
+        <Footer />
       </div>
-      <Footer />
-    </div>
     </PageTransition>
   );
 };
