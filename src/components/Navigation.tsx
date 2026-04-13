@@ -63,7 +63,7 @@ const Navigation = () => {
             {user ? (
               <>
                 <Button variant="ghost" size="sm" className="rounded-xl" asChild>
-                  <Link to="/wallet">Account</Link>
+                  <Link to="/dashboard">Dashboard</Link>
                 </Button>
                 <Button variant="outline" size="sm" className="rounded-xl" onClick={handleSignOut}>
                   Sign Out
