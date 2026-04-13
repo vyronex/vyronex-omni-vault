@@ -30,7 +30,7 @@ const Dashboard = () => {
   const { wallets, balances, loading: walletsLoading, addWallet } = useWallets();
   const { transactions, loading: txLoading } = useTransactions();
   const { data: vnxPrice } = useVNXPrice();
-  const { data: marketData } = useCoinGecko();
+  const { data: marketData } = useMarketData();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [profile, setProfile] = useState<{ username: string; avatar_url: string }>({ username: "", avatar_url: "" });
   const [kycStatus, setKycStatus] = useState<"none" | "pending" | "verified">("none");
