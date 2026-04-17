@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { useState } from "react";
+import vyronexLogo from "@/assets/vyronex-logo.jpeg";
 
 const Navigation = () => {
   const location = useLocation();
@@ -31,13 +32,12 @@ const Navigation = () => {
     <nav className="sticky top-0 z-50 border-b border-border/30 bg-background/80 backdrop-blur-xl">
       <div className="section-container py-3">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="h-9 w-9 rounded-xl gradient-primary flex items-center justify-center shadow-glow group-hover:shadow-glow-lg transition-all">
-              <span className="text-primary-foreground font-bold text-lg">V</span>
-            </div>
-            <span className="font-bold text-xl tracking-tight" style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
-              Vyronex<span className="text-gradient">VNX</span>
-            </span>
+          <Link to="/" className="flex items-center group">
+            <img
+              src={vyronexLogo}
+              alt="Vyronex VNX"
+              className="h-9 md:h-10 w-auto rounded-md transition-transform group-hover:scale-[1.03]"
+            />
           </Link>
 
           {/* Desktop Navigation */}
