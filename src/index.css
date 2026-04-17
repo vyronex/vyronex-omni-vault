@@ -255,6 +255,21 @@
   section :where(div, header):has(> h2) {
     text-align: center;
   }
+  /* Center subtitles/descriptions following any heading */
+  section :where(h1, h2, h3) + p,
+  section :where(h1, h2, h3) ~ p.subtitle,
+  section p.section-subtitle,
+  section p.section-description {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  /* Center wrappers that contain a heading + description */
+  section :where(div, header):has(> :is(h1, h2, h3)) > p {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 
   .card-modern {
     @apply p-6 md:p-8 rounded-2xl bg-card border border-border/40 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated hover:border-primary/20;
