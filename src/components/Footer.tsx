@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import vyronexLogo from "@/assets/vyronex-logo.jpeg";
 
 const Footer = () => {
   return (
@@ -6,14 +7,9 @@ const Footer = () => {
       <div className="section-container py-16">
         <div className="grid md:grid-cols-5 gap-10 mb-12">
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="h-10 w-10 rounded-xl gradient-primary flex items-center justify-center shadow-glow">
-                <span className="text-primary-foreground font-bold text-xl">V</span>
-              </div>
-              <span className="font-bold text-xl tracking-tight" style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}>
-                Vyronex<span className="text-gradient">VNX</span>
-              </span>
-            </div>
+            <Link to="/" className="inline-flex items-center mb-5">
+              <img src={vyronexLogo} alt="VyronexVNX logo" className="h-10 w-auto rounded-md" />
+            </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-sm mb-6">
               The future of decentralized trading. Multi-chain DeFi platform with enterprise-grade security and seamless user experience.
             </p>
