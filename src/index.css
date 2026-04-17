@@ -123,6 +123,9 @@
     font-size: 18px !important;
     font-weight: 700;
     line-height: 1.3;
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   p, span, li, a, label, input, textarea, select, button, td, th {
