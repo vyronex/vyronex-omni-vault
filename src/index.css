@@ -230,6 +230,29 @@
     @apply inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase border border-primary/20 bg-primary/5 text-primary mb-4;
   }
 
+  /* Globally center all section titles + their badge/subtitle */
+  section h2 {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  section h2 + p {
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  /* Center the badge above the h2 */
+  section .section-badge {
+    display: inline-flex;
+  }
+  section h2:has(+ *),
+  section .section-badge {
+    /* ensure parent wrapper centers inline children */
+  }
+  section :where(div, header):has(> h2) {
+    text-align: center;
+  }
+
   .card-modern {
     @apply p-6 md:p-8 rounded-2xl bg-card border border-border/40 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated hover:border-primary/20;
   }
