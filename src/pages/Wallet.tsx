@@ -101,12 +101,15 @@ const WalletReal = () => {
                 </Button>
               )}
             </div>
-            <div className="flex gap-3">
-              <Button className="flex-1 rounded-xl gradient-primary shadow-glow hover:shadow-glow-lg active-press transition-all h-12">
+            <div className="grid grid-cols-3 gap-3">
+              <Button onClick={() => setWithdrawOpen(true)} className="rounded-xl gradient-primary shadow-glow hover:shadow-glow-lg active-press transition-all h-12">
                 Send
               </Button>
-              <Button className="flex-1 rounded-xl active-press h-12" variant="outline">
+              <Button onClick={() => setDepositOpen(true)} className="rounded-xl active-press h-12" variant="outline">
                 Receive
+              </Button>
+              <Button onClick={() => setTransferOpen(true)} className="rounded-xl active-press h-12" variant="outline">
+                Transfer
               </Button>
             </div>
           </div>
