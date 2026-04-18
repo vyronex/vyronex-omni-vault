@@ -6,6 +6,7 @@ import OrderForm from "@/components/OrderForm";
 import TradeHistory from "@/components/TradeHistory";
 import PriceChart from "@/components/PriceChart";
 import { useAuth } from "@/hooks/useAuth";
+import { useTradeNotifications } from "@/hooks/useTradeNotifications";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
