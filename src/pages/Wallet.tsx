@@ -18,6 +18,9 @@ const WalletReal = () => {
   const { data: vnxPrice } = useVNXPrice();
   const { wallets, balances, loading: walletsLoading } = useWallets();
   const { transactions, loading: transactionsLoading } = useTransactions();
+  const [depositOpen, setDepositOpen] = useState(false);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
