@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -10,6 +10,7 @@ import { useWallets } from "@/hooks/useWallets";
 import { useTransactions } from "@/hooks/useTransactions";
 import { toast } from "sonner";
 import PageTransition from "@/components/PageTransition";
+import { DepositDialog, WithdrawDialog, TransferDialog } from "@/components/wallet/WalletActionDialogs";
 
 const WalletReal = () => {
   const navigate = useNavigate();
@@ -17,6 +18,9 @@ const WalletReal = () => {
   const { data: vnxPrice } = useVNXPrice();
   const { wallets, balances, loading: walletsLoading } = useWallets();
   const { transactions, loading: transactionsLoading } = useTransactions();
+  const [depositOpen, setDepositOpen] = useState(false);
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -97,12 +101,15 @@ const WalletReal = () => {
                 </Button>
               )}
             </div>
-            <div className="flex gap-3">
-              <Button className="flex-1 rounded-xl gradient-primary shadow-glow hover:shadow-glow-lg active-press transition-all h-12">
+            <div className="grid grid-cols-3 gap-3">
+              <Button onClick={() => setWithdrawOpen(true)} className="rounded-xl gradient-primary shadow-glow hover:shadow-glow-lg active-press transition-all h-12">
                 Send
               </Button>
-              <Button className="flex-1 rounded-xl active-press h-12" variant="outline">
+              <Button onClick={() => setDepositOpen(true)} className="rounded-xl active-press h-12" variant="outline">
                 Receive
+              </Button>
+              <Button onClick={() => setTransferOpen(true)} className="rounded-xl active-press h-12" variant="outline">
+                Transfer
               </Button>
             </div>
           </div>
@@ -164,24 +171,37 @@ const WalletReal = () => {
               </div>
             ) : transactions && transactions.length > 0 ? (
               <div className="space-y-3">
-                {transactions.map((tx) => (
-                  <div key={tx.id} className="data-row">
-                    <div>
-                      <p className="font-semibold">{tx.tx_type}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(tx.created_at).toLocaleString()}
-                      </p>
+                {transactions.map((tx) => {
+                  const statusStyles: Record<string, string> = {
+                    confirmed: "bg-[hsl(var(--vnx-green))]/15 text-[hsl(var(--vnx-green))] border-[hsl(var(--vnx-green))]/30",
+                    pending: "bg-[hsl(var(--vnx-gold))]/15 text-[hsl(var(--vnx-gold))] border-[hsl(var(--vnx-gold))]/30",
+                    failed: "bg-destructive/15 text-destructive border-destructive/30",
+                  };
+                  const typeBadge: Record<string, string> = {
+                    deposit: "text-[hsl(var(--vnx-green))]",
+                    withdraw: "text-destructive",
+                    transfer: "text-accent",
+                  };
+                  const sign = tx.tx_type === "deposit" ? "+" : tx.tx_type === "withdraw" ? "−" : "";
+                  return (
+                    <div key={tx.id} className="data-row">
+                      <div>
+                        <p className={`font-semibold capitalize ${typeBadge[tx.tx_type] || ""}`}>{tx.tx_type}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(tx.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold font-mono">
+                          {sign}{Number(tx.amount).toFixed(4)} {tx.token_symbol}
+                        </p>
+                        <span className={`inline-block mt-1 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border ${statusStyles[tx.status] || "bg-muted/30 text-muted-foreground border-border/40"}`}>
+                          {tx.status}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        {Number(tx.amount).toFixed(4)} {tx.token_symbol}
-                      </p>
-                      <p className={`text-sm font-medium ${tx.status === 'confirmed' ? 'text-[hsl(var(--vnx-green))]' : 'text-[hsl(var(--vnx-gold))]'}`}>
-                        {tx.status}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-12 text-muted-foreground">
@@ -230,6 +250,15 @@ const WalletReal = () => {
         </div>
       </div>
       <Footer />
+
+      <DepositDialog
+        open={depositOpen}
+        onOpenChange={setDepositOpen}
+        walletAddress={primaryWallet?.address || ""}
+        walletChain={primaryWallet?.chain || "BNB Chain"}
+      />
+      <WithdrawDialog open={withdrawOpen} onOpenChange={setWithdrawOpen} />
+      <TransferDialog open={transferOpen} onOpenChange={setTransferOpen} />
     </div>
     </PageTransition>
   );
