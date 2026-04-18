@@ -250,6 +250,15 @@ const WalletReal = () => {
         </div>
       </div>
       <Footer />
+
+      <DepositDialog
+        open={depositOpen}
+        onOpenChange={setDepositOpen}
+        walletAddress={primaryWallet?.address || ""}
+        walletChain={primaryWallet?.chain || "BNB Chain"}
+      />
+      <WithdrawDialog open={withdrawOpen} onOpenChange={setWithdrawOpen} />
+      <TransferDialog open={transferOpen} onOpenChange={setTransferOpen} />
     </div>
     </PageTransition>
   );
