@@ -438,17 +438,35 @@ const Index = () => {
               </div>
               <div className="flex flex-wrap justify-center gap-3">
                 {[
-                  { symbol: "BTC", name: "Bitcoin" }, { symbol: "ETH", name: "Ethereum" },
-                  { symbol: "BNB", name: "BNB" }, { symbol: "SOL", name: "Solana" },
-                  { symbol: "TRX", name: "Tron" }, { symbol: "FTM", name: "Fantom" },
-                  { symbol: "USDT", name: "Tether" }, { symbol: "USDC", name: "USD Coin" },
-                  { symbol: "DAI", name: "Dai" }, { symbol: "LINK", name: "Chainlink" },
-                  { symbol: "UNI", name: "Uniswap" }, { symbol: "VNX", name: "VyronexVNX" },
+                  { symbol: "BTC", name: "Bitcoin", icon: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png" },
+                  { symbol: "ETH", name: "Ethereum", icon: "https://assets.coingecko.com/coins/images/279/small/ethereum.png" },
+                  { symbol: "BNB", name: "BNB", icon: "https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png" },
+                  { symbol: "SOL", name: "Solana", icon: "https://assets.coingecko.com/coins/images/4128/small/solana.png" },
+                  { symbol: "TRX", name: "Tron", icon: "https://assets.coingecko.com/coins/images/1094/small/tron-logo.png" },
+                  { symbol: "FTM", name: "Fantom", icon: "https://assets.coingecko.com/coins/images/4001/small/Fantom_round.png" },
+                  { symbol: "USDT", name: "Tether", icon: "https://assets.coingecko.com/coins/images/325/small/Tether.png" },
+                  { symbol: "USDC", name: "USD Coin", icon: "https://assets.coingecko.com/coins/images/6319/small/usdc.png" },
+                  { symbol: "DAI", name: "Dai", icon: "https://assets.coingecko.com/coins/images/9956/small/Badge_Dai.png" },
+                  { symbol: "LINK", name: "Chainlink", icon: "https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png" },
+                  { symbol: "UNI", name: "Uniswap", icon: "https://assets.coingecko.com/coins/images/12504/small/uniswap-logo.png" },
+                  { symbol: "MATIC", name: "Polygon", icon: "https://assets.coingecko.com/coins/images/4713/small/polygon.png" },
+                  { symbol: "AVAX", name: "Avalanche", icon: "https://assets.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png" },
+                  { symbol: "ARB", name: "Arbitrum", icon: "https://assets.coingecko.com/coins/images/16547/small/arb.jpg" },
+                  { symbol: "OP", name: "Optimism", icon: "https://assets.coingecko.com/coins/images/25244/small/Optimism.png" },
+                  { symbol: "DOGE", name: "Dogecoin", icon: "https://assets.coingecko.com/coins/images/5/small/dogecoin.png" },
+                  { symbol: "SHIB", name: "Shiba Inu", icon: "https://assets.coingecko.com/coins/images/11939/small/shiba.png" },
+                  { symbol: "ADA", name: "Cardano", icon: "https://assets.coingecko.com/coins/images/975/small/cardano.png" },
+                  { symbol: "XRP", name: "Ripple", icon: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png" },
+                  { symbol: "VNX", name: "VyronexVNX", icon: "/placeholder.svg", isVnx: true },
                 ].map((asset, i) => (
                   <div key={i} className="flex items-center gap-2.5 px-5 py-3 rounded-full bg-card border border-border/40 hover-border-glow transition-all hover-scale-subtle cursor-default">
-                    <div className="h-7 w-7 rounded-full gradient-primary flex items-center justify-center">
-                      <span className="text-[10px] font-bold text-primary-foreground">{asset.symbol.substring(0, 2)}</span>
-                    </div>
+                    {asset.isVnx ? (
+                      <div className="h-7 w-7 rounded-full gradient-primary flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-primary-foreground">VNX</span>
+                      </div>
+                    ) : (
+                      <img src={asset.icon} alt={asset.name} className="h-7 w-7 rounded-full" loading="lazy" />
+                    )}
                     <span className="font-semibold text-sm">{asset.symbol}</span>
                     <span className="text-xs text-muted-foreground hidden sm:inline">{asset.name}</span>
                   </div>
