@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
@@ -10,6 +10,7 @@ import { useWallets } from "@/hooks/useWallets";
 import { useTransactions } from "@/hooks/useTransactions";
 import { toast } from "sonner";
 import PageTransition from "@/components/PageTransition";
+import { DepositDialog, WithdrawDialog, TransferDialog } from "@/components/wallet/WalletActionDialogs";
 
 const WalletReal = () => {
   const navigate = useNavigate();
