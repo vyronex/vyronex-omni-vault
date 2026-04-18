@@ -171,24 +171,37 @@ const WalletReal = () => {
               </div>
             ) : transactions && transactions.length > 0 ? (
               <div className="space-y-3">
-                {transactions.map((tx) => (
-                  <div key={tx.id} className="data-row">
-                    <div>
-                      <p className="font-semibold">{tx.tx_type}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(tx.created_at).toLocaleString()}
-                      </p>
+                {transactions.map((tx) => {
+                  const statusStyles: Record<string, string> = {
+                    confirmed: "bg-[hsl(var(--vnx-green))]/15 text-[hsl(var(--vnx-green))] border-[hsl(var(--vnx-green))]/30",
+                    pending: "bg-[hsl(var(--vnx-gold))]/15 text-[hsl(var(--vnx-gold))] border-[hsl(var(--vnx-gold))]/30",
+                    failed: "bg-destructive/15 text-destructive border-destructive/30",
+                  };
+                  const typeBadge: Record<string, string> = {
+                    deposit: "text-[hsl(var(--vnx-green))]",
+                    withdraw: "text-destructive",
+                    transfer: "text-accent",
+                  };
+                  const sign = tx.tx_type === "deposit" ? "+" : tx.tx_type === "withdraw" ? "−" : "";
+                  return (
+                    <div key={tx.id} className="data-row">
+                      <div>
+                        <p className={`font-semibold capitalize ${typeBadge[tx.tx_type] || ""}`}>{tx.tx_type}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(tx.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold font-mono">
+                          {sign}{Number(tx.amount).toFixed(4)} {tx.token_symbol}
+                        </p>
+                        <span className={`inline-block mt-1 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border ${statusStyles[tx.status] || "bg-muted/30 text-muted-foreground border-border/40"}`}>
+                          {tx.status}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        {Number(tx.amount).toFixed(4)} {tx.token_symbol}
-                      </p>
-                      <p className={`text-sm font-medium ${tx.status === 'confirmed' ? 'text-[hsl(var(--vnx-green))]' : 'text-[hsl(var(--vnx-gold))]'}`}>
-                        {tx.status}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-12 text-muted-foreground">
