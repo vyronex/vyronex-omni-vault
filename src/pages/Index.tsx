@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Navigation from "@/components/Navigation";
 import LivePricesTable from "@/components/LivePricesTable";
 import TradingModes from "@/components/TradingModes";
@@ -1019,7 +1020,165 @@ console.log(price); // 0.000542`}</code>
           </div>
         </section>
 
-        {/* ═══ FAQ ═══ */}
+        {/* ═══ SECURITY & TRUST ═══ */}
+        <section className="py-24 relative">
+          <div className="section-container">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-14">
+                <span className="section-badge">Security & Trust</span>
+                <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
+                  Audited. Insured. <span className="text-gradient">Protected.</span>
+                </h2>
+                <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+                  Independently audited by leading firms and backed by a $100M insurance fund.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-4 gap-4 mb-10">
+                {[
+                  { value: "$100M", label: "Insurance Fund", sub: "User asset protection" },
+                  { value: "95%", label: "Cold Storage", sub: "Offline asset reserves" },
+                  { value: "AES-256", label: "Encryption", sub: "Bank-grade security" },
+                  { value: "24/7", label: "Monitoring", sub: "Real-time threat detection" },
+                ].map((item, i) => (
+                  <div key={i} className="p-6 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all text-center">
+                    <p className="text-3xl font-bold text-gradient mb-1" style={{ fontFamily: "'Space Grotesk'" }}>{item.value}</p>
+                    <p className="text-sm font-bold mb-1">{item.label}</p>
+                    <p className="text-xs text-muted-foreground">{item.sub}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="p-8 rounded-3xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/20">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">Audited by</p>
+                    <h3 className="text-xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>Industry-leading security partners</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {["CertiK", "Hacken", "PeckShield", "SlowMist"].map((firm) => (
+                      <span key={firm} className="px-5 py-2.5 rounded-full bg-card border border-border/40 text-sm font-bold tracking-wide">
+                        {firm}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { label: "KYC/AML", value: "Compliant" },
+                    { label: "GDPR", value: "Certified" },
+                    { label: "SOC 2", value: "Type II" },
+                    { label: "ISO 27001", value: "Certified" },
+                  ].map((c, i) => (
+                    <div key={i} className="p-3 rounded-xl bg-background/50 border border-border/30 text-center">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{c.label}</p>
+                      <p className="text-sm font-bold mt-1">{c.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ TESTIMONIALS ═══ */}
+        <section className="py-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
+          <div className="section-container relative">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-14">
+                <span className="section-badge">Testimonials</span>
+                <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
+                  Loved by <span className="text-gradient">traders worldwide.</span>
+                </h2>
+                <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+                  Join 50,000+ users building their portfolios on VyronexVNX.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-5 mb-10">
+                {[
+                  { quote: "Best multi-chain experience I've used. Swaps are fast, fees are tiny, and the staking returns are unbeatable.", name: "Marcus T.", role: "DeFi Trader", rating: "5.0" },
+                  { quote: "VNX staking has been a game-changer. I'm earning passive income daily and the platform feels rock-solid.", name: "Sofia R.", role: "Long-term Holder", rating: "5.0" },
+                  { quote: "The futures dashboard rivals top centralized exchanges. Deep liquidity and zero downtime — exactly what I need.", name: "Kenji A.", role: "Futures Trader", rating: "4.9" },
+                ].map((t, i) => (
+                  <div key={i} className="p-7 rounded-3xl bg-card border border-border/40 shadow-card hover-border-glow transition-all flex flex-col">
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary">★ {t.rating}</span>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wider">Verified User</span>
+                    </div>
+                    <p className="text-sm leading-relaxed mb-6 flex-1">"{t.quote}"</p>
+                    <div className="pt-4 border-t border-border/30">
+                      <p className="font-bold text-sm">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.role}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { value: "50K+", label: "Active Users" },
+                  { value: "4.9/5", label: "Avg Rating" },
+                  { value: "$2.5B+", label: "Volume Traded" },
+                  { value: "120+", label: "Countries" },
+                ].map((s, i) => (
+                  <div key={i} className="text-center p-5 rounded-2xl bg-card border border-border/40">
+                    <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>{s.value}</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ ROADMAP TIMELINE ═══ */}
+        <section className="py-24 relative">
+          <div className="section-container">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-14">
+                <span className="section-badge">Roadmap</span>
+                <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
+                  The road <span className="text-gradient">ahead.</span>
+                </h2>
+                <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+                  Quarterly milestones shaping the future of VyronexVNX.
+                </p>
+              </div>
+
+              <div className="relative">
+                <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/40 via-primary/20 to-transparent md:-translate-x-1/2" />
+                <div className="space-y-10">
+                  {[
+                    { quarter: "Q1 2025", title: "Multi-Chain Expansion", desc: "Launch native support for Solana, Fantom, and Tron with cross-chain bridging.", status: "Shipped", statusColor: "text-[hsl(var(--vnx-green))] bg-[hsl(var(--vnx-green))]/10" },
+                    { quarter: "Q2 2025", title: "Futures & Margin Trading", desc: "Perpetual futures with up to 100x leverage and isolated/cross margin modes.", status: "In Progress", statusColor: "text-primary bg-primary/10" },
+                    { quarter: "Q3 2025", title: "Mobile App Release", desc: "Native iOS and Android apps with biometric security and push notifications.", status: "Upcoming", statusColor: "text-accent bg-accent/10" },
+                    { quarter: "Q4 2025", title: "VNX Governance DAO", desc: "On-chain governance for VNX holders to vote on listings, fees, and protocol upgrades.", status: "Planned", statusColor: "text-muted-foreground bg-muted/30" },
+                    { quarter: "Q1 2026", title: "Institutional Suite", desc: "OTC desk, prime brokerage tools, and custody solutions for institutional clients.", status: "Planned", statusColor: "text-muted-foreground bg-muted/30" },
+                  ].map((item, i) => (
+                    <div key={i} className={`relative flex flex-col md:flex-row gap-6 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}>
+                      <div className="absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-primary shadow-glow md:-translate-x-1/2 mt-2" />
+                      <div className={`pl-12 md:pl-0 md:w-1/2 ${i % 2 === 0 ? "md:pr-12 md:text-right" : "md:pl-12"}`}>
+                        <div className="p-6 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all w-full">
+                          <div className={`flex items-center gap-2 mb-3 ${i % 2 === 0 ? "md:justify-end" : ""}`}>
+                            <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary">{item.quarter}</span>
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${item.statusColor}`}>{item.status}</span>
+                          </div>
+                          <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "'Space Grotesk'" }}>{item.title}</h3>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                        </div>
+                      </div>
+                      <div className="hidden md:block md:w-1/2" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ FAQ — Accordion ═══ */}
         <section className="py-24 relative">
           <div className="section-container">
             <div className="max-w-3xl mx-auto">
@@ -1028,22 +1187,35 @@ console.log(price); // 0.000542`}</code>
                 <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
                   Common <span className="text-gradient">questions.</span>
                 </h2>
+                <p className="text-muted-foreground mt-3 max-w-lg mx-auto">
+                  Everything you need to know about trading, security, and rewards.
+                </p>
               </div>
-              <div className="space-y-3">
+              <Accordion type="single" collapsible className="space-y-3">
                 {[
-                  { q: "What is VNX token?", a: "VNX is the native utility token used for trading fees, staking rewards, and governance." },
-                  { q: "Which chains are supported?", a: "Ethereum, BNB Chain, Tron, Bitcoin, Fantom, and Solana." },
-                  { q: "How do I start trading?", a: "Connect your wallet, deposit funds, and start trading with our intuitive interface." },
-                  { q: "What are the trading fees?", a: "0.1% standard, with discounts for VNX holders." },
-                  { q: "Is my money safe?", a: "Yes — cold storage, 2FA, AES-256 encryption, and $100M insurance fund." },
-                  { q: "How do staking rewards work?", a: "Stake VNX to earn up to 12.5% APR. Rewards distributed daily." },
+                  { q: "What is VNX token?", a: "VNX is the native utility token of the VyronexVNX ecosystem, used for trading fee discounts, staking rewards, and on-chain governance. Holders earn passive income and participate in protocol decisions." },
+                  { q: "Which blockchains are supported?", a: "We support six major networks: Ethereum, BNB Chain, Tron, Bitcoin, Fantom, and Solana — with seamless cross-chain swaps and unified balance tracking." },
+                  { q: "How do I start trading?", a: "Create an account with email or Google, verify your identity, deposit funds via crypto or fiat on-ramp, and start trading immediately. The whole process takes under 5 minutes." },
+                  { q: "What are the trading fees?", a: "Standard taker fees are 0.1%, with maker rebates available. VNX holders receive tiered discounts up to 50% off based on holdings." },
+                  { q: "Is my money safe?", a: "Yes. 95% of user assets are held in cold storage, all communications use AES-256 encryption, and we maintain a $100M insurance fund. Independent audits by CertiK, Hacken, and PeckShield." },
+                  { q: "How do staking rewards work?", a: "Stake VNX with flexible (12.5% APR) or fixed-term (up to 24.8% APR) options. Rewards are calculated continuously and distributed daily directly to your wallet." },
+                  { q: "Can I withdraw at any time?", a: "Flexible staking and spot balances can be withdrawn instantly. Fixed-term stakes unlock at the end of the lock period. There are no withdrawal fees beyond standard network gas." },
+                  { q: "Do you offer customer support?", a: "Yes — 24/7 live chat, email, and a comprehensive help center. Premium VNX tier members receive dedicated account managers." },
                 ].map((faq, i) => (
-                  <div key={i} className="p-6 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all">
-                    <h3 className="font-bold text-sm mb-2" style={{ fontFamily: "'Space Grotesk'" }}>{faq.q}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
-                  </div>
+                  <AccordionItem
+                    key={i}
+                    value={`item-${i}`}
+                    className="rounded-2xl bg-card border border-border/40 px-6 hover-border-glow transition-all"
+                  >
+                    <AccordionTrigger className="text-left font-bold text-sm hover:no-underline" style={{ fontFamily: "'Space Grotesk'" }}>
+                      {faq.q}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-sm text-muted-foreground leading-relaxed">
+                      {faq.a}
+                    </AccordionContent>
+                  </AccordionItem>
                 ))}
-              </div>
+              </Accordion>
             </div>
           </div>
         </section>
