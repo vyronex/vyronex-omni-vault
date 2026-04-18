@@ -21,6 +21,7 @@ interface TradingPair {
 const SpotTrading = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  useTradeNotifications();
   const [tradingPairs, setTradingPairs] = useState<TradingPair[]>([]);
   const [selectedPair, setSelectedPair] = useState<string>("");
 
