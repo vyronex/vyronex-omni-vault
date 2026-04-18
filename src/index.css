@@ -280,6 +280,38 @@
     margin-right: auto !important;
   }
 
+  /* ═══ GLOBAL SECTION CENTERING ═══
+     Center all section content by default. Excludes footer, tables, forms,
+     and explicit opt-out (.no-center) to keep data-heavy layouts intact. */
+  main section,
+  body > div > section,
+  body > section {
+    text-align: center;
+  }
+  /* Center flex rows (buttons, pills, badges) unless explicitly aligned */
+  main section :where(.flex):not(.justify-start):not(.justify-end):not(.justify-between):not(.justify-around):not(.flex-col):not(.no-center-flex),
+  body > div > section :where(.flex):not(.justify-start):not(.justify-end):not(.justify-between):not(.justify-around):not(.flex-col):not(.no-center-flex) {
+    justify-content: center;
+  }
+  /* Re-allow left alignment inside data-heavy components */
+  section :is(table, thead, tbody, tr, td, th),
+  section :is(form, label, input, textarea, select),
+  section .no-center,
+  section .no-center * {
+    text-align: left;
+  }
+  section :is(table, thead, tbody, tr, td, th) .flex,
+  section .no-center .flex {
+    justify-content: flex-start;
+  }
+  /* Footer always left-aligned */
+  footer, footer * {
+    text-align: left !important;
+  }
+  footer .flex {
+    justify-content: flex-start;
+  }
+
   .card-modern {
     @apply p-6 md:p-8 rounded-2xl bg-card border border-border/40 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-elevated hover:border-primary/20;
   }
