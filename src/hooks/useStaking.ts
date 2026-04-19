@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useEffect } from "react";
 
 export interface StakingPool {
   id: string;
@@ -84,8 +85,50 @@ export const useStaking = () => {
       return (data ?? []) as StakingRecord[];
     },
     enabled: !!user,
-    refetchInterval: 15000,
+    refetchInterval: 60000, // safety net; realtime drives most updates
   });
+
+  // ─── Realtime subscription on staking_records ───────────────────────
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`staking-records-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "staking_records",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          queryClient.invalidateQueries({ queryKey: ["staking", user.id] });
+
+          // Surface stake completions across tabs
+          if (
+            payload.eventType === "UPDATE" &&
+            (payload.new as StakingRecord).status === "completed" &&
+            (payload.old as StakingRecord)?.status === "active"
+          ) {
+            const rec = payload.new as StakingRecord;
+            toast.success(
+              `Stake completed: ${Number(rec.amount).toFixed(2)} VNX returned`,
+            );
+            queryClient.invalidateQueries({ queryKey: ["balances"] });
+          }
+
+          // New stake created in another tab
+          if (payload.eventType === "INSERT") {
+            queryClient.invalidateQueries({ queryKey: ["balances"] });
+          }
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
 
   const activeStakes = records.filter(r => r.status === "active");
   const totalStaked = activeStakes.reduce((sum, r) => sum + Number(r.amount), 0);
