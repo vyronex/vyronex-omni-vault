@@ -4,6 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import StatsCard from "@/components/StatsCard";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -38,6 +48,7 @@ const Stake = () => {
 
   const [stakeAmount, setStakeAmount] = useState("");
   const [unstakeId, setUnstakeId] = useState<string>("");
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedPoolId, setSelectedPoolId] = useState(STAKING_POOLS[0].id);
   const [calcAmount, setCalcAmount] = useState("100000");
   const [calcPoolId, setCalcPoolId] = useState(STAKING_POOLS[1].id);
@@ -82,15 +93,25 @@ const Stake = () => {
   };
 
   const unstakeRecord = activeStakes.find(r => r.id === unstakeId);
+  const unstakeAccrued = unstakeRecord ? calculateAccruedRewards(unstakeRecord) : 0;
+  const unstakePrincipal = unstakeRecord ? Number(unstakeRecord.amount) : 0;
+  const unstakeTotal = unstakePrincipal + unstakeAccrued;
+  const unstakeUnlocked = unstakeRecord ? isUnlocked(unstakeRecord) : false;
 
-  const handleUnstake = async () => {
+  const requestUnstake = () => {
     if (!unstakeId) {
       toast.error("Select a stake to unstake");
       return;
     }
+    setConfirmOpen(true);
+  };
+
+  const confirmUnstake = async () => {
+    if (!unstakeId) return;
     try {
       await unstake.mutateAsync(unstakeId);
       setUnstakeId("");
+      setConfirmOpen(false);
     } catch { /* handled */ }
   };
 
@@ -294,12 +315,12 @@ const Stake = () => {
                     )}
 
                     <Button
-                      onClick={handleUnstake}
+                      onClick={requestUnstake}
                       disabled={unstake.isPending || !unstakeId}
                       variant="outline"
                       className="w-full rounded-xl active-press h-12"
                     >
-                      {unstake.isPending ? "Processing..." : "Unstake & Withdraw"}
+                      {unstake.isPending ? "Processing..." : "Review & Unstake"}
                     </Button>
                   </TabsContent>
                 </Tabs>
@@ -540,6 +561,75 @@ const Stake = () => {
           </div>
         </div>
         <Footer />
+
+        {/* Unstake confirmation */}
+        <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+          <AlertDialogContent className="rounded-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                Confirm Unstake
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {unstakeUnlocked
+                  ? "Your principal and all accrued rewards will be returned to your VNX balance."
+                  : "This stake is still locked. You may incur penalties or be unable to unstake until the unlock date."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            {unstakeRecord && (
+              <div className="my-2 p-4 rounded-xl bg-muted/30 space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Pool</span>
+                  <span className="font-semibold">
+                    {unstakeRecord.apr}% APR ·{" "}
+                    {unstakeRecord.lock_period_days === 0 ? "Flexible" : `${unstakeRecord.lock_period_days}d`}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Principal</span>
+                  <span className="font-mono font-semibold">{unstakePrincipal.toFixed(4)} VNX</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Accrued rewards</span>
+                  <span className="font-mono font-semibold text-[hsl(var(--vnx-green))]">
+                    +{unstakeAccrued.toFixed(4)} VNX
+                  </span>
+                </div>
+                <div className="border-t border-border/40 pt-2 flex justify-between">
+                  <span className="font-semibold">Total returned</span>
+                  <span className="font-mono font-bold text-base">{unstakeTotal.toFixed(4)} VNX</span>
+                </div>
+                {priceUsd > 0 && (
+                  <p className="text-xs text-muted-foreground text-right">
+                    ≈ ${(unstakeTotal * priceUsd).toFixed(2)}
+                  </p>
+                )}
+                <div className="pt-1">
+                  <span
+                    className={`inline-block text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border ${
+                      unstakeUnlocked
+                        ? "bg-[hsl(var(--vnx-green))]/15 text-[hsl(var(--vnx-green))] border-[hsl(var(--vnx-green))]/30"
+                        : "bg-[hsl(var(--vnx-gold))]/15 text-[hsl(var(--vnx-gold))] border-[hsl(var(--vnx-gold))]/30"
+                    }`}
+                  >
+                    {unstakeUnlocked ? "Unlocked" : `Locked · ${formatTimeLeft(unstakeRecord.end_date)}`}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <AlertDialogFooter>
+              <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={confirmUnstake}
+                disabled={unstake.isPending}
+                className="rounded-xl gradient-primary"
+              >
+                {unstake.isPending ? "Processing..." : "Confirm Unstake"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </PageTransition>
   );
