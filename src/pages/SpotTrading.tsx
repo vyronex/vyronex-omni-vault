@@ -5,6 +5,7 @@ import OrderBook from "@/components/OrderBook";
 import OrderForm from "@/components/OrderForm";
 import TradeHistory from "@/components/TradeHistory";
 import PriceChart from "@/components/PriceChart";
+import OpenOrdersPanel from "@/components/OpenOrdersPanel";
 import { useAuth } from "@/hooks/useAuth";
 import { useTradeNotifications } from "@/hooks/useTradeNotifications";
 import { Button } from "@/components/ui/button";
