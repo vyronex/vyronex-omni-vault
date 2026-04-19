@@ -9,6 +9,8 @@ import { useTradeNotifications } from "@/hooks/useTradeNotifications";
 import { useAuth } from "@/hooks/useAuth";
 
 const Trade = () => {
+  const { user } = useAuth();
+  useTradeNotifications();
   const [coins, setCoins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
