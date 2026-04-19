@@ -50,6 +50,42 @@ export const useWallets = () => {
     enabled: !!user,
   });
 
+  // Realtime: balances + wallets sync across tabs
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`wallets-balances-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "balances",
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["balances", user.id] });
+        },
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "wallets",
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["wallets", user.id] });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, queryClient]);
+
   const addWallet = useMutation({
     mutationFn: async ({
       chain,
