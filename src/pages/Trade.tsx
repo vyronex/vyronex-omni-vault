@@ -4,6 +4,9 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { fetchCoinGeckoData } from "@/hooks/useCoinGecko";
 import PageTransition from "@/components/PageTransition";
+import OpenOrdersPanel from "@/components/OpenOrdersPanel";
+import { useTradeNotifications } from "@/hooks/useTradeNotifications";
+import { useAuth } from "@/hooks/useAuth";
 
 const Trade = () => {
   const [coins, setCoins] = useState<any[]>([]);
