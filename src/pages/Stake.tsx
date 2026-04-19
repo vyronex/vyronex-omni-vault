@@ -94,14 +94,26 @@ const Stake = () => {
 
   const unstakeRecord = activeStakes.find(r => r.id === unstakeId);
 
-  const handleUnstake = async () => {
+  const unstakeRecord = activeStakes.find(r => r.id === unstakeId);
+  const unstakeAccrued = unstakeRecord ? calculateAccruedRewards(unstakeRecord) : 0;
+  const unstakePrincipal = unstakeRecord ? Number(unstakeRecord.amount) : 0;
+  const unstakeTotal = unstakePrincipal + unstakeAccrued;
+  const unstakeUnlocked = unstakeRecord ? isUnlocked(unstakeRecord) : false;
+
+  const requestUnstake = () => {
     if (!unstakeId) {
       toast.error("Select a stake to unstake");
       return;
     }
+    setConfirmOpen(true);
+  };
+
+  const confirmUnstake = async () => {
+    if (!unstakeId) return;
     try {
       await unstake.mutateAsync(unstakeId);
       setUnstakeId("");
+      setConfirmOpen(false);
     } catch { /* handled */ }
   };
 
