@@ -48,6 +48,7 @@ const Stake = () => {
 
   const [stakeAmount, setStakeAmount] = useState("");
   const [unstakeId, setUnstakeId] = useState<string>("");
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedPoolId, setSelectedPoolId] = useState(STAKING_POOLS[0].id);
   const [calcAmount, setCalcAmount] = useState("100000");
   const [calcPoolId, setCalcPoolId] = useState(STAKING_POOLS[1].id);
