@@ -213,23 +213,47 @@ export const useWalletActions = () => {
       });
       if (debitError) throw debitError;
 
-      // Note: crediting recipient via RPC is blocked by the auth.uid() check
-      // in update_balance. We record a pending internal-transfer transaction
-      // for the sender; the recipient credit is processed off-chain by service role.
+      // Insert pending sender-side transfer record
       const wallet = await ensurePrimaryWallet();
-      const { error: txError } = await supabase.from("transactions").insert({
-        user_id: user.id,
-        wallet_id: wallet.id,
-        tx_hash: `internal-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
-        tx_type: "transfer",
-        from_address: user.id,
-        to_address: recipient.id,
-        token_symbol: symbol,
-        amount: parsed.data.amount,
-        chain: "internal",
-        status: "pending",
-      });
+      const { data: txRow, error: txError } = await supabase
+        .from("transactions")
+        .insert({
+          user_id: user.id,
+          wallet_id: wallet.id,
+          tx_hash: `internal-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+          tx_type: "transfer",
+          from_address: user.id,
+          to_address: recipient.id,
+          token_symbol: symbol,
+          amount: parsed.data.amount,
+          chain: "internal",
+          status: "pending",
+        })
+        .select("id")
+        .single();
       if (txError) throw txError;
+
+      // Credit recipient via service-role edge function (atomic settlement)
+      const { error: fnError } = await supabase.functions.invoke(
+        "process-internal-transfer",
+        {
+          body: {
+            recipient_id: recipient.id,
+            token_symbol: symbol,
+            amount: parsed.data.amount,
+            tx_id: txRow.id,
+          },
+        },
+      );
+      if (fnError) {
+        // Rollback: refund sender if recipient credit failed
+        await supabase.rpc("update_balance", {
+          p_user_id: user.id,
+          p_token_symbol: symbol,
+          p_amount: Math.abs(parsed.data.amount),
+        });
+        throw new Error(`Transfer failed: ${fnError.message}`);
+      }
 
       return { recipient: recipient.username };
     },
