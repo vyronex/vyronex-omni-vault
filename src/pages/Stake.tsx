@@ -93,8 +93,6 @@ const Stake = () => {
   };
 
   const unstakeRecord = activeStakes.find(r => r.id === unstakeId);
-
-  const unstakeRecord = activeStakes.find(r => r.id === unstakeId);
   const unstakeAccrued = unstakeRecord ? calculateAccruedRewards(unstakeRecord) : 0;
   const unstakePrincipal = unstakeRecord ? Number(unstakeRecord.amount) : 0;
   const unstakeTotal = unstakePrincipal + unstakeAccrued;
