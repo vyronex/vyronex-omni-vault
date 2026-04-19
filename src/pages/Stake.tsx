@@ -315,12 +315,12 @@ const Stake = () => {
                     )}
 
                     <Button
-                      onClick={handleUnstake}
+                      onClick={requestUnstake}
                       disabled={unstake.isPending || !unstakeId}
                       variant="outline"
                       className="w-full rounded-xl active-press h-12"
                     >
-                      {unstake.isPending ? "Processing..." : "Unstake & Withdraw"}
+                      {unstake.isPending ? "Processing..." : "Review & Unstake"}
                     </Button>
                   </TabsContent>
                 </Tabs>
