@@ -3,8 +3,13 @@ import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDerivatives, useDerivativesExchanges } from "@/hooks/useCoinGecko";
 import PageTransition from "@/components/PageTransition";
+import OpenOrdersPanel from "@/components/OpenOrdersPanel";
+import { useTradeNotifications } from "@/hooks/useTradeNotifications";
+import { useAuth } from "@/hooks/useAuth";
 
 const Futures = () => {
+  const { user } = useAuth();
+  useTradeNotifications();
   const { data: derivatives, isLoading } = useDerivatives();
   const { data: exchanges } = useDerivativesExchanges();
 
@@ -129,6 +134,13 @@ const Futures = () => {
               </table>
             </div>
           </div>
+
+          {/* Open Orders */}
+          {user && (
+            <div className="mt-8 animate-slide-up stagger-3">
+              <OpenOrdersPanel />
+            </div>
+          )}
         </div>
       </div>
       <Footer />

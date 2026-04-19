@@ -4,8 +4,13 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { fetchCoinGeckoData } from "@/hooks/useCoinGecko";
 import PageTransition from "@/components/PageTransition";
+import OpenOrdersPanel from "@/components/OpenOrdersPanel";
+import { useTradeNotifications } from "@/hooks/useTradeNotifications";
+import { useAuth } from "@/hooks/useAuth";
 
 const Trade = () => {
+  const { user } = useAuth();
+  useTradeNotifications();
   const [coins, setCoins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -187,8 +192,14 @@ const Trade = () => {
                   )}
                 </tbody>
               </table>
+          {/* Open Orders (signed-in users only) */}
+          {user && (
+            <div className="mt-8 animate-slide-up stagger-5">
+              <OpenOrdersPanel />
             </div>
-          </div>
+          )}
+        </div>
+      </div>
         </div>
       </div>
 

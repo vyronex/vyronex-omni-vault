@@ -5,6 +5,7 @@ import OrderBook from "@/components/OrderBook";
 import OrderForm from "@/components/OrderForm";
 import TradeHistory from "@/components/TradeHistory";
 import PriceChart from "@/components/PriceChart";
+import OpenOrdersPanel from "@/components/OpenOrdersPanel";
 import { useAuth } from "@/hooks/useAuth";
 import { useTradeNotifications } from "@/hooks/useTradeNotifications";
 import { Button } from "@/components/ui/button";
@@ -126,10 +127,11 @@ const SpotTrading = () => {
               </div>
             </div>
 
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-5">
               <div className="rounded-2xl bg-card border border-border/40 shadow-card overflow-hidden">
                 <TradeHistory tradingPairId={selectedPair} />
               </div>
+              <OpenOrdersPanel tradingPairId={selectedPair} compact />
             </div>
           </div>
         )}
