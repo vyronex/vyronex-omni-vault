@@ -192,8 +192,14 @@ const Trade = () => {
                   )}
                 </tbody>
               </table>
+          {/* Open Orders (signed-in users only) */}
+          {user && (
+            <div className="mt-8 animate-slide-up stagger-5">
+              <OpenOrdersPanel />
             </div>
-          </div>
+          )}
+        </div>
+      </div>
         </div>
       </div>
 
