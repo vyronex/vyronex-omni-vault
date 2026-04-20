@@ -16,7 +16,7 @@ const WalletReal = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { data: vnxPrice } = useVNXPrice();
-  const { wallets, balances, loading: walletsLoading } = useWallets();
+  const { wallets, balances, loading: walletsLoading, flashedBalanceIds } = useWallets();
   const { transactions, loading: transactionsLoading, flashedIds } = useTransactions();
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
