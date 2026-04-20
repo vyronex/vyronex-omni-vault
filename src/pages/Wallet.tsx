@@ -135,7 +135,7 @@ const WalletReal = () => {
                 {balances.map((balance, i) => (
                   <div
                     key={balance.id}
-                    className="data-row hover-scale-subtle"
+                    className={`data-row hover-scale-subtle ${flashedBalanceIds.has(balance.id) ? "row-flash" : ""}`}
                     style={{ animationDelay: `${i * 50}ms` }}
                   >
                     <div className="flex items-center gap-4">
