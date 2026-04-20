@@ -184,7 +184,7 @@ const WalletReal = () => {
                   };
                   const sign = tx.tx_type === "deposit" ? "+" : tx.tx_type === "withdraw" ? "−" : "";
                   return (
-                    <div key={tx.id} className="data-row">
+                    <div key={tx.id} className={`data-row ${flashedIds.has(tx.id) ? "row-flash" : ""}`}>
                       <div>
                         <p className={`font-semibold capitalize ${typeBadge[tx.tx_type] || ""}`}>{tx.tx_type}</p>
                         <p className="text-xs text-muted-foreground">
