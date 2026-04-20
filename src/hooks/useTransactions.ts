@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface Transaction {
@@ -18,6 +18,22 @@ interface Transaction {
 export const useTransactions = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [flashedIds, setFlashedIds] = useState<Set<string>>(new Set());
+
+  const flashRow = (id: string) => {
+    setFlashedIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+    setTimeout(() => {
+      setFlashedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }, 1800);
+  };
 
   const { data: transactions, isLoading } = useQuery({
     queryKey: ["transactions", user?.id],
@@ -35,7 +51,7 @@ export const useTransactions = () => {
     enabled: !!user,
   });
 
-  // Realtime: live transactions sync + status change toasts
+  // Realtime: live transactions sync + status change toasts + row flash
   useEffect(() => {
     if (!user) return;
     const channel = supabase
@@ -51,11 +67,13 @@ export const useTransactions = () => {
         (payload) => {
           queryClient.invalidateQueries({ queryKey: ["transactions", user.id] });
 
+          const next = (payload.new ?? null) as Transaction | null;
+          if (next?.id) flashRow(next.id);
+
           // Surface status transitions across tabs
           if (payload.eventType === "UPDATE") {
-            const next = payload.new as Transaction;
             const prev = payload.old as Transaction | null;
-            if (prev?.status !== next.status) {
+            if (next && prev?.status !== next.status) {
               if (next.status === "confirmed") {
                 toast.success(
                   `${next.tx_type} confirmed — ${Number(next.amount).toFixed(4)} ${next.token_symbol}`,
@@ -76,5 +94,5 @@ export const useTransactions = () => {
     };
   }, [user, queryClient]);
 
-  return { transactions, loading: isLoading };
+  return { transactions, loading: isLoading, flashedIds };
 };
