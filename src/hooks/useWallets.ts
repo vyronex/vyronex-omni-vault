@@ -144,5 +144,6 @@ export const useWallets = () => {
     balances,
     loading: walletsLoading || balancesLoading,
     addWallet,
+    flashedBalanceIds,
   };
 };
