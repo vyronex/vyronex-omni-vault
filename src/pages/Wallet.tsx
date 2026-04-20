@@ -17,7 +17,7 @@ const WalletReal = () => {
   const { user, loading: authLoading } = useAuth();
   const { data: vnxPrice } = useVNXPrice();
   const { wallets, balances, loading: walletsLoading } = useWallets();
-  const { transactions, loading: transactionsLoading } = useTransactions();
+  const { transactions, loading: transactionsLoading, flashedIds } = useTransactions();
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
@@ -184,7 +184,7 @@ const WalletReal = () => {
                   };
                   const sign = tx.tx_type === "deposit" ? "+" : tx.tx_type === "withdraw" ? "−" : "";
                   return (
-                    <div key={tx.id} className="data-row">
+                    <div key={tx.id} className={`data-row ${flashedIds.has(tx.id) ? "row-flash" : ""}`}>
                       <div>
                         <p className={`font-semibold capitalize ${typeBadge[tx.tx_type] || ""}`}>{tx.tx_type}</p>
                         <p className="text-xs text-muted-foreground">
