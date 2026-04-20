@@ -16,7 +16,7 @@ const WalletReal = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { data: vnxPrice } = useVNXPrice();
-  const { wallets, balances, loading: walletsLoading } = useWallets();
+  const { wallets, balances, loading: walletsLoading, flashedBalanceIds } = useWallets();
   const { transactions, loading: transactionsLoading, flashedIds } = useTransactions();
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
@@ -135,7 +135,7 @@ const WalletReal = () => {
                 {balances.map((balance, i) => (
                   <div
                     key={balance.id}
-                    className="data-row hover-scale-subtle"
+                    className={`data-row hover-scale-subtle ${flashedBalanceIds.has(balance.id) ? "row-flash" : ""}`}
                     style={{ animationDelay: `${i * 50}ms` }}
                   >
                     <div className="flex items-center gap-4">

@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Wallet {
   id: string;
@@ -20,6 +20,22 @@ interface Balance {
 export const useWallets = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [flashedBalanceIds, setFlashedBalanceIds] = useState<Set<string>>(new Set());
+
+  const flashBalance = (id: string) => {
+    setFlashedBalanceIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+    setTimeout(() => {
+      setFlashedBalanceIds((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }, 1800);
+  };
 
   const { data: wallets, isLoading: walletsLoading } = useQuery({
     queryKey: ["wallets", user?.id],
@@ -63,8 +79,16 @@ export const useWallets = () => {
           table: "balances",
           filter: `user_id=eq.${user.id}`,
         },
-        () => {
+        (payload) => {
           queryClient.invalidateQueries({ queryKey: ["balances", user.id] });
+          const next = (payload.new ?? null) as Balance | null;
+          const prev = (payload.old ?? null) as Balance | null;
+          if (next?.id) {
+            // Only flash if balance value actually changed (or it's a new row)
+            if (!prev || Number(prev.balance) !== Number(next.balance)) {
+              flashBalance(next.id);
+            }
+          }
         },
       )
       .on(
@@ -120,5 +144,6 @@ export const useWallets = () => {
     balances,
     loading: walletsLoading || balancesLoading,
     addWallet,
+    flashedBalanceIds,
   };
 };
