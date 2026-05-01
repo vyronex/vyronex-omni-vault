@@ -212,6 +212,7 @@ const Wallet = () => {
                         isPrimary={!!w.is_primary}
                         onChain={onChainByChain.get(w.chain)}
                         loading={onChainLoading}
+                        prices={chainPrices}
                         onSetPrimary={() => setPrimary.mutate(w.id)}
                       />
                     ))}
