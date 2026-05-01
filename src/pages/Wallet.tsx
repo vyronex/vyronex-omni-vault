@@ -11,6 +11,7 @@ import { useWallets } from "@/hooks/useWallets";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useOnChainBalances, type OnChainBalance } from "@/hooks/useOnChainBalances";
 import { useSetPrimaryWallet } from "@/hooks/useSetPrimaryWallet";
+import { useChainPrices } from "@/hooks/useChainPrices";
 import { toast } from "sonner";
 import PageTransition from "@/components/PageTransition";
 import { DepositDialog, WithdrawDialog, TransferDialog } from "@/components/wallet/WalletActionDialogs";
