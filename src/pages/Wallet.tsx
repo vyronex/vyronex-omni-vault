@@ -11,6 +11,7 @@ import { useWallets } from "@/hooks/useWallets";
 import { useTransactions } from "@/hooks/useTransactions";
 import { useOnChainBalances, type OnChainBalance } from "@/hooks/useOnChainBalances";
 import { useSetPrimaryWallet } from "@/hooks/useSetPrimaryWallet";
+import { useChainPrices } from "@/hooks/useChainPrices";
 import { toast } from "sonner";
 import PageTransition from "@/components/PageTransition";
 import { DepositDialog, WithdrawDialog, TransferDialog } from "@/components/wallet/WalletActionDialogs";
@@ -25,6 +26,7 @@ const Wallet = () => {
   const { wallets, balances, loading: walletsLoading, flashedBalanceIds } = useWallets();
   const { transactions, loading: transactionsLoading, flashedIds } = useTransactions();
   const setPrimary = useSetPrimaryWallet();
+  const { data: chainPrices } = useChainPrices();
 
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
@@ -210,6 +212,7 @@ const Wallet = () => {
                         isPrimary={!!w.is_primary}
                         onChain={onChainByChain.get(w.chain)}
                         loading={onChainLoading}
+                        prices={chainPrices}
                         onSetPrimary={() => setPrimary.mutate(w.id)}
                       />
                     ))}
