@@ -52,6 +52,7 @@ const explorerUrl = (chain: string, address: string): string | null => {
 };
 
 export const ChainAccountCard = ({
+  walletId,
   chain,
   address,
   isPrimary,
@@ -59,8 +60,12 @@ export const ChainAccountCard = ({
   loading,
   prices,
   onSetPrimary,
+  onUpdateAddress,
 }: ChainAccountCardProps) => {
   const [qrOpen, setQrOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editValue, setEditValue] = useState("");
+  const [saving, setSaving] = useState(false);
   const isPending = address.startsWith("pending");
   const shortAddress = address.length > 16
     ? `${address.slice(0, 6)}...${address.slice(-6)}`
