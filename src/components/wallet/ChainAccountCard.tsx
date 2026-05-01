@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import type { OnChainBalance } from "@/hooks/useOnChainBalances";
+import type { ChainPrices } from "@/hooks/useChainPrices";
 
 interface ChainAccountCardProps {
   chain: string;
