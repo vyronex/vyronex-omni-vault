@@ -96,25 +96,43 @@ export const ChainAccountCard = ({
           )}
         </div>
 
+        {/* Chain total USD */}
+        {!isPending && !loading && chainTotal > 0 && (
+          <div className="mb-3 pb-2 border-b border-border/30 flex items-baseline justify-between">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Total Value</p>
+            <p className="text-sm font-bold text-primary font-mono">${chainTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+          </div>
+        )}
+
         {/* Native balance */}
-        <div className="flex items-baseline justify-between mb-3">
+        <div className="flex items-baseline justify-between mb-1">
           <p className="text-[11px] text-muted-foreground uppercase tracking-wider">{onChain?.native.symbol ?? CHAIN_BADGE[chain]}</p>
-          <p className="text-lg font-bold font-mono">
-            {loading
-              ? "…"
-              : isPending
-                ? "—"
-                : nativeBalance.toLocaleString(undefined, { maximumFractionDigits: 6 })}
-          </p>
+          <div className="text-right">
+            <p className="text-lg font-bold font-mono">
+              {loading
+                ? "…"
+                : isPending
+                  ? "—"
+                  : nativeBalance.toLocaleString(undefined, { maximumFractionDigits: 6 })}
+            </p>
+            {!isPending && !loading && nativeUsd > 0 && (
+              <p className="text-[10px] text-muted-foreground font-mono">${nativeUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+            )}
+          </div>
         </div>
 
         {/* Token balances if any */}
         {tokens.length > 0 && (
           <div className="space-y-1 mb-3 pb-3 border-b border-border/30">
-            {tokens.map((t) => (
+            {tokens.map((t, idx) => (
               <div key={t.address} className="flex justify-between text-xs">
                 <span className="text-muted-foreground">{t.symbol}</span>
-                <span className="font-mono">{t.balance.toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
+                <div className="text-right">
+                  <span className="font-mono">{t.balance.toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>
+                  {tokenUsds[idx] > 0 && (
+                    <p className="text-[10px] text-muted-foreground font-mono">${tokenUsds[idx].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  )}
+                </div>
               </div>
             ))}
           </div>
