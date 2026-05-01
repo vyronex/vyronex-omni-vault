@@ -44,6 +44,7 @@ export const ChainAccountCard = ({
   isPrimary,
   onChain,
   loading,
+  prices,
   onSetPrimary,
 }: ChainAccountCardProps) => {
   const [qrOpen, setQrOpen] = useState(false);
