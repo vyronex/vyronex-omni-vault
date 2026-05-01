@@ -12,6 +12,7 @@ interface ChainAccountCardProps {
   isPrimary: boolean;
   onChain?: OnChainBalance;
   loading?: boolean;
+  prices?: ChainPrices;
   onSetPrimary?: () => void;
 }
 
