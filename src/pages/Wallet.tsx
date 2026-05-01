@@ -207,6 +207,7 @@ const Wallet = () => {
                     {sortedWallets.map((w) => (
                       <ChainAccountCard
                         key={w.id}
+                        walletId={w.id}
                         chain={w.chain}
                         address={w.address}
                         isPrimary={!!w.is_primary}
@@ -214,6 +215,9 @@ const Wallet = () => {
                         loading={onChainLoading}
                         prices={chainPrices}
                         onSetPrimary={() => setPrimary.mutate(w.id)}
+                        onUpdateAddress={async (id, addr) => {
+                          await updateWalletAddress.mutateAsync({ walletId: id, address: addr });
+                        }}
                       />
                     ))}
                   </div>
