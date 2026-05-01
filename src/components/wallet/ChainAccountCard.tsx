@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import type { OnChainBalance } from "@/hooks/useOnChainBalances";
 import type { ChainPrices } from "@/hooks/useChainPrices";
 
+// Basic address format validators per chain family
+const ADDRESS_REGEX: Record<string, RegExp> = {
+  "BNB Chain": /^0x[a-fA-F0-9]{40}$/,
+  Ethereum: /^0x[a-fA-F0-9]{40}$/,
+  Fantom: /^0x[a-fA-F0-9]{40}$/,
+  Bitcoin: /^(1|3|bc1)[a-zA-HJ-NP-Z0-9]{25,62}$/,
+  Solana: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
+  Tron: /^T[a-zA-Z0-9]{33}$/,
+};
+
 interface ChainAccountCardProps {
+  walletId: string;
   chain: string;
   address: string;
   isPrimary: boolean;
@@ -14,6 +26,7 @@ interface ChainAccountCardProps {
   loading?: boolean;
   prices?: ChainPrices;
   onSetPrimary?: () => void;
+  onUpdateAddress?: (walletId: string, address: string) => Promise<void>;
 }
 
 const CHAIN_BADGE: Record<string, string> = {
