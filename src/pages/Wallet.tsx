@@ -26,6 +26,7 @@ const Wallet = () => {
   const { wallets, balances, loading: walletsLoading, flashedBalanceIds } = useWallets();
   const { transactions, loading: transactionsLoading, flashedIds } = useTransactions();
   const setPrimary = useSetPrimaryWallet();
+  const { data: chainPrices } = useChainPrices();
 
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
