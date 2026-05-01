@@ -139,11 +139,30 @@ export const useWallets = () => {
     },
   });
 
+  const updateWalletAddress = useMutation({
+    mutationFn: async ({ walletId, address }: { walletId: string; address: string }) => {
+      const { data, error } = await supabase
+        .from("wallets")
+        .update({ address })
+        .eq("id", walletId)
+        .eq("user_id", user?.id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["wallets", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["onchain-balances"] });
+    },
+  });
+
   return {
     wallets,
     balances,
     loading: walletsLoading || balancesLoading,
     addWallet,
+    updateWalletAddress,
     flashedBalanceIds,
   };
 };
