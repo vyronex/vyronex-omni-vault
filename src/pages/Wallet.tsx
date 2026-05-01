@@ -23,7 +23,7 @@ const Wallet = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { data: vnxPrice } = useVNXPrice();
-  const { wallets, balances, loading: walletsLoading, flashedBalanceIds } = useWallets();
+  const { wallets, balances, loading: walletsLoading, flashedBalanceIds, updateWalletAddress } = useWallets();
   const { transactions, loading: transactionsLoading, flashedIds } = useTransactions();
   const setPrimary = useSetPrimaryWallet();
   const { data: chainPrices } = useChainPrices();
@@ -207,6 +207,7 @@ const Wallet = () => {
                     {sortedWallets.map((w) => (
                       <ChainAccountCard
                         key={w.id}
+                        walletId={w.id}
                         chain={w.chain}
                         address={w.address}
                         isPrimary={!!w.is_primary}
@@ -214,6 +215,9 @@ const Wallet = () => {
                         loading={onChainLoading}
                         prices={chainPrices}
                         onSetPrimary={() => setPrimary.mutate(w.id)}
+                        onUpdateAddress={async (id, addr) => {
+                          await updateWalletAddress.mutateAsync({ walletId: id, address: addr });
+                        }}
                       />
                     ))}
                   </div>

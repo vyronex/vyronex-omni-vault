@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import type { OnChainBalance } from "@/hooks/useOnChainBalances";
 import type { ChainPrices } from "@/hooks/useChainPrices";
 
+// Basic address format validators per chain family
+const ADDRESS_REGEX: Record<string, RegExp> = {
+  "BNB Chain": /^0x[a-fA-F0-9]{40}$/,
+  Ethereum: /^0x[a-fA-F0-9]{40}$/,
+  Fantom: /^0x[a-fA-F0-9]{40}$/,
+  Bitcoin: /^(1|3|bc1)[a-zA-HJ-NP-Z0-9]{25,62}$/,
+  Solana: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
+  Tron: /^T[a-zA-Z0-9]{33}$/,
+};
+
 interface ChainAccountCardProps {
+  walletId: string;
   chain: string;
   address: string;
   isPrimary: boolean;
@@ -14,6 +26,7 @@ interface ChainAccountCardProps {
   loading?: boolean;
   prices?: ChainPrices;
   onSetPrimary?: () => void;
+  onUpdateAddress?: (walletId: string, address: string) => Promise<void>;
 }
 
 const CHAIN_BADGE: Record<string, string> = {
@@ -39,6 +52,7 @@ const explorerUrl = (chain: string, address: string): string | null => {
 };
 
 export const ChainAccountCard = ({
+  walletId,
   chain,
   address,
   isPrimary,
@@ -46,8 +60,12 @@ export const ChainAccountCard = ({
   loading,
   prices,
   onSetPrimary,
+  onUpdateAddress,
 }: ChainAccountCardProps) => {
   const [qrOpen, setQrOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editValue, setEditValue] = useState("");
+  const [saving, setSaving] = useState(false);
   const isPending = address.startsWith("pending");
   const shortAddress = address.length > 16
     ? `${address.slice(0, 6)}...${address.slice(-6)}`
@@ -138,15 +156,27 @@ export const ChainAccountCard = ({
           </div>
         )}
 
-        {/* Address row */}
-        <button
-          onClick={copyAddress}
-          className="w-full text-left mb-3 px-2 py-1.5 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-          title={address}
-        >
-          <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Address</p>
-          <p className="font-mono text-xs truncate">{shortAddress}</p>
-        </button>
+        {/* Address row — tap to copy, long-press hint for edit */}
+        <div className="flex items-center gap-1 mb-3">
+          <button
+            onClick={copyAddress}
+            className="flex-1 text-left px-2 py-1.5 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors min-w-0"
+            title={address}
+          >
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Address</p>
+            <p className="font-mono text-xs truncate">{shortAddress}</p>
+          </button>
+          {onUpdateAddress && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className="text-[10px] h-8 px-2 shrink-0 text-muted-foreground hover:text-primary"
+              onClick={() => { setEditValue(isPending ? "" : address); setEditOpen(true); }}
+            >
+              Edit
+            </Button>
+          )}
+        </div>
 
         {/* Actions */}
         <div className="grid grid-cols-3 gap-2">
@@ -167,6 +197,60 @@ export const ChainAccountCard = ({
           )}
         </div>
       </div>
+
+      {/* Edit address dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Set {chain} Address</DialogTitle>
+            <DialogDescription>
+              Paste your {chain} wallet address. On-chain balances will be read from this address.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input
+              placeholder={`Enter ${CHAIN_BADGE[chain] ?? chain} address`}
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              className="font-mono text-xs"
+              autoFocus
+            />
+            {editValue && ADDRESS_REGEX[chain] && !ADDRESS_REGEX[chain].test(editValue.trim()) && (
+              <p className="text-xs text-destructive">
+                Invalid {chain} address format
+              </p>
+            )}
+            <Button
+              className="w-full"
+              disabled={
+                saving ||
+                !editValue.trim() ||
+                (ADDRESS_REGEX[chain] ? !ADDRESS_REGEX[chain].test(editValue.trim()) : false)
+              }
+              onClick={async () => {
+                if (!onUpdateAddress) return;
+                const trimmed = editValue.trim();
+                if (ADDRESS_REGEX[chain] && !ADDRESS_REGEX[chain].test(trimmed)) {
+                  toast.error(`Invalid ${chain} address format`);
+                  return;
+                }
+                setSaving(true);
+                try {
+                  await onUpdateAddress(walletId, trimmed);
+                  toast.success(`${chain} address updated`);
+                  setEditOpen(false);
+                } catch (err: any) {
+                  toast.error(err?.message ?? "Failed to update address");
+                } finally {
+                  setSaving(false);
+                }
+              }}
+            >
+              {saving ? "Saving…" : "Save Address"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Receive QR dialog */}
       <Dialog open={qrOpen} onOpenChange={setQrOpen}>
