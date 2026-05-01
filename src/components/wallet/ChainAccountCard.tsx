@@ -68,6 +68,12 @@ export const ChainAccountCard = ({
   const tokens = onChain?.tokens.filter((t) => t.balance > 0) ?? [];
   const nativeBalance = onChain?.native.balance ?? 0;
 
+  // USD calculations
+  const nativeSymbol = onChain?.native.symbol ?? CHAIN_BADGE[chain] ?? "";
+  const nativeUsd = prices ? prices.usdValue(nativeSymbol, nativeBalance) : 0;
+  const tokenUsds = tokens.map((t) => prices ? prices.usdValue(t.symbol, t.balance) : 0);
+  const chainTotal = nativeUsd + tokenUsds.reduce((s, v) => s + v, 0);
+
   return (
     <>
       <div className={`p-4 rounded-2xl border bg-card transition-all ${isPrimary ? "border-primary/60 shadow-glow" : "border-border/40"}`}>
