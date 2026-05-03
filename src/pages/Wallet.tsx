@@ -309,6 +309,11 @@ const Wallet = () => {
                               <p className="font-semibold font-mono">
                                 {sign}{Number(tx.amount).toFixed(4)} {tx.token_symbol}
                               </p>
+                              {chainPrices && (
+                                <p className="text-[10px] text-muted-foreground font-mono">
+                                  ≈ ${chainPrices.usdValue(tx.token_symbol, Number(tx.amount)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </p>
+                              )}
                               <span className={`inline-block mt-1 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full border ${statusStyles[tx.status] || "bg-muted/30 text-muted-foreground border-border/40"}`}>
                                 {tx.status}
                               </span>
