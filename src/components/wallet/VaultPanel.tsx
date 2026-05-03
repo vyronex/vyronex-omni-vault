@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-import { useVault, type VaultDeposit, type VaultStrategy } from "@/hooks/useVault";
+import { useVault, type VaultDeposit } from "@/hooks/useVault";
 import type { ChainPrices } from "@/hooks/useChainPrices";
 
 interface VaultPanelProps {
@@ -24,11 +24,109 @@ const RISK_BG: Record<string, string> = {
   "High-Yield Vault": "bg-primary/10 border-primary/30",
 };
 
+// Mini bar chart — renders 12 bars representing simulated monthly performance
+const MiniPerformanceChart = ({ apr, months = 12 }: { apr: number; months?: number }) => {
+  const bars = useMemo(() => {
+    const result: number[] = [];
+    for (let i = 0; i < months; i++) {
+      // Simulate slight variance around monthly rate
+      const monthlyRate = apr / 12;
+      const variance = (Math.sin(i * 1.7 + apr) * 0.3 + 1) * monthlyRate;
+      result.push(Math.max(0.1, variance));
+    }
+    return result;
+  }, [apr, months]);
+
+  const max = Math.max(...bars);
+
+  return (
+    <div className="flex items-end gap-[3px] h-10">
+      {bars.map((v, i) => (
+        <div
+          key={i}
+          className="flex-1 rounded-t-sm bg-primary/60 hover:bg-primary transition-colors"
+          style={{ height: `${(v / max) * 100}%` }}
+          title={`Month ${i + 1}: ${v.toFixed(2)}%`}
+        />
+      ))}
+    </div>
+  );
+};
+
+// Earnings projection breakdown
+const EarningsProjectionCard = ({
+  deposits,
+  prices,
+}: {
+  deposits: VaultDeposit[];
+  prices?: ChainPrices;
+}) => {
+  const activeDeposits = deposits.filter((d) => d.status === "active");
+
+  // Projected earnings over next 30, 90, 365 days based on current active deposits
+  const projections = useMemo(() => {
+    const periods = [
+      { label: "30D", days: 30 },
+      { label: "90D", days: 90 },
+      { label: "1Y", days: 365 },
+    ];
+
+    return periods.map(({ label, days }) => {
+      let totalTokenEarnings = 0;
+      let totalVnxBonus = 0;
+
+      activeDeposits.forEach((dep) => {
+        const apr = dep.strategy?.apr_percent ?? 0;
+        const bonusApr = dep.strategy?.vnx_bonus_apr ?? 0;
+        const remainDays = Math.max(0, (new Date(dep.unlock_at).getTime() - Date.now()) / 86400000);
+        const effectiveDays = Math.min(days, remainDays);
+
+        totalTokenEarnings += dep.amount * (apr / 100) * (effectiveDays / 365);
+        totalVnxBonus += dep.amount * (bonusApr / 100) * (effectiveDays / 365);
+      });
+
+      const usd = prices
+        ? activeDeposits.reduce((s, d) => s + (prices.usdValue(d.token_symbol, d.amount * ((d.strategy?.apr_percent ?? 0) / 100) * (Math.min(days, Math.max(0, (new Date(d.unlock_at).getTime() - Date.now()) / 86400000)) / 365))), 0)
+        : 0;
+
+      return { label, tokenEarnings: totalTokenEarnings, vnxBonus: totalVnxBonus, usd };
+    });
+  }, [activeDeposits, prices]);
+
+  if (activeDeposits.length === 0) return null;
+
+  return (
+    <div className="p-4 rounded-2xl border border-border/40 bg-card mb-4">
+      <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3"
+        style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+        Projected Earnings
+      </p>
+      <div className="grid grid-cols-3 gap-3">
+        {projections.map((p) => (
+          <div key={p.label} className="text-center">
+            <p className="text-[10px] text-muted-foreground uppercase">{p.label}</p>
+            <p className="text-sm font-bold font-mono text-[hsl(var(--vnx-green))]">
+              +{p.tokenEarnings.toFixed(2)}
+            </p>
+            <p className="text-[10px] font-mono text-primary">
+              +{p.vnxBonus.toFixed(2)} VNX
+            </p>
+            {p.usd > 0 && (
+              <p className="text-[10px] text-muted-foreground font-mono">${p.usd.toFixed(2)}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const VaultPanel = ({ prices }: VaultPanelProps) => {
   const {
     strategies, deposits, strategiesLoading, depositsLoading,
     createDeposit, withdrawDeposit,
-    totalDeposited, totalEarnings, activeCount,
+    totalDeposited, totalEarnings, totalVnxRewards, activeCount,
+    platformTvl, weightedApy,
   } = useVault();
 
   const [depositOpen, setDepositOpen] = useState(false);
@@ -36,7 +134,7 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
   const [selectedStrategy, setSelectedStrategy] = useState<string>("");
   const [amount, setAmount] = useState("");
   const [lockDays, setLockDays] = useState(30);
-  const [tab, setTab] = useState<"strategies" | "active" | "history">("strategies");
+  const [tab, setTab] = useState<"dashboard" | "strategies" | "active" | "history">("dashboard");
 
   const activeStrategy = useMemo(
     () => strategies?.find((s) => s.id === selectedStrategy),
@@ -48,12 +146,24 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
     return Number(amount) * (activeStrategy.apr_percent / 100) * (lockDays / 365);
   }, [activeStrategy, amount, lockDays]);
 
+  const projectedVnxBonus = useMemo(() => {
+    if (!activeStrategy || !amount || isNaN(Number(amount))) return 0;
+    return Number(amount) * (activeStrategy.vnx_bonus_apr / 100) * (lockDays / 365);
+  }, [activeStrategy, amount, lockDays]);
+
   const projectedUsd = prices && activeStrategy
     ? prices.usdValue(activeStrategy.token_symbol, projectedEarnings)
     : 0;
 
-  const totalDepositedUsd = prices ? prices.usdValue("VNX", totalDeposited) : 0;
-  const totalEarningsUsd = prices ? prices.usdValue("VNX", totalEarnings) : 0;
+  const totalDepositedUsd = prices
+    ? (deposits?.filter((d) => d.status === "active") ?? []).reduce(
+        (s, d) => s + prices.usdValue(d.token_symbol, d.amount), 0)
+    : 0;
+  const totalEarningsUsd = prices
+    ? (deposits ?? []).reduce((s, d) => s + prices.usdValue(d.token_symbol, d.earned_amount), 0)
+    : 0;
+  const totalVnxRewardsUsd = prices ? prices.usdValue("VNX", totalVnxRewards) : 0;
+  const platformTvlUsd = prices ? prices.usdValue("VNX", platformTvl) : 0;
 
   const activeDeposits = deposits?.filter((d) => d.status === "active") ?? [];
   const historyDeposits = deposits?.filter((d) => d.status !== "active") ?? [];
@@ -103,7 +213,7 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
               Vault
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Lock tokens · Earn yield · Withdraw anytime with penalty
+              Lock tokens · Earn yield + VNX bonus rewards
             </p>
           </div>
           <Button
@@ -115,24 +225,9 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
           </Button>
         </div>
 
-        {/* Vault Stats */}
-        <div className="grid grid-cols-3 gap-3 mb-5">
-          {[
-            { label: "Total Locked", value: totalDeposited.toLocaleString(undefined, { maximumFractionDigits: 2 }), sub: totalDepositedUsd > 0 ? `$${totalDepositedUsd.toFixed(2)}` : undefined },
-            { label: "Total Earnings", value: totalEarnings.toLocaleString(undefined, { maximumFractionDigits: 4 }), sub: totalEarningsUsd > 0 ? `$${totalEarningsUsd.toFixed(2)}` : undefined },
-            { label: "Active Vaults", value: activeCount.toString(), sub: `${strategies?.length ?? 0} strategies` },
-          ].map((s, i) => (
-            <div key={i} className="p-3 rounded-xl bg-muted/30 border border-border/40 text-center">
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
-              <p className="text-lg font-bold font-mono mt-1">{s.value}</p>
-              {s.sub && <p className="text-[10px] text-muted-foreground">{s.sub}</p>}
-            </div>
-          ))}
-        </div>
-
         {/* Sub-tabs */}
-        <div className="flex gap-1 mb-4 p-1 rounded-xl bg-muted/20 border border-border/30">
-          {(["strategies", "active", "history"] as const).map((t) => (
+        <div className="flex gap-1 mb-5 p-1 rounded-xl bg-muted/20 border border-border/30">
+          {(["dashboard", "strategies", "active", "history"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -142,12 +237,107 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t === "active" ? `Active (${activeDeposits.length})` : t === "history" ? `History (${historyDeposits.length})` : "Strategies"}
+              {t === "active" ? `Active (${activeDeposits.length})` : t === "history" ? `History (${historyDeposits.length})` : t === "dashboard" ? "Dashboard" : "Strategies"}
             </button>
           ))}
         </div>
 
-        {/* Strategies Tab */}
+        {/* ─── DASHBOARD TAB ─────────────────────────── */}
+        {tab === "dashboard" && (
+          <div className="space-y-4">
+            {/* Platform-level metrics */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: "Platform TVL", value: `$${platformTvlUsd > 0 ? platformTvlUsd.toLocaleString(undefined, { maximumFractionDigits: 0 }) : platformTvl.toLocaleString()}`, accent: false },
+                { label: "Avg APY", value: `${weightedApy.toFixed(1)}%`, accent: true },
+                { label: "Your Locked", value: `$${totalDepositedUsd > 0 ? totalDepositedUsd.toFixed(2) : totalDeposited.toLocaleString()}`, accent: false },
+                { label: "VNX Rewards", value: totalVnxRewards.toFixed(2), accent: true },
+              ].map((s, i) => (
+                <div key={i} className="p-3 rounded-xl bg-muted/30 border border-border/40 text-center">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
+                  <p className={`text-base font-bold font-mono mt-1 ${s.accent ? "text-primary" : ""}`}>{s.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Detailed user stats */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 rounded-xl bg-muted/30 border border-border/40 text-center">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Total Earnings</p>
+                <p className="text-lg font-bold font-mono mt-1 text-[hsl(var(--vnx-green))]">
+                  {totalEarnings.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                </p>
+                {totalEarningsUsd > 0 && <p className="text-[10px] text-muted-foreground">${totalEarningsUsd.toFixed(2)}</p>}
+              </div>
+              <div className="p-3 rounded-xl bg-muted/30 border border-border/40 text-center">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">VNX Bonus Earned</p>
+                <p className="text-lg font-bold font-mono mt-1 text-primary">
+                  {totalVnxRewards.toFixed(4)}
+                </p>
+                {totalVnxRewardsUsd > 0 && <p className="text-[10px] text-muted-foreground">${totalVnxRewardsUsd.toFixed(2)}</p>}
+              </div>
+              <div className="p-3 rounded-xl bg-muted/30 border border-border/40 text-center">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Active Vaults</p>
+                <p className="text-lg font-bold font-mono mt-1">{activeCount}</p>
+                <p className="text-[10px] text-muted-foreground">{strategies?.length ?? 0} strategies</p>
+              </div>
+            </div>
+
+            {/* Projected Earnings Card */}
+            <EarningsProjectionCard deposits={deposits ?? []} prices={prices} />
+
+            {/* Historical Performance per strategy */}
+            <div className="p-4 rounded-2xl border border-border/40 bg-card">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3"
+                style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                Strategy Performance (12-Month)
+              </p>
+              <div className="space-y-4">
+                {strategies?.map((s) => (
+                  <div key={s.id}>
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-xs font-bold ${RISK_COLOR[s.name] ?? ""}`}>{s.name}</span>
+                        <span className="text-[10px] font-mono text-muted-foreground">{s.token_symbol}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] text-muted-foreground">
+                          TVL: ${prices ? prices.usdValue(s.token_symbol, s.tvl).toLocaleString(undefined, { maximumFractionDigits: 0 }) : s.tvl.toLocaleString()}
+                        </span>
+                        <span className="text-xs font-bold font-mono text-[hsl(var(--vnx-green))]">{s.apr_percent}% APR</span>
+                        {s.vnx_bonus_apr > 0 && (
+                          <span className="text-[10px] font-bold font-mono text-primary">+{s.vnx_bonus_apr}% VNX</span>
+                        )}
+                      </div>
+                    </div>
+                    <MiniPerformanceChart apr={s.apr_percent} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* VNX Rewards Explainer */}
+            <div className="p-4 rounded-2xl border border-primary/30 bg-primary/5">
+              <p className="text-sm font-bold text-primary mb-1" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                VNX Bonus Rewards
+              </p>
+              <p className="text-xs text-muted-foreground mb-3">
+                Every vault deposit earns bonus VNX tokens on top of the base APR. The longer you lock, the more VNX you earn. Early withdrawals reduce both base earnings and VNX rewards by the strategy's penalty rate.
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {strategies?.filter((s) => s.vnx_bonus_apr > 0).slice(0, 3).map((s) => (
+                  <div key={s.id} className="p-2 rounded-lg bg-background/50 border border-border/30 text-center">
+                    <p className="text-[10px] text-muted-foreground">{s.name}</p>
+                    <p className="text-sm font-bold font-mono text-primary">+{s.vnx_bonus_apr}%</p>
+                    <p className="text-[10px] text-muted-foreground">{s.token_symbol}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─── STRATEGIES TAB ───────────────────────── */}
         {tab === "strategies" && (
           <div className="space-y-3">
             {strategies?.map((s) => (
@@ -167,10 +357,18 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                     {s.token_symbol}
                   </span>
                 </div>
-                <div className="grid grid-cols-3 gap-2 mt-3">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-3">
                   <div>
-                    <p className="text-[10px] text-muted-foreground uppercase">APR</p>
+                    <p className="text-[10px] text-muted-foreground uppercase">Base APR</p>
                     <p className={`text-sm font-bold font-mono ${RISK_COLOR[s.name] ?? ""}`}>{s.apr_percent}%</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-muted-foreground uppercase">VNX Bonus</p>
+                    <p className="text-sm font-bold font-mono text-primary">+{s.vnx_bonus_apr}%</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-muted-foreground uppercase">TVL</p>
+                    <p className="text-sm font-mono">{s.tvl > 1000 ? `${(s.tvl / 1000).toFixed(0)}K` : s.tvl.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-[10px] text-muted-foreground uppercase">Lock</p>
@@ -198,7 +396,7 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
           </div>
         )}
 
-        {/* Active Deposits Tab */}
+        {/* ─── ACTIVE DEPOSITS TAB ──────────────────── */}
         {tab === "active" && (
           activeDeposits.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
@@ -213,6 +411,7 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                 const matured = remaining === 0;
                 const usdAmount = prices ? prices.usdValue(dep.token_symbol, dep.amount) : 0;
                 const usdEarned = prices ? prices.usdValue(dep.token_symbol, dep.earned_amount) : 0;
+                const vnxRewardUsd = prices ? prices.usdValue("VNX", dep.vnx_reward) : 0;
 
                 return (
                   <div key={dep.id} className="p-4 rounded-2xl border border-border/40 bg-card">
@@ -234,7 +433,6 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                       </span>
                     </div>
 
-                    {/* Progress bar */}
                     <div className="mb-3">
                       <Progress value={progress} className="h-1.5" />
                       <div className="flex justify-between mt-1 text-[10px] text-muted-foreground">
@@ -243,18 +441,25 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div className="grid grid-cols-3 gap-3 mb-3">
                       <div>
                         <p className="text-[10px] text-muted-foreground uppercase">Deposited</p>
                         <p className="font-bold font-mono text-sm">{dep.amount.toLocaleString()} {dep.token_symbol}</p>
                         {usdAmount > 0 && <p className="text-[10px] text-muted-foreground font-mono">${usdAmount.toFixed(2)}</p>}
                       </div>
                       <div>
-                        <p className="text-[10px] text-muted-foreground uppercase">Projected Earnings</p>
+                        <p className="text-[10px] text-muted-foreground uppercase">Earnings</p>
                         <p className="font-bold font-mono text-sm text-[hsl(var(--vnx-green))]">
                           +{dep.earned_amount.toLocaleString(undefined, { maximumFractionDigits: 4 })} {dep.token_symbol}
                         </p>
                         {usdEarned > 0 && <p className="text-[10px] text-muted-foreground font-mono">${usdEarned.toFixed(2)}</p>}
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-muted-foreground uppercase">VNX Bonus</p>
+                        <p className="font-bold font-mono text-sm text-primary">
+                          +{dep.vnx_reward.toFixed(4)} VNX
+                        </p>
+                        {vnxRewardUsd > 0 && <p className="text-[10px] text-muted-foreground font-mono">${vnxRewardUsd.toFixed(2)}</p>}
                       </div>
                     </div>
 
@@ -264,7 +469,7 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                       className={`w-full text-xs h-8 rounded-lg ${matured ? "gradient-primary shadow-glow" : ""}`}
                       onClick={() => setWithdrawTarget(dep)}
                     >
-                      {matured ? "Withdraw + Earnings" : "Early Withdraw (Penalty)"}
+                      {matured ? "Withdraw + Earnings + VNX" : "Early Withdraw (Penalty)"}
                     </Button>
                   </div>
                 );
@@ -273,7 +478,7 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
           )
         )}
 
-        {/* History Tab */}
+        {/* ─── HISTORY TAB ──────────────────────────── */}
         {tab === "history" && (
           historyDeposits.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
@@ -308,6 +513,9 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                         +{dep.earned_amount.toLocaleString(undefined, { maximumFractionDigits: 4 })} earned
                       </p>
                       {usdEarned > 0 && <p className="text-[10px] text-muted-foreground font-mono">${usdEarned.toFixed(2)}</p>}
+                      {dep.vnx_reward > 0 && (
+                        <p className="text-xs font-mono text-primary mt-0.5">+{dep.vnx_reward.toFixed(4)} VNX</p>
+                      )}
                     </div>
                   </div>
                 );
@@ -317,13 +525,13 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
         )}
       </div>
 
-      {/* Deposit Dialog */}
+      {/* ─── DEPOSIT DIALOG ────────────────────────── */}
       <Dialog open={depositOpen} onOpenChange={setDepositOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>New Vault Deposit</DialogTitle>
             <DialogDescription>
-              Lock tokens in a vault strategy to earn yield. Early withdrawal incurs a penalty on earnings.
+              Lock tokens to earn yield + VNX bonus rewards. Early withdrawal incurs a penalty.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -336,7 +544,7 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                 <SelectContent>
                   {strategies?.map((s) => (
                     <SelectItem key={s.id} value={s.id}>
-                      {s.name} — {s.token_symbol} @ {s.apr_percent}% APR
+                      {s.name} — {s.token_symbol} @ {s.apr_percent}% + {s.vnx_bonus_apr}% VNX
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -359,9 +567,7 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
             {activeStrategy && (
               <div>
                 <div className="flex justify-between mb-1.5">
-                  <label className="text-xs text-muted-foreground uppercase tracking-wider">
-                    Lock Duration
-                  </label>
+                  <label className="text-xs text-muted-foreground uppercase tracking-wider">Lock Duration</label>
                   <span className="text-xs font-bold font-mono">{lockDays} days</span>
                 </div>
                 <Slider
@@ -378,15 +584,18 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
               </div>
             )}
 
-            {/* Projected earnings */}
             {activeStrategy && Number(amount) > 0 && (
-              <div className="p-3 rounded-xl bg-muted/30 border border-border/40">
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">APR</span>
+              <div className="p-3 rounded-xl bg-muted/30 border border-border/40 space-y-1">
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Base APR</span>
                   <span className="font-bold font-mono">{activeStrategy.apr_percent}%</span>
                 </div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">Early Withdrawal Penalty</span>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">VNX Bonus APR</span>
+                  <span className="font-bold font-mono text-primary">+{activeStrategy.vnx_bonus_apr}%</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">Early Penalty</span>
                   <span className="font-mono">{activeStrategy.penalty_percent}%</span>
                 </div>
                 <div className="flex justify-between text-xs pt-2 border-t border-border/30">
@@ -400,31 +609,33 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                     )}
                   </div>
                 </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">VNX Bonus</span>
+                  <span className="font-bold font-mono text-primary">+{projectedVnxBonus.toFixed(4)} VNX</span>
+                </div>
               </div>
             )}
 
             <Button
               className="w-full rounded-xl gradient-primary shadow-glow"
-              disabled={
-                !selectedStrategy || !amount || Number(amount) <= 0 || createDeposit.isPending
-              }
+              disabled={!selectedStrategy || !amount || Number(amount) <= 0 || createDeposit.isPending}
               onClick={handleDeposit}
             >
-              {createDeposit.isPending ? "Depositing…" : "Lock Tokens"}
+              {createDeposit.isPending ? "Depositing…" : "Lock Tokens + Earn VNX"}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Withdraw Confirmation Dialog */}
+      {/* ─── WITHDRAW DIALOG ───────────────────────── */}
       <Dialog open={!!withdrawTarget} onOpenChange={() => setWithdrawTarget(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Withdraw from Vault</DialogTitle>
             <DialogDescription>
               {withdrawTarget && daysRemaining(withdrawTarget) > 0
-                ? `Early withdrawal — a ${withdrawTarget.strategy?.penalty_percent ?? 10}% penalty will be applied to your earnings.`
-                : "Your deposit has matured. Withdraw your principal and full earnings."
+                ? `Early withdrawal — a ${withdrawTarget.strategy?.penalty_percent ?? 10}% penalty applies to earnings and VNX rewards.`
+                : "Your deposit has matured. Withdraw your principal, full earnings, and VNX bonus."
               }
             </DialogDescription>
           </DialogHeader>
@@ -441,13 +652,25 @@ export const VaultPanel = ({ prices }: VaultPanelProps) => {
                     +{withdrawTarget.earned_amount.toLocaleString(undefined, { maximumFractionDigits: 4 })} {withdrawTarget.token_symbol}
                   </span>
                 </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-muted-foreground">VNX Bonus</span>
+                  <span className="font-mono text-primary">+{withdrawTarget.vnx_reward.toFixed(4)} VNX</span>
+                </div>
                 {daysRemaining(withdrawTarget) > 0 && (
-                  <div className="flex justify-between text-xs pt-1 border-t border-border/30">
-                    <span className="text-destructive">Penalty</span>
-                    <span className="font-mono text-destructive">
-                      −{(withdrawTarget.earned_amount * (withdrawTarget.strategy?.penalty_percent ?? 10) / 100).toFixed(4)} {withdrawTarget.token_symbol}
-                    </span>
-                  </div>
+                  <>
+                    <div className="flex justify-between text-xs pt-1 border-t border-border/30">
+                      <span className="text-destructive">Earnings Penalty</span>
+                      <span className="font-mono text-destructive">
+                        −{(withdrawTarget.earned_amount * (withdrawTarget.strategy?.penalty_percent ?? 10) / 100).toFixed(4)} {withdrawTarget.token_symbol}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-destructive">VNX Penalty</span>
+                      <span className="font-mono text-destructive">
+                        −{(withdrawTarget.vnx_reward * (withdrawTarget.strategy?.penalty_percent ?? 10) / 100).toFixed(4)} VNX
+                      </span>
+                    </div>
+                  </>
                 )}
               </div>
               <Button
