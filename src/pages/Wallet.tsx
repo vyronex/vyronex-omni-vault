@@ -232,6 +232,11 @@ const Wallet = () => {
                 </div>
               </TabsContent>
 
+              {/* ─── VAULT: token locking & yield ───────────────────────── */}
+              <TabsContent value="vault" className="mt-0">
+                <VaultPanel prices={chainPrices} />
+              </TabsContent>
+
               {/* ─── CUSTODIAL: VyronexVNX-managed balances ────────────────── */}
               <TabsContent value="custodial" className="mt-0">
                 <div className="data-card">
