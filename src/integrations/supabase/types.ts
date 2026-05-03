@@ -464,6 +464,98 @@ export type Database = {
         }
         Relationships: []
       }
+      vault_deposits: {
+        Row: {
+          amount: number
+          created_at: string
+          earned_amount: number
+          id: string
+          locked_at: string
+          status: string
+          strategy_id: string
+          token_symbol: string
+          unlock_at: string
+          updated_at: string
+          user_id: string
+          withdrawn_at: string | null
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          earned_amount?: number
+          id?: string
+          locked_at?: string
+          status?: string
+          strategy_id: string
+          token_symbol?: string
+          unlock_at: string
+          updated_at?: string
+          user_id: string
+          withdrawn_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          earned_amount?: number
+          id?: string
+          locked_at?: string
+          status?: string
+          strategy_id?: string
+          token_symbol?: string
+          unlock_at?: string
+          updated_at?: string
+          user_id?: string
+          withdrawn_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vault_deposits_strategy_id_fkey"
+            columns: ["strategy_id"]
+            isOneToOne: false
+            referencedRelation: "vault_strategies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vault_strategies: {
+        Row: {
+          apr_percent: number
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          max_lock_days: number
+          min_lock_days: number
+          name: string
+          penalty_percent: number
+          token_symbol: string
+        }
+        Insert: {
+          apr_percent?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_lock_days?: number
+          min_lock_days?: number
+          name: string
+          penalty_percent?: number
+          token_symbol?: string
+        }
+        Update: {
+          apr_percent?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_lock_days?: number
+          min_lock_days?: number
+          name?: string
+          penalty_percent?: number
+          token_symbol?: string
+        }
+        Relationships: []
+      }
       wallets: {
         Row: {
           address: string

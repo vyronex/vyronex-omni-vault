@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import PageTransition from "@/components/PageTransition";
 import { DepositDialog, WithdrawDialog, TransferDialog } from "@/components/wallet/WalletActionDialogs";
 import { ChainAccountCard } from "@/components/wallet/ChainAccountCard";
+import { VaultPanel } from "@/components/wallet/VaultPanel";
 
 const CHAIN_ORDER = ["BNB Chain", "Ethereum", "Fantom", "Bitcoin", "Solana", "Tron"];
 
@@ -176,8 +177,9 @@ const Wallet = () => {
 
             {/* Tabbed Content */}
             <Tabs defaultValue="accounts" className="w-full">
-              <TabsList className="grid grid-cols-3 w-full mb-6 rounded-xl">
+              <TabsList className="grid grid-cols-4 w-full mb-6 rounded-xl">
                 <TabsTrigger value="accounts" className="rounded-lg">Accounts</TabsTrigger>
+                <TabsTrigger value="vault" className="rounded-lg">Vault</TabsTrigger>
                 <TabsTrigger value="custodial" className="rounded-lg">Custodial</TabsTrigger>
                 <TabsTrigger value="activity" className="rounded-lg">Activity</TabsTrigger>
               </TabsList>
@@ -228,6 +230,11 @@ const Wallet = () => {
                     </div>
                   )}
                 </div>
+              </TabsContent>
+
+              {/* ─── VAULT: token locking & yield ───────────────────────── */}
+              <TabsContent value="vault" className="mt-0">
+                <VaultPanel prices={chainPrices} />
               </TabsContent>
 
               {/* ─── CUSTODIAL: VyronexVNX-managed balances ────────────────── */}
