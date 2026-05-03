@@ -13,6 +13,8 @@ export interface VaultStrategy {
   min_lock_days: number;
   max_lock_days: number;
   penalty_percent: number;
+  vnx_bonus_apr: number;
+  tvl: number;
 }
 
 export interface VaultDeposit {
@@ -25,6 +27,7 @@ export interface VaultDeposit {
   unlock_at: string;
   withdrawn_at: string | null;
   earned_amount: number;
+  vnx_reward: number;
   status: string;
   created_at: string;
   strategy?: VaultStrategy;
@@ -34,7 +37,6 @@ export const useVault = () => {
   const { user } = useAuth();
   const qc = useQueryClient();
 
-  // Fetch strategies
   const { data: strategies, isLoading: strategiesLoading } = useQuery({
     queryKey: ["vault-strategies"],
     queryFn: async () => {
@@ -44,11 +46,16 @@ export const useVault = () => {
         .eq("is_active", true)
         .order("apr_percent", { ascending: true });
       if (error) throw error;
-      return data as VaultStrategy[];
+      return (data ?? []).map((d: any) => ({
+        ...d,
+        apr_percent: Number(d.apr_percent),
+        penalty_percent: Number(d.penalty_percent),
+        vnx_bonus_apr: Number(d.vnx_bonus_apr),
+        tvl: Number(d.tvl),
+      })) as VaultStrategy[];
     },
   });
 
-  // Fetch user deposits
   const { data: deposits, isLoading: depositsLoading } = useQuery({
     queryKey: ["vault-deposits", user?.id],
     queryFn: async () => {
@@ -62,13 +69,19 @@ export const useVault = () => {
         ...d,
         amount: Number(d.amount),
         earned_amount: Number(d.earned_amount),
-        strategy: d.vault_strategies as VaultStrategy,
+        vnx_reward: Number(d.vnx_reward),
+        strategy: d.vault_strategies ? {
+          ...d.vault_strategies,
+          apr_percent: Number(d.vault_strategies.apr_percent),
+          penalty_percent: Number(d.vault_strategies.penalty_percent),
+          vnx_bonus_apr: Number(d.vault_strategies.vnx_bonus_apr),
+          tvl: Number(d.vault_strategies.tvl),
+        } : undefined,
       })) as VaultDeposit[];
     },
     enabled: !!user,
   });
 
-  // Realtime subscription for deposits
   useEffect(() => {
     if (!user) return;
     const channel = supabase
@@ -85,16 +98,16 @@ export const useVault = () => {
     return () => { supabase.removeChannel(channel); };
   }, [user, qc]);
 
-  // Create deposit
   const createDeposit = useMutation({
     mutationFn: async (params: { strategyId: string; amount: number; lockDays: number; tokenSymbol: string }) => {
       const unlockAt = new Date();
       unlockAt.setDate(unlockAt.getDate() + params.lockDays);
 
-      // Calculate projected earnings (simple interest)
       const strategy = strategies?.find((s) => s.id === params.strategyId);
       const apr = strategy?.apr_percent ?? 0;
+      const bonusApr = strategy?.vnx_bonus_apr ?? 0;
       const earned = params.amount * (apr / 100) * (params.lockDays / 365);
+      const vnxReward = params.amount * (bonusApr / 100) * (params.lockDays / 365);
 
       const { data, error } = await supabase.from("vault_deposits").insert({
         user_id: user!.id,
@@ -103,6 +116,7 @@ export const useVault = () => {
         token_symbol: params.tokenSymbol,
         unlock_at: unlockAt.toISOString(),
         earned_amount: earned,
+        vnx_reward: vnxReward,
       }).select().single();
 
       if (error) throw error;
@@ -110,26 +124,25 @@ export const useVault = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["vault-deposits", user?.id] });
-      toast.success("Vault deposit created successfully");
+      toast.success("Vault deposit created — VNX bonus rewards activated");
     },
     onError: (err: any) => toast.error(err?.message ?? "Failed to create deposit"),
   });
 
-  // Withdraw deposit
   const withdrawDeposit = useMutation({
     mutationFn: async (depositId: string) => {
       const dep = deposits?.find((d) => d.id === depositId);
       if (!dep) throw new Error("Deposit not found");
 
       const now = new Date();
-      const unlockDate = new Date(dep.unlock_at);
-      const isEarly = now < unlockDate;
+      const isEarly = now < new Date(dep.unlock_at);
 
       let finalEarned = dep.earned_amount;
+      let finalVnxReward = dep.vnx_reward;
       if (isEarly) {
-        const strategy = dep.strategy ?? strategies?.find((s) => s.id === dep.strategy_id);
-        const penalty = strategy?.penalty_percent ?? 10;
+        const penalty = dep.strategy?.penalty_percent ?? 10;
         finalEarned = Math.max(0, finalEarned * (1 - penalty / 100));
+        finalVnxReward = Math.max(0, finalVnxReward * (1 - penalty / 100));
       }
 
       const { error } = await supabase
@@ -138,28 +151,35 @@ export const useVault = () => {
           status: isEarly ? "early_withdrawn" : "withdrawn",
           withdrawn_at: now.toISOString(),
           earned_amount: finalEarned,
+          vnx_reward: finalVnxReward,
         })
         .eq("id", depositId)
         .eq("user_id", user!.id);
 
       if (error) throw error;
-      return { isEarly, finalEarned };
+      return { isEarly, finalEarned, finalVnxReward };
     },
     onSuccess: (result) => {
       qc.invalidateQueries({ queryKey: ["vault-deposits", user?.id] });
       if (result.isEarly) {
-        toast.warning("Early withdrawal — penalty applied to earnings");
+        toast.warning("Early withdrawal — penalty applied to earnings & VNX rewards");
       } else {
-        toast.success("Vault withdrawal completed");
+        toast.success(`Vault withdrawal completed — ${result.finalVnxReward.toFixed(2)} VNX bonus claimed`);
       }
     },
     onError: (err: any) => toast.error(err?.message ?? "Withdrawal failed"),
   });
 
   // Computed stats
-  const totalDeposited = deposits?.filter((d) => d.status === "active").reduce((s, d) => s + d.amount, 0) ?? 0;
+  const activeDeposits = deposits?.filter((d) => d.status === "active") ?? [];
+  const totalDeposited = activeDeposits.reduce((s, d) => s + d.amount, 0);
   const totalEarnings = deposits?.reduce((s, d) => s + d.earned_amount, 0) ?? 0;
-  const activeCount = deposits?.filter((d) => d.status === "active").length ?? 0;
+  const totalVnxRewards = deposits?.reduce((s, d) => s + d.vnx_reward, 0) ?? 0;
+  const activeCount = activeDeposits.length;
+  const platformTvl = strategies?.reduce((s, st) => s + st.tvl, 0) ?? 0;
+  const weightedApy = strategies && strategies.length > 0
+    ? strategies.reduce((s, st) => s + st.apr_percent * st.tvl, 0) / Math.max(platformTvl, 1)
+    : 0;
 
   return {
     strategies,
@@ -170,6 +190,9 @@ export const useVault = () => {
     withdrawDeposit,
     totalDeposited,
     totalEarnings,
+    totalVnxRewards,
     activeCount,
+    platformTvl,
+    weightedApy,
   };
 };

@@ -477,6 +477,7 @@ export type Database = {
           unlock_at: string
           updated_at: string
           user_id: string
+          vnx_reward: number
           withdrawn_at: string | null
         }
         Insert: {
@@ -491,6 +492,7 @@ export type Database = {
           unlock_at: string
           updated_at?: string
           user_id: string
+          vnx_reward?: number
           withdrawn_at?: string | null
         }
         Update: {
@@ -505,6 +507,7 @@ export type Database = {
           unlock_at?: string
           updated_at?: string
           user_id?: string
+          vnx_reward?: number
           withdrawn_at?: string | null
         }
         Relationships: [
@@ -529,6 +532,8 @@ export type Database = {
           name: string
           penalty_percent: number
           token_symbol: string
+          tvl: number
+          vnx_bonus_apr: number
         }
         Insert: {
           apr_percent?: number
@@ -541,6 +546,8 @@ export type Database = {
           name: string
           penalty_percent?: number
           token_symbol?: string
+          tvl?: number
+          vnx_bonus_apr?: number
         }
         Update: {
           apr_percent?: number
@@ -553,6 +560,8 @@ export type Database = {
           name?: string
           penalty_percent?: number
           token_symbol?: string
+          tvl?: number
+          vnx_bonus_apr?: number
         }
         Relationships: []
       }
