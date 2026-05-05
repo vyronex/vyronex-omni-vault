@@ -38,7 +38,6 @@ const Index = () => {
 
         {/* ═══ HERO — Cinematic centered layout ═══ */}
         <section className="relative overflow-hidden min-h-[95vh] flex flex-col items-center justify-center">
-          {/* Animated orb background */}
           <div className="absolute inset-0 pointer-events-none">
             <motion.div
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full"
@@ -61,7 +60,7 @@ const Index = () => {
             >
               <motion.div variants={fadeUp} custom={0}>
                 <span className="inline-block px-5 py-2 rounded-full text-[11px] font-bold tracking-[0.2em] uppercase border border-primary/20 bg-primary/5 text-primary">
-                  Multi-Chain DeFi Protocol
+                  Centralized Crypto Exchange
                 </span>
               </motion.div>
 
@@ -77,7 +76,7 @@ const Index = () => {
               </motion.h1>
 
               <motion.p variants={fadeUp} custom={2} className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed">
-                One platform. Six blockchains. Enterprise-grade security meets permissionless finance.
+                One platform. Six blockchains. Institutional-grade trading infrastructure with insured custody.
               </motion.p>
 
               <motion.div variants={fadeUp} custom={3} className="flex flex-wrap justify-center gap-4 pt-2">
@@ -127,12 +126,44 @@ const Index = () => {
             </motion.div>
           </div>
 
-          {/* Bottom fade line */}
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border/40 to-transparent" />
         </section>
 
+        {/* ═══ VNX LIVE PRICE TICKER ═══ */}
+        <section className="py-4 border-b border-border/20 bg-card/30">
+          <div className="section-container">
+            <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-6 md:gap-12">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center">
+                  <span className="text-[10px] font-bold text-primary-foreground">VNX</span>
+                </div>
+                <div>
+                  <span className="font-bold text-sm" style={{ fontFamily: "'Space Grotesk'" }}>VNX Token</span>
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">Price</p>
+                <p className="font-bold font-mono text-sm">${vnxPrice?.price?.toFixed(6) || '0.000542'}</p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-muted-foreground">24h Change</p>
+                <p className={`font-bold text-sm ${(vnxPrice?.change24h || 0) >= 0 ? 'text-[hsl(var(--vnx-green))]' : 'text-[hsl(var(--vnx-red))]'}`}>
+                  {(vnxPrice?.change24h || 0) >= 0 ? '+' : ''}{vnxPrice?.change24h?.toFixed(2) || '0.00'}%
+                </p>
+              </div>
+              <div className="text-center hidden sm:block">
+                <p className="text-xs text-muted-foreground">24h Volume</p>
+                <p className="font-bold text-sm font-mono">${vnxPrice?.volume24h ? (vnxPrice.volume24h / 1000).toFixed(1) + 'K' : '0'}</p>
+              </div>
+              <Link to="/vnx">
+                <Button variant="outline" size="sm" className="rounded-full text-xs hover-border-glow">View Token</Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {/* ═══ MARQUEE — Scrolling chain logos ═══ */}
-        <section className="py-6 border-y border-border/20 overflow-hidden">
+        <section className="py-6 border-b border-border/20 overflow-hidden">
           <div className="flex animate-[marquee_20s_linear_infinite] gap-12 whitespace-nowrap">
             {[...Array(2)].flatMap((_, dupeIdx) =>
               ["Ethereum", "BNB Chain", "Tron", "Bitcoin", "Fantom", "Solana", "Polygon", "Avalanche"].map((chain, i) => (
@@ -157,13 +188,12 @@ const Index = () => {
               </div>
 
               <div className="grid md:grid-cols-3 gap-4">
-                {/* Tall left card */}
                 <div className="md:row-span-2 p-8 rounded-3xl bg-gradient-to-br from-primary/10 to-primary/[0.02] border border-primary/20 flex flex-col justify-between min-h-[360px] hover-border-glow transition-all group">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">Multi-Chain</p>
-                    <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: "'Space Grotesk'" }}>6 blockchains,<br />one platform.</h3>
+                    <h3 className="text-2xl font-bold mb-3" style={{ fontFamily: "'Space Grotesk'" }}>6 blockchains,<br />one exchange.</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      Seamlessly trade across Ethereum, BNB, Tron, Bitcoin, Fantom, and Solana without switching apps.
+                      Trade across Ethereum, BNB, Tron, Bitcoin, Fantom, and Solana — all from a single, unified account with insured custody.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-6">
@@ -173,33 +203,31 @@ const Index = () => {
                   </div>
                 </div>
 
-                {/* Top right cards */}
                 <div className="p-7 rounded-3xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent mb-3">Security</p>
-                  <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "'Space Grotesk'" }}>Bank-grade protection</h3>
-                  <p className="text-sm text-muted-foreground">AES-256 encryption, cold storage for 95% of assets, and $100M insurance fund.</p>
+                  <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "'Space Grotesk'" }}>Institutional-grade custody</h3>
+                  <p className="text-sm text-muted-foreground">AES-256 encryption, multi-sig cold storage for 95% of assets, and $100M insurance fund.</p>
                 </div>
 
                 <div className="p-7 rounded-3xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--vnx-green))] mb-3">Speed</p>
-                  <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "'Space Grotesk'" }}>Sub-second execution</h3>
-                  <p className="text-sm text-muted-foreground">Real-time market data with less than 50ms latency for instant order execution.</p>
+                  <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "'Space Grotesk'" }}>Sub-millisecond matching</h3>
+                  <p className="text-sm text-muted-foreground">Our matching engine processes 100K+ orders per second with less than 1ms latency.</p>
                 </div>
 
-                {/* Bottom right wide card */}
                 <div className="md:col-span-2 p-7 rounded-3xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--vnx-gold))] mb-3">DeFi Suite</p>
-                  <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "'Space Grotesk'" }}>Stake, Farm, Earn — all in one place</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Earn up to 24.8% APR through staking, liquidity mining, and yield farming with automated strategies.</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--vnx-gold))] mb-3">Trading Suite</p>
+                  <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "'Space Grotesk'" }}>Spot, Futures, Margin — all in one platform</h3>
+                  <p className="text-sm text-muted-foreground mb-4">Advanced order types, up to 100x leverage, and professional charting tools for every trading style.</p>
                   <div className="grid grid-cols-3 gap-3">
                     {[
-                      { label: "Staking", apr: "12.5%" },
-                      { label: "LP Mining", apr: "18.2%" },
-                      { label: "Yield Farm", apr: "24.8%" },
+                      { label: "Spot Trading", fee: "0.1%" },
+                      { label: "Futures", leverage: "100x" },
+                      { label: "Earn Programs", apr: "24.8%" },
                     ].map((e, i) => (
                       <div key={i} className="p-3 rounded-xl bg-background/50 border border-border/30 text-center">
                         <p className="text-xs text-muted-foreground">{e.label}</p>
-                        <p className="text-lg font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>{e.apr}</p>
+                        <p className="text-lg font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>{e.fee || e.leverage || e.apr}</p>
                       </div>
                     ))}
                   </div>
@@ -209,7 +237,73 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══ HOW IT WORKS — Horizontal numbered strip ═══ */}
+        {/* ═══ MATCHING ENGINE & ORDER TYPES ═══ */}
+        <section className="py-24 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] via-transparent to-transparent" />
+          <div className="section-container relative">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-16">
+                <span className="section-badge">Engine</span>
+                <h2 className="mt-4 text-4xl md:text-5xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>
+                  Built for<br />
+                  <span className="text-gradient">serious traders.</span>
+                </h2>
+                <p className="text-muted-foreground mt-3 max-w-lg">Ultra-low-latency matching engine with institutional-grade order types and deep liquidity pools.</p>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-8">
+                {/* Engine Stats */}
+                <div className="p-8 rounded-3xl bg-card border border-border/40 shadow-card">
+                  <h3 className="text-lg font-bold mb-6" style={{ fontFamily: "'Space Grotesk'" }}>Engine Performance</h3>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    {[
+                      { value: "100K+", label: "Orders / Second", sub: "Peak throughput" },
+                      { value: "<1ms", label: "Matching Latency", sub: "Average execution" },
+                      { value: "99.99%", label: "Uptime SLA", sub: "Enterprise guarantee" },
+                      { value: "$500M+", label: "Daily Liquidity", sub: "Across all pairs" },
+                    ].map((s, i) => (
+                      <div key={i} className="p-4 rounded-xl bg-background/50 border border-border/30 text-center">
+                        <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>{s.value}</p>
+                        <p className="text-xs font-bold mt-1">{s.label}</p>
+                        <p className="text-[10px] text-muted-foreground">{s.sub}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-primary/5 to-transparent border border-primary/20">
+                    <p className="text-xs text-muted-foreground">Our proprietary matching engine uses price-time priority with memory-mapped order books, ensuring deterministic execution for every trade.</p>
+                  </div>
+                </div>
+
+                {/* Order Types */}
+                <div className="p-8 rounded-3xl bg-card border border-border/40 shadow-card">
+                  <h3 className="text-lg font-bold mb-6" style={{ fontFamily: "'Space Grotesk'" }}>Advanced Order Types</h3>
+                  <div className="space-y-3">
+                    {[
+                      { type: "Market Order", desc: "Instant execution at the best available price", tag: "Basic" },
+                      { type: "Limit Order", desc: "Set your price — executes when the market reaches it", tag: "Basic" },
+                      { type: "Stop-Loss", desc: "Automatically sell when price drops below your threshold", tag: "Risk Mgmt" },
+                      { type: "OCO (One-Cancels-Other)", desc: "Pair a take-profit and stop-loss — one triggers, the other cancels", tag: "Advanced" },
+                      { type: "Trailing Stop", desc: "Dynamic stop that follows the price by a set percentage", tag: "Advanced" },
+                      { type: "Iceberg Order", desc: "Large orders split into smaller visible chunks to reduce market impact", tag: "Institutional" },
+                    ].map((order, i) => (
+                      <div key={i} className="p-4 rounded-xl bg-background/50 border border-border/30 hover-border-glow transition-all">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="font-bold text-sm">{order.type}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">{order.desc}</p>
+                          </div>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold shrink-0">{order.tag}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ HOW IT WORKS ═══ */}
         <section className="py-20 relative">
           <div className="section-container">
             <div className="max-w-7xl mx-auto">
@@ -220,13 +314,12 @@ const Index = () => {
                 </h2>
               </div>
               <div className="grid md:grid-cols-4 gap-0 relative">
-                {/* Connecting line */}
                 <div className="hidden md:block absolute top-10 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-primary/30 via-primary/20 to-primary/30" />
                 {[
                   { step: "01", title: "Create Account", desc: "Sign up with email and verify your identity" },
-                  { step: "02", title: "Connect Wallet", desc: "Link your crypto wallet or use ours" },
-                  { step: "03", title: "Deposit Funds", desc: "Add crypto or fiat currency" },
-                  { step: "04", title: "Start Trading", desc: "Trade, stake, and earn rewards" },
+                  { step: "02", title: "Deposit Funds", desc: "Add crypto or fiat via bank transfer or card" },
+                  { step: "03", title: "Choose Your Market", desc: "Spot, futures, or margin trading" },
+                  { step: "04", title: "Start Trading", desc: "Execute trades and earn rewards" },
                 ].map((item, i) => (
                   <div key={i} className="text-center px-4 py-6 relative group">
                     <div className="h-20 w-20 mx-auto rounded-full border-2 border-primary/20 bg-card flex items-center justify-center mb-5 group-hover:border-primary/60 group-hover:shadow-glow transition-all">
@@ -273,30 +366,30 @@ const Index = () => {
                 <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
                   Choose your <span className="text-gradient">style.</span>
                 </h2>
-                <p className="text-muted-foreground mt-3 max-w-lg mx-auto">Spot, futures, or margin — trade however you want.</p>
+                <p className="text-muted-foreground mt-3 max-w-lg mx-auto">Spot, futures, or margin — professional tools for every strategy.</p>
               </div>
               <TradingModes />
             </div>
           </div>
         </section>
 
-        {/* ═══ QUICK SWAP — Left-aligned with large text ═══ */}
+        {/* ═══ INSTANT CONVERT ═══ */}
         <section className="py-24 relative">
           <div className="section-container">
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-16 items-center">
                 <div>
-                  <span className="section-badge">Instant</span>
+                  <span className="section-badge">Convert</span>
                   <h2 className="mt-4 text-4xl md:text-5xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>
-                    Swap tokens<br />
-                    <span className="text-gradient">instantly.</span>
+                    Instant<br />
+                    <span className="text-gradient">conversion.</span>
                   </h2>
                   <p className="text-muted-foreground mt-4 text-lg leading-relaxed max-w-md">
-                    Cross-chain swaps with the best rates aggregated from multiple DEXs. Zero slippage on stablecoins.
+                    Convert between 500+ token pairs instantly — no orderbook needed. Best rates guaranteed with zero slippage on stablecoins.
                   </p>
                   <div className="mt-8 grid grid-cols-3 gap-4">
                     {[
-                      { label: "Swap Fee", value: "0.1%" },
+                      { label: "Convert Fee", value: "0.1%" },
                       { label: "Chains", value: "6+" },
                       { label: "Pairs", value: "500+" },
                     ].map((s, i) => (
@@ -315,7 +408,68 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══ TOKENOMICS — Magazine-style split ═══ */}
+        {/* ═══ FIAT GATEWAY ═══ */}
+        <section className="py-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.03] to-transparent" />
+          <div className="section-container relative">
+            <div className="max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                  <span className="section-badge">Fiat</span>
+                  <h2 className="mt-4 text-4xl md:text-5xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>
+                    Buy crypto with<br />
+                    <span className="text-gradient">real money.</span>
+                  </h2>
+                  <p className="text-muted-foreground mt-4 text-lg leading-relaxed max-w-md">
+                    Deposit and withdraw fiat currencies instantly. Multiple payment methods, regulated banking partners, and competitive rates.
+                  </p>
+                  <div className="mt-8 space-y-4">
+                    {[
+                      "Instant deposits via bank transfer, credit/debit card",
+                      "Support for USD, EUR, GBP, AUD, and 15+ currencies",
+                      "Apple Pay and Google Pay integration",
+                      "Same-day withdrawals to your bank account",
+                    ].map((feature, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0" />
+                        <p className="text-sm text-muted-foreground">{feature}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { method: "Bank Transfer", speed: "1-2 hours", fee: "Free", limit: "$1M/day" },
+                    { method: "Credit Card", speed: "Instant", fee: "1.5%", limit: "$50K/day" },
+                    { method: "Apple Pay", speed: "Instant", fee: "1.0%", limit: "$25K/day" },
+                    { method: "Wire Transfer", speed: "1 business day", fee: "0.1%", limit: "Unlimited" },
+                  ].map((m, i) => (
+                    <div key={i} className="p-5 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all">
+                      <p className="font-bold text-sm mb-3" style={{ fontFamily: "'Space Grotesk'" }}>{m.method}</p>
+                      <div className="space-y-1.5">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Speed</span>
+                          <span className="font-semibold">{m.speed}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Fee</span>
+                          <span className="font-semibold text-[hsl(var(--vnx-green))]">{m.fee}</span>
+                        </div>
+                        <div className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">Limit</span>
+                          <span className="font-semibold">{m.limit}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ TOKENOMICS ═══ */}
         <section className="py-24 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.03] to-transparent" />
           <div className="section-container relative">
@@ -361,9 +515,9 @@ const Index = () => {
                   {[
                     { title: "Trading Fee Discounts", desc: "Up to 50% off trading fees", highlight: "50%" },
                     { title: "Staking Rewards", desc: "Earn on staked VNX", highlight: "12.5% APR" },
-                    { title: "Governance Rights", desc: "Vote on platform decisions", highlight: "DAO" },
+                    { title: "VIP Tiers", desc: "Higher VNX = lower fees & priority", highlight: "VIP" },
                     { title: "Premium Features", desc: "Advanced trading tools", highlight: "Pro" },
-                    { title: "Launchpad Access", desc: "Early access to new tokens", highlight: "IDO" },
+                    { title: "Launchpad Access", desc: "Early access to new tokens", highlight: "IEO" },
                     { title: "Fee Burn", desc: "Deflationary mechanism", highlight: "Burn" },
                   ].map((item, i) => (
                     <div key={i} className="p-5 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all group">
@@ -390,7 +544,7 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══ COMPARISON — Horizontal card stack ═══ */}
+        {/* ═══ COMPARISON ═══ */}
         <section className="py-20 relative">
           <div className="section-container">
             <div className="max-w-5xl mx-auto">
@@ -404,15 +558,15 @@ const Index = () => {
                 <div className="grid grid-cols-4 gap-0 text-sm">
                   <div className="p-5 font-bold border-b border-border/40">Feature</div>
                   <div className="p-5 font-bold border-b border-border/40 text-center text-gradient">VyronexVNX</div>
-                  <div className="p-5 font-bold border-b border-border/40 text-center text-muted-foreground">CEX</div>
-                  <div className="p-5 font-bold border-b border-border/40 text-center text-muted-foreground">Other DEX</div>
+                  <div className="p-5 font-bold border-b border-border/40 text-center text-muted-foreground">Other CEX</div>
+                  <div className="p-5 font-bold border-b border-border/40 text-center text-muted-foreground">DEX</div>
                   {[
-                    { feature: "Multi-Chain", vnx: "Yes", cex: "Limited", other: "No" },
-                    { feature: "Self-Custody", vnx: "Yes", cex: "No", other: "Yes" },
-                    { feature: "Low Fees", vnx: "0.1%", cex: "0.2-0.5%", other: "0.3%+" },
-                    { feature: "Staking", vnx: "12.5%", cex: "3-5%", other: "Variable" },
-                    { feature: "Fiat On-Ramp", vnx: "Yes", cex: "Yes", other: "No" },
-                    { feature: "No KYC", vnx: "Optional", cex: "Required", other: "No" },
+                    { feature: "Multi-Chain", vnx: "6 Chains", cex: "Limited", other: "1-2" },
+                    { feature: "Custody", vnx: "Insured", cex: "Basic", other: "Self" },
+                    { feature: "Fees", vnx: "0.1%", cex: "0.2-0.5%", other: "Gas + 0.3%" },
+                    { feature: "Earn Programs", vnx: "24.8%", cex: "3-5%", other: "Variable" },
+                    { feature: "Fiat On-Ramp", vnx: "15+ Currencies", cex: "Limited", other: "None" },
+                    { feature: "Matching Speed", vnx: "<1ms", cex: "5-50ms", other: "Block time" },
                   ].map((row, i) => (
                     <div key={i} className="contents">
                       <div className="p-4 border-b border-border/20 text-muted-foreground">{row.feature}</div>
@@ -427,7 +581,7 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══ SUPPORTED ASSETS — Compact pill grid ═══ */}
+        {/* ═══ SUPPORTED ASSETS ═══ */}
         <section className="py-20 relative">
           <div className="section-container">
             <div className="max-w-6xl mx-auto">
@@ -477,7 +631,7 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══ EARNING SECTION — Three dramatic cards ═══ */}
+        {/* ═══ EARN PROGRAMS ═══ */}
         <section className="py-24 relative">
           <div className="section-container">
             <div className="max-w-6xl mx-auto">
@@ -490,9 +644,9 @@ const Index = () => {
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 {[
-                  { title: "Staking", apr: "12.5%", desc: "Lock VNX and earn daily rewards with flexible or fixed terms", tag: "Popular", tagColor: "bg-primary/10 text-primary" },
-                  { title: "LP Mining", apr: "18.2%", desc: "Provide liquidity to earn a share of trading fees", tag: "High Yield", tagColor: "bg-accent/10 text-accent" },
-                  { title: "Yield Farm", apr: "24.8%", desc: "Automated DeFi strategies for maximum returns", tag: "Advanced", tagColor: "bg-[hsl(var(--vnx-gold))]/10 text-[hsl(var(--vnx-gold))]" },
+                  { title: "Flexible Savings", apr: "8.5%", desc: "Deposit and withdraw anytime with daily interest on 50+ supported tokens", tag: "Easy", tagColor: "bg-primary/10 text-primary" },
+                  { title: "Fixed Staking", apr: "12.5%", desc: "Lock VNX or other tokens for fixed terms and earn guaranteed higher returns", tag: "Popular", tagColor: "bg-accent/10 text-accent" },
+                  { title: "Launchpool", apr: "24.8%", desc: "Stake VNX to farm new token listings before they go live on the exchange", tag: "Exclusive", tagColor: "bg-[hsl(var(--vnx-gold))]/10 text-[hsl(var(--vnx-gold))]" },
                 ].map((earn, i) => (
                   <div key={i} className="p-8 rounded-3xl bg-card border border-border/40 shadow-card hover-border-glow transition-all group">
                     <div className="flex justify-between items-start mb-6">
@@ -516,25 +670,94 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ═══ GOVERNANCE ═══ */}
+        {/* ═══ COPY TRADING & LEADERBOARD ═══ */}
+        <section className="py-24 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
+          <div className="section-container relative">
+            <div className="max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-8">
+                <div>
+                  <span className="section-badge">Social</span>
+                  <h2 className="mt-4 text-4xl md:text-5xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>
+                    Copy the<br />
+                    <span className="text-gradient">best traders.</span>
+                  </h2>
+                  <p className="text-muted-foreground mt-4 mb-8 max-w-md">
+                    Follow top-performing traders and automatically mirror their strategies. Earn while you learn.
+                  </p>
+                  <div className="space-y-4">
+                    {[
+                      { step: "01", title: "Browse Leaderboard", desc: "Find traders ranked by ROI, win rate, and risk score" },
+                      { step: "02", title: "Follow & Copy", desc: "One-click to auto-copy any trader's positions" },
+                      { step: "03", title: "Set Limits", desc: "Control max investment, stop-loss, and allocation per trade" },
+                      { step: "04", title: "Earn Together", desc: "Profit when they profit — transparent profit-sharing model" },
+                    ].map((item, i) => (
+                      <div key={i} className="flex gap-4 items-center p-4 rounded-xl hover:bg-card/50 transition-all">
+                        <span className="text-xl font-bold text-primary/30 w-8" style={{ fontFamily: "'Space Grotesk'" }}>{item.step}</span>
+                        <div>
+                          <p className="font-semibold text-sm">{item.title}</p>
+                          <p className="text-xs text-muted-foreground">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-8 rounded-3xl bg-card border border-border/40 shadow-card">
+                  <h3 className="text-lg font-bold mb-6" style={{ fontFamily: "'Space Grotesk'" }}>Top Traders This Month</h3>
+                  <div className="space-y-3">
+                    {[
+                      { rank: "1", name: "CryptoAlpha", roi: "+142.5%", winRate: "78%", followers: "2,340", pnl: "+$1.2M" },
+                      { rank: "2", name: "SwingMaster", roi: "+98.3%", winRate: "72%", followers: "1,850", pnl: "+$890K" },
+                      { rank: "3", name: "SteadyEddie", roi: "+67.1%", winRate: "85%", followers: "3,120", pnl: "+$540K" },
+                      { rank: "4", name: "MoonTrader", roi: "+54.8%", winRate: "65%", followers: "980", pnl: "+$320K" },
+                      { rank: "5", name: "DCAKing", roi: "+43.2%", winRate: "91%", followers: "4,500", pnl: "+$280K" },
+                    ].map((trader, i) => (
+                      <div key={i} className="p-4 rounded-xl bg-background/50 border border-border/30 hover-border-glow transition-all">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <span className="text-lg font-bold text-primary/40 w-6" style={{ fontFamily: "'Space Grotesk'" }}>#{trader.rank}</span>
+                            <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center">
+                              <span className="text-xs font-bold text-primary-foreground">{trader.name[0]}</span>
+                            </div>
+                            <div>
+                              <p className="font-bold text-sm">{trader.name}</p>
+                              <p className="text-[10px] text-muted-foreground">{trader.followers} followers</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-sm text-[hsl(var(--vnx-green))]">{trader.roi}</p>
+                            <p className="text-[10px] text-muted-foreground">Win {trader.winRate}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ COMMUNITY VOICE ═══ */}
         <section className="py-24 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
           <div className="section-container relative">
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-8">
                 <div>
-                  <span className="section-badge">DAO</span>
+                  <span className="section-badge">Community</span>
                   <h2 className="mt-4 text-4xl md:text-5xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>
                     Your voice<br />
                     <span className="text-gradient">matters.</span>
                   </h2>
-                  <p className="text-muted-foreground mt-4 mb-8 max-w-md">Shape the future of VyronexVNX through community governance. Hold VNX to propose and vote.</p>
+                  <p className="text-muted-foreground mt-4 mb-8 max-w-md">Shape the future of VyronexVNX through community governance. Hold VNX to propose and vote on platform changes.</p>
                   <div className="space-y-4">
                     {[
-                      { step: "01", title: "Hold VNX", desc: "Stake tokens to gain voting power" },
+                      { step: "01", title: "Hold VNX", desc: "VNX holdings determine your voting power" },
                       { step: "02", title: "Propose", desc: "Submit platform improvement proposals" },
                       { step: "03", title: "Vote", desc: "Cast your vote on active proposals" },
-                      { step: "04", title: "Execute", desc: "Approved changes are implemented" },
+                      { step: "04", title: "Execute", desc: "Approved changes are implemented by the team" },
                     ].map((item, i) => (
                       <div key={i} className="flex gap-4 items-center p-4 rounded-xl hover:bg-card/50 transition-all">
                         <span className="text-xl font-bold text-primary/30 w-8" style={{ fontFamily: "'Space Grotesk'" }}>{item.step}</span>
@@ -554,7 +777,7 @@ const Index = () => {
                       { title: "Reduce Trading Fees to 0.08%", votes: "12,450", status: "Active" },
                       { title: "Add Avalanche Chain Support", votes: "8,320", status: "Active" },
                       { title: "Increase Staking APR to 15%", votes: "15,780", status: "Passed" },
-                      { title: "Launch NFT Marketplace", votes: "6,100", status: "Voting" },
+                      { title: "Launch Copy Trading Feature", votes: "6,100", status: "Voting" },
                     ].map((proposal, i) => (
                       <div key={i} className="p-4 rounded-xl bg-background/50 border border-border/30 hover-border-glow transition-all">
                         <div className="flex justify-between items-start">
@@ -585,8 +808,8 @@ const Index = () => {
               </div>
               <div className="grid md:grid-cols-3 gap-4 mb-8">
                 {[
-                  { title: "REST API", desc: "Full-featured endpoints for trading and market data" },
-                  { title: "WebSocket", desc: "Real-time streams with sub-millisecond latency" },
+                  { title: "REST API", desc: "Full-featured endpoints for trading, account, and market data" },
+                  { title: "WebSocket", desc: "Real-time order book, trades, and account streams" },
                   { title: "SDK Libraries", desc: "Official SDKs for JavaScript, Python, Go, and Rust" },
                 ].map((api, i) => (
                   <div key={i} className="p-6 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all">
@@ -597,23 +820,87 @@ const Index = () => {
               </div>
               <div className="rounded-2xl bg-card border border-border/40 p-6 overflow-x-auto">
                 <pre className="text-sm text-muted-foreground font-mono">
-                  <code>{`// Fetch VNX price
-const res = await fetch('https://api.vyronexvnx.com/v1/market/VNX-USDT');
-const { price } = await res.json();
-console.log(price); // 0.000542`}</code>
+                  <code>{`// Place a limit order via REST API
+const res = await fetch('https://api.vyronexvnx.com/v1/order', {
+  method: 'POST',
+  headers: { 'X-API-Key': apiKey },
+  body: JSON.stringify({
+    symbol: 'VNX-USDT',
+    side: 'buy',
+    type: 'limit',
+    price: '0.000542',
+    quantity: '10000'
+  })
+});`}</code>
                 </pre>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ═══ MOBILE APP — Reverse split ═══ */}
+        {/* ═══ INSTITUTIONAL & OTC ═══ */}
+        <section className="py-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.04] to-transparent" />
+          <div className="section-container relative">
+            <div className="max-w-7xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                  <span className="section-badge">Institutional</span>
+                  <h2 className="mt-4 text-4xl md:text-5xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>
+                    Built for<br />
+                    <span className="text-gradient">institutions.</span>
+                  </h2>
+                  <p className="text-muted-foreground mt-4 mb-8 text-lg max-w-md leading-relaxed">
+                    Enterprise-grade tools for funds, family offices, and professional trading firms. Deep liquidity and white-glove service.
+                  </p>
+                  <div className="space-y-3 mb-8">
+                    {[
+                      "OTC desk for large block trades with zero market impact",
+                      "Dedicated account managers and priority API access",
+                      "Sub-account management for fund allocation",
+                      "Custom fee tiers and negotiated rates",
+                      "Regulatory-compliant reporting and audit trails",
+                    ].map((feature, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0" />
+                        <p className="text-sm text-muted-foreground">{feature}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Link to="/contact">
+                    <Button size="lg" className="rounded-full px-10 gradient-primary shadow-glow hover:shadow-glow-lg transition-all active-press">
+                      Contact Sales
+                    </Button>
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { value: "$50M+", label: "Min OTC Trade", sub: "No market impact" },
+                    { value: "T+0", label: "Settlement", sub: "Same-day clearing" },
+                    { value: "24/7", label: "OTC Desk", sub: "Always available" },
+                    { value: "Custom", label: "Fee Structure", sub: "Negotiated rates" },
+                    { value: "FIX 4.4", label: "Protocol", sub: "Institutional standard" },
+                    { value: "SOC 2", label: "Compliance", sub: "Type II certified" },
+                  ].map((item, i) => (
+                    <div key={i} className="p-5 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all text-center">
+                      <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>{item.value}</p>
+                      <p className="text-xs font-bold mt-1">{item.label}</p>
+                      <p className="text-[10px] text-muted-foreground">{item.sub}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ MOBILE APP ═══ */}
         <section className="py-24 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-l from-primary/[0.04] to-transparent" />
           <div className="section-container relative">
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-16 items-center">
-                {/* Phone mockup */}
                 <div className="relative order-2 lg:order-1">
                   <div className="mx-auto w-[240px] md:w-[270px] relative animate-float">
                     <div className="rounded-[2.5rem] border-[5px] border-border/30 bg-card shadow-elevated overflow-hidden aspect-[9/19]">
@@ -638,7 +925,7 @@ console.log(price); // 0.000542`}</code>
                           <p className="text-[10px] text-primary-foreground/80 mt-0.5">+5.23% today</p>
                         </div>
                         <div className="grid grid-cols-4 gap-2 mb-3">
-                          {["Send", "Swap", "Stake", "Buy"].map(a => (
+                          {["Send", "Trade", "Earn", "Buy"].map(a => (
                             <div key={a} className="text-center">
                               <div className="h-8 w-8 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-1">
                                 <div className="h-3 w-3 rounded-full bg-primary/40" />
@@ -673,7 +960,6 @@ console.log(price); // 0.000542`}</code>
                   </div>
                 </div>
 
-                {/* Text */}
                 <div className="order-1 lg:order-2">
                   <span className="section-badge">Mobile</span>
                   <h2 className="mt-4 text-4xl md:text-5xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>
@@ -681,14 +967,14 @@ console.log(price); // 0.000542`}</code>
                     <span className="text-gradient">anywhere.</span>
                   </h2>
                   <p className="text-muted-foreground mt-4 mb-8 text-lg max-w-md leading-relaxed">
-                    Access your portfolio and execute trades from any device with our mobile-optimized platform.
+                    Full exchange functionality in your pocket. Execute trades, manage your portfolio, and earn rewards on the go.
                   </p>
                   <div className="space-y-3 mb-8">
                     {[
-                      "Real-time price alerts and notifications",
+                      "Real-time price alerts and push notifications",
                       "Biometric authentication for secure access",
                       "One-tap trading with customizable shortcuts",
-                      "Offline portfolio tracking and analytics",
+                      "Portfolio analytics and P&L tracking",
                     ].map((feature, i) => (
                       <div key={i} className="flex items-center gap-3">
                         <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0" />
@@ -732,33 +1018,25 @@ console.log(price); // 0.000542`}</code>
           </div>
         </section>
 
-        {/* ═══ TESTIMONIALS — Oversized quote style ═══ */}
-        <section className="py-24 relative">
+        {/* ═══ PARTNERS & INTEGRATIONS ═══ */}
+        <section className="py-20 relative">
           <div className="section-container">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-14">
-                <span className="section-badge">Testimonials</span>
+                <span className="section-badge">Ecosystem</span>
                 <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
-                  Loved by <span className="text-gradient">traders.</span>
+                  Trusted <span className="text-gradient">partners.</span>
                 </h2>
+                <p className="text-muted-foreground mt-3">Industry-leading infrastructure and compliance partners.</p>
               </div>
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="flex flex-wrap justify-center gap-3">
                 {[
-                  { name: "Alex Chen", role: "Day Trader", text: "Best multi-chain platform I've used. Lightning fast trades and great UI!" },
-                  { name: "Sarah Johnson", role: "Crypto Investor", text: "The staking rewards are incredible. I've earned 15% more with VNX staking." },
-                  { name: "Michael Rodriguez", role: "DeFi Enthusiast", text: "Finally a platform that supports all my favorite chains in one place!" },
-                ].map((t, i) => (
-                  <div key={i} className="p-8 rounded-3xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
-                    <p className="text-lg font-medium leading-relaxed mb-8 text-foreground/90">"{t.text}"</p>
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full gradient-primary flex items-center justify-center">
-                        <span className="text-primary-foreground font-bold text-sm">{t.name[0]}</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-sm">{t.name}</p>
-                        <p className="text-xs text-muted-foreground">{t.role}</p>
-                      </div>
-                    </div>
+                  "Chainlink", "Fireblocks", "Chainalysis", "Elliptic",
+                  "AWS", "Cloudflare", "CertiK", "PeckShield",
+                  "Visa", "Mastercard", "Circle", "MoonPay",
+                ].map((partner, i) => (
+                  <div key={i} className="px-6 py-4 rounded-full bg-card border border-border/40 hover-border-glow transition-all hover-scale-subtle cursor-default">
+                    <span className="font-bold text-sm tracking-wide">{partner}</span>
                   </div>
                 ))}
               </div>
@@ -766,7 +1044,59 @@ console.log(price); // 0.000542`}</code>
           </div>
         </section>
 
-        {/* ═══ REFERRAL — Tiered horizontal ═══ */}
+        {/* ═══ TESTIMONIALS ═══ */}
+        <section className="py-24 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
+          <div className="section-container relative">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-14">
+                <span className="section-badge">Testimonials</span>
+                <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
+                  Loved by <span className="text-gradient">traders worldwide.</span>
+                </h2>
+                <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+                  Join 50,000+ users trading on VyronexVNX.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-5 mb-10">
+                {[
+                  { quote: "Best multi-chain CEX I've used. Instant deposits, fast matching, and the earn programs are unbeatable.", name: "Marcus T.", role: "Day Trader", rating: "5.0" },
+                  { quote: "VNX staking has been a game-changer. I'm earning passive income daily and the platform feels rock-solid.", name: "Sofia R.", role: "Long-term Holder", rating: "5.0" },
+                  { quote: "The futures dashboard rivals Binance. Deep liquidity and zero downtime — exactly what I need for scalping.", name: "Kenji A.", role: "Futures Trader", rating: "4.9" },
+                ].map((t, i) => (
+                  <div key={i} className="p-7 rounded-3xl bg-card border border-border/40 shadow-card hover-border-glow transition-all flex flex-col">
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary">★ {t.rating}</span>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wider">Verified User</span>
+                    </div>
+                    <p className="text-sm leading-relaxed mb-6 flex-1">"{t.quote}"</p>
+                    <div className="pt-4 border-t border-border/30">
+                      <p className="font-bold text-sm">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.role}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { value: "50K+", label: "Active Users" },
+                  { value: "4.9/5", label: "Avg Rating" },
+                  { value: "$2.5B+", label: "Volume Traded" },
+                  { value: "120+", label: "Countries" },
+                ].map((s, i) => (
+                  <div key={i} className="text-center p-5 rounded-2xl bg-card border border-border/40">
+                    <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>{s.value}</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ REFERRAL ═══ */}
         <section className="py-24 relative">
           <div className="section-container">
             <div className="max-w-6xl mx-auto">
@@ -800,17 +1130,17 @@ console.log(price); // 0.000542`}</code>
           </div>
         </section>
 
-        {/* ═══ LAUNCHPAD ═══ */}
+        {/* ═══ LAUNCHPAD (IEO) ═══ */}
         <section className="py-24 relative">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] via-transparent to-transparent" />
           <div className="section-container relative">
             <div className="max-w-6xl mx-auto">
               <div className="mb-14">
-                <span className="section-badge">IDO</span>
+                <span className="section-badge">IEO</span>
                 <h2 className="mt-4 text-4xl md:text-5xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>
                   VNX <span className="text-gradient">Launchpad.</span>
                 </h2>
-                <p className="text-muted-foreground mt-3 max-w-md">Be early to the next big project — exclusive token launches for VNX holders.</p>
+                <p className="text-muted-foreground mt-3 max-w-md">Be early to the next big project — exclusive token launches vetted and listed by VyronexVNX.</p>
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 {[
@@ -847,46 +1177,97 @@ console.log(price); // 0.000542`}</code>
           </div>
         </section>
 
-        {/* ═══ ROADMAP — Timeline vertical ═══ */}
+        {/* ═══ SECURITY & COMPLIANCE ═══ */}
         <section className="py-24 relative">
           <div className="section-container">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-6xl mx-auto">
               <div className="text-center mb-14">
-                <span className="section-badge">Vision</span>
+                <span className="section-badge">Security & Compliance</span>
                 <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
-                  Our <span className="text-gradient">roadmap.</span>
+                  Audited. Insured. <span className="text-gradient">Regulated.</span>
                 </h2>
+                <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+                  Institutional-grade security architecture with proof-of-reserves and regulatory compliance across 120+ jurisdictions.
+                </p>
               </div>
-              <div className="relative">
-                {/* Vertical line */}
-                <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/40 via-primary/20 to-transparent" />
-                <div className="space-y-8">
+
+              <div className="grid md:grid-cols-4 gap-4 mb-10">
+                {[
+                  { value: "$100M", label: "Insurance Fund", sub: "User asset protection" },
+                  { value: "95%", label: "Cold Storage", sub: "Multi-sig vaults" },
+                  { value: "AES-256", label: "Encryption", sub: "End-to-end" },
+                  { value: "24/7", label: "Monitoring", sub: "Real-time threat detection" },
+                ].map((item, i) => (
+                  <div key={i} className="p-6 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all text-center">
+                    <p className="text-3xl font-bold text-gradient mb-1" style={{ fontFamily: "'Space Grotesk'" }}>{item.value}</p>
+                    <p className="text-sm font-bold mb-1">{item.label}</p>
+                    <p className="text-xs text-muted-foreground">{item.sub}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4 mb-8">
+                <div className="p-8 rounded-3xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/20">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-4">Proof of Reserves</p>
+                  <h3 className="text-lg font-bold mb-3" style={{ fontFamily: "'Space Grotesk'" }}>100% asset-backed</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">All user funds are fully backed 1:1. Our proof-of-reserves is verified monthly by independent auditors and published on-chain for full transparency.</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { label: "Reserve Ratio", value: "102%" },
+                      { label: "Last Audit", value: "Apr 2026" },
+                      { label: "Auditor", value: "CertiK" },
+                    ].map((r, i) => (
+                      <div key={i} className="p-3 rounded-xl bg-background/50 border border-border/30 text-center">
+                        <p className="text-[10px] text-muted-foreground uppercase">{r.label}</p>
+                        <p className="text-sm font-bold mt-1">{r.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-8 rounded-3xl bg-card border border-border/40 shadow-card">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-accent mb-4">Bug Bounty Program</p>
+                  <h3 className="text-lg font-bold mb-3" style={{ fontFamily: "'Space Grotesk'" }}>$250K bounty pool</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">Security researchers worldwide are incentivized to responsibly disclose vulnerabilities. Payouts from $500 to $100K based on severity.</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { label: "Pool Size", value: "$250K" },
+                      { label: "Max Payout", value: "$100K" },
+                      { label: "Reports", value: "340+" },
+                    ].map((r, i) => (
+                      <div key={i} className="p-3 rounded-xl bg-background/50 border border-border/30 text-center">
+                        <p className="text-[10px] text-muted-foreground uppercase">{r.label}</p>
+                        <p className="text-sm font-bold mt-1">{r.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 rounded-2xl bg-card border border-border/40">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">Audited by</p>
+                    <h3 className="text-lg font-bold" style={{ fontFamily: "'Space Grotesk'" }}>Industry-leading security partners</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    {["CertiK", "Hacken", "PeckShield", "SlowMist"].map((firm) => (
+                      <span key={firm} className="px-5 py-2.5 rounded-full bg-background/50 border border-border/40 text-sm font-bold tracking-wide">
+                        {firm}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
-                    { quarter: "Q4 2024", title: "Platform Launch", items: ["Multi-chain wallet", "VNX token launch", "Basic trading"], active: true },
-                    { quarter: "Q1 2025", title: "DeFi Expansion", items: ["Staking pools", "Liquidity farming", "Governance"], active: true },
-                    { quarter: "Q2 2025", title: "Advanced Trading", items: ["Margin trading", "Futures contracts", "Options"], active: false },
-                    { quarter: "Q3 2025", title: "Enterprise", items: ["API access", "White-label", "Institutional"], active: false },
-                  ].map((phase, i) => (
-                    <div key={i} className={`relative flex items-start gap-8 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}>
-                      {/* Dot */}
-                      <div className="absolute left-6 md:left-1/2 -translate-x-1/2 top-2">
-                        <div className={`h-3 w-3 rounded-full border-2 ${phase.active ? 'bg-primary border-primary shadow-glow' : 'bg-card border-border'}`} />
-                      </div>
-                      {/* Spacer for left side */}
-                      <div className="hidden md:block md:w-1/2" />
-                      {/* Card */}
-                      <div className="ml-14 md:ml-0 md:w-1/2 p-6 rounded-2xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
-                        <span className="text-xs font-bold text-primary">{phase.quarter}</span>
-                        <h3 className="font-bold mt-1 mb-3" style={{ fontFamily: "'Space Grotesk'" }}>{phase.title}</h3>
-                        <ul className="space-y-1.5">
-                          {phase.items.map((item, j) => (
-                            <li key={j} className="text-sm text-muted-foreground flex items-center gap-2">
-                              <div className="h-1 w-1 rounded-full bg-primary/40 shrink-0" />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                    { label: "KYC/AML", value: "Compliant" },
+                    { label: "GDPR", value: "Certified" },
+                    { label: "SOC 2", value: "Type II" },
+                    { label: "ISO 27001", value: "Certified" },
+                  ].map((c, i) => (
+                    <div key={i} className="p-3 rounded-xl bg-background/50 border border-border/30 text-center">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{c.label}</p>
+                      <p className="text-sm font-bold mt-1">{c.value}</p>
                     </div>
                   ))}
                 </div>
@@ -904,7 +1285,7 @@ console.log(price); // 0.000542`}</code>
                 <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
                   <span className="text-gradient">Global</span> reach.
                 </h2>
-                <p className="text-muted-foreground mt-3">120+ countries. 24/7 uptime.</p>
+                <p className="text-muted-foreground mt-3">120+ countries. 24/7 uptime. Regulated across jurisdictions.</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {[
@@ -921,7 +1302,7 @@ console.log(price); // 0.000542`}</code>
                 ))}
               </div>
               <div className="flex flex-wrap justify-center gap-2">
-                {["English", "中文", "Español", "العربية", "Français", "日本語"].map((lang, i) => (
+                {["English", "中文", "Español", "العربية", "Français", "日本語", "한국어", "Português"].map((lang, i) => (
                   <span key={i} className="px-4 py-2 rounded-full bg-card border border-border/30 text-xs font-medium text-muted-foreground">{lang}</span>
                 ))}
               </div>
@@ -941,9 +1322,9 @@ console.log(price); // 0.000542`}</code>
               </div>
               <div className="grid md:grid-cols-3 gap-4">
                 {[
-                  { source: "CoinTelegraph", quote: "VyronexVNX is redefining multi-chain DeFi with its seamless user experience and robust security.", date: "Jan 2025" },
-                  { source: "CryptoSlate", quote: "The VNX token has shown impressive utility in the crowded DeFi landscape.", date: "Dec 2024" },
-                  { source: "The Block", quote: "With 50K+ active users, VyronexVNX is one to watch in the multi-chain DEX space.", date: "Nov 2024" },
+                  { source: "CoinTelegraph", quote: "VyronexVNX is redefining multi-chain trading with institutional-grade infrastructure and competitive fees.", date: "Jan 2025" },
+                  { source: "CryptoSlate", quote: "The VNX token ecosystem creates a flywheel of trading discounts, staking, and governance utility.", date: "Dec 2024" },
+                  { source: "The Block", quote: "With 50K+ active users and $2.5B+ in volume, VyronexVNX is a serious contender in the CEX space.", date: "Nov 2024" },
                 ].map((article, i) => (
                   <div key={i} className="p-7 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all">
                     <div className="flex justify-between items-center mb-5">
@@ -977,8 +1358,8 @@ console.log(price); // 0.000542`}</code>
                 {[
                   { title: "Beginner Guides", count: "24 Articles", desc: "Start your crypto journey step by step" },
                   { title: "Trading Strategies", count: "18 Lessons", desc: "Proven strategies from pro traders" },
-                  { title: "DeFi Deep Dives", count: "12 Guides", desc: "Yield farming, liquidity, and more" },
-                  { title: "Security Tips", count: "8 Resources", desc: "Protect your assets effectively" },
+                  { title: "Platform Tutorials", count: "12 Guides", desc: "Master every feature of VyronexVNX" },
+                  { title: "Security Tips", count: "8 Resources", desc: "Protect your account and assets" },
                 ].map((resource, i) => (
                   <div key={i} className="p-6 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all group">
                     <h3 className="font-bold text-sm mb-1" style={{ fontFamily: "'Space Grotesk'" }}>{resource.title}</h3>
@@ -991,7 +1372,7 @@ console.log(price); // 0.000542`}</code>
           </div>
         </section>
 
-        {/* ═══ BADGES — Gamification strip ═══ */}
+        {/* ═══ BADGES ═══ */}
         <section className="py-20 relative">
           <div className="section-container">
             <div className="max-w-6xl mx-auto">
@@ -1020,120 +1401,36 @@ console.log(price); // 0.000542`}</code>
           </div>
         </section>
 
-        {/* ═══ SECURITY & TRUST ═══ */}
-        <section className="py-24 relative">
+        {/* ═══ COMMUNITY & SOCIAL ═══ */}
+        <section className="py-20 relative">
           <div className="section-container">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-14">
-                <span className="section-badge">Security & Trust</span>
+                <span className="section-badge">Community</span>
                 <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
-                  Audited. Insured. <span className="text-gradient">Protected.</span>
+                  Join the <span className="text-gradient">movement.</span>
                 </h2>
-                <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
-                  Independently audited by leading firms and backed by a $100M insurance fund.
-                </p>
+                <p className="text-muted-foreground mt-3">Connect with 50,000+ traders across our social channels.</p>
               </div>
-
-              <div className="grid md:grid-cols-4 gap-4 mb-10">
-                {[
-                  { value: "$100M", label: "Insurance Fund", sub: "User asset protection" },
-                  { value: "95%", label: "Cold Storage", sub: "Offline asset reserves" },
-                  { value: "AES-256", label: "Encryption", sub: "Bank-grade security" },
-                  { value: "24/7", label: "Monitoring", sub: "Real-time threat detection" },
-                ].map((item, i) => (
-                  <div key={i} className="p-6 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all text-center">
-                    <p className="text-3xl font-bold text-gradient mb-1" style={{ fontFamily: "'Space Grotesk'" }}>{item.value}</p>
-                    <p className="text-sm font-bold mb-1">{item.label}</p>
-                    <p className="text-xs text-muted-foreground">{item.sub}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="p-8 rounded-3xl bg-gradient-to-br from-primary/5 to-transparent border border-primary/20">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">Audited by</p>
-                    <h3 className="text-xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>Industry-leading security partners</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {["CertiK", "Hacken", "PeckShield", "SlowMist"].map((firm) => (
-                      <span key={firm} className="px-5 py-2.5 rounded-full bg-card border border-border/40 text-sm font-bold tracking-wide">
-                        {firm}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {[
-                    { label: "KYC/AML", value: "Compliant" },
-                    { label: "GDPR", value: "Certified" },
-                    { label: "SOC 2", value: "Type II" },
-                    { label: "ISO 27001", value: "Certified" },
-                  ].map((c, i) => (
-                    <div key={i} className="p-3 rounded-xl bg-background/50 border border-border/30 text-center">
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{c.label}</p>
-                      <p className="text-sm font-bold mt-1">{c.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ TESTIMONIALS ═══ */}
-        <section className="py-24 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
-          <div className="section-container relative">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-14">
-                <span className="section-badge">Testimonials</span>
-                <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
-                  Loved by <span className="text-gradient">traders worldwide.</span>
-                </h2>
-                <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
-                  Join 50,000+ users building their portfolios on VyronexVNX.
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-5 mb-10">
-                {[
-                  { quote: "Best multi-chain experience I've used. Swaps are fast, fees are tiny, and the staking returns are unbeatable.", name: "Marcus T.", role: "DeFi Trader", rating: "5.0" },
-                  { quote: "VNX staking has been a game-changer. I'm earning passive income daily and the platform feels rock-solid.", name: "Sofia R.", role: "Long-term Holder", rating: "5.0" },
-                  { quote: "The futures dashboard rivals top centralized exchanges. Deep liquidity and zero downtime — exactly what I need.", name: "Kenji A.", role: "Futures Trader", rating: "4.9" },
-                ].map((t, i) => (
-                  <div key={i} className="p-7 rounded-3xl bg-card border border-border/40 shadow-card hover-border-glow transition-all flex flex-col">
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary">★ {t.rating}</span>
-                      <span className="text-xs text-muted-foreground uppercase tracking-wider">Verified User</span>
-                    </div>
-                    <p className="text-sm leading-relaxed mb-6 flex-1">"{t.quote}"</p>
-                    <div className="pt-4 border-t border-border/30">
-                      <p className="font-bold text-sm">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.role}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { value: "50K+", label: "Active Users" },
-                  { value: "4.9/5", label: "Avg Rating" },
-                  { value: "$2.5B+", label: "Volume Traded" },
-                  { value: "120+", label: "Countries" },
-                ].map((s, i) => (
-                  <div key={i} className="text-center p-5 rounded-2xl bg-card border border-border/40">
-                    <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>{s.value}</p>
-                    <p className="text-xs text-muted-foreground uppercase tracking-wider mt-1">{s.label}</p>
-                  </div>
+                  { platform: "Twitter / X", followers: "125K+", handle: "@VyronexVNX", link: "#" },
+                  { platform: "Discord", followers: "42K+", handle: "VyronexVNX Community", link: "#" },
+                  { platform: "Telegram", followers: "38K+", handle: "@VyronexVNX_Official", link: "#" },
+                  { platform: "GitHub", followers: "2.8K+", handle: "VyronexVNX", link: "#" },
+                ].map((social, i) => (
+                  <a key={i} href={social.link} className="p-6 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all text-center group">
+                    <p className="text-3xl font-bold text-gradient mb-2" style={{ fontFamily: "'Space Grotesk'" }}>{social.followers}</p>
+                    <p className="font-bold text-sm mb-1">{social.platform}</p>
+                    <p className="text-xs text-muted-foreground">{social.handle}</p>
+                  </a>
                 ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ═══ ROADMAP TIMELINE ═══ */}
+        {/* ═══ ROADMAP ═══ */}
         <section className="py-24 relative">
           <div className="section-container">
             <div className="max-w-5xl mx-auto">
@@ -1151,11 +1448,11 @@ console.log(price); // 0.000542`}</code>
                 <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary/40 via-primary/20 to-transparent md:-translate-x-1/2" />
                 <div className="space-y-10">
                   {[
-                    { quarter: "Q1 2025", title: "Multi-Chain Expansion", desc: "Launch native support for Solana, Fantom, and Tron with cross-chain bridging.", status: "Shipped", statusColor: "text-[hsl(var(--vnx-green))] bg-[hsl(var(--vnx-green))]/10" },
+                    { quarter: "Q1 2025", title: "Multi-Chain Expansion", desc: "Launch native support for Solana, Fantom, and Tron with unified custody.", status: "Shipped", statusColor: "text-[hsl(var(--vnx-green))] bg-[hsl(var(--vnx-green))]/10" },
                     { quarter: "Q2 2025", title: "Futures & Margin Trading", desc: "Perpetual futures with up to 100x leverage and isolated/cross margin modes.", status: "In Progress", statusColor: "text-primary bg-primary/10" },
                     { quarter: "Q3 2025", title: "Mobile App Release", desc: "Native iOS and Android apps with biometric security and push notifications.", status: "Upcoming", statusColor: "text-accent bg-accent/10" },
-                    { quarter: "Q4 2025", title: "VNX Governance DAO", desc: "On-chain governance for VNX holders to vote on listings, fees, and protocol upgrades.", status: "Planned", statusColor: "text-muted-foreground bg-muted/30" },
-                    { quarter: "Q1 2026", title: "Institutional Suite", desc: "OTC desk, prime brokerage tools, and custody solutions for institutional clients.", status: "Planned", statusColor: "text-muted-foreground bg-muted/30" },
+                    { quarter: "Q4 2025", title: "Copy Trading Launch", desc: "Social trading with leaderboards, auto-copy, and transparent profit-sharing.", status: "Planned", statusColor: "text-muted-foreground bg-muted/30" },
+                    { quarter: "Q1 2026", title: "Institutional Suite", desc: "OTC desk, prime brokerage tools, FIX protocol, and custody solutions.", status: "Planned", statusColor: "text-muted-foreground bg-muted/30" },
                   ].map((item, i) => (
                     <div key={i} className={`relative flex flex-col md:flex-row gap-6 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}>
                       <div className="absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-primary shadow-glow md:-translate-x-1/2 mt-2" />
@@ -1178,7 +1475,115 @@ console.log(price); // 0.000542`}</code>
           </div>
         </section>
 
-        {/* ═══ FAQ — Accordion ═══ */}
+        {/* ═══ MEET THE TEAM ═══ */}
+        <section className="py-24 relative">
+          <div className="section-container">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-14">
+                <span className="section-badge">Team</span>
+                <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
+                  Meet the <span className="text-gradient">team.</span>
+                </h2>
+                <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+                  Veterans from traditional finance, blockchain, and cybersecurity building the next generation of crypto trading.
+                </p>
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  { name: "Alexander Vyron", role: "CEO & Founder", bio: "Ex-Goldman Sachs. 15+ years in capital markets and fintech." },
+                  { name: "Elena Cortez", role: "CTO", bio: "Former Coinbase engineer. Built matching engines processing $10B+ daily." },
+                  { name: "James Nakamura", role: "Head of Security", bio: "Ex-NSA cybersecurity lead. Specializes in cryptographic infrastructure." },
+                  { name: "Priya Sharma", role: "Head of Product", bio: "Former Binance PM. Shipped products used by 50M+ crypto traders." },
+                  { name: "Marcus Chen", role: "VP Engineering", bio: "Built trading systems at Jane Street. Expert in low-latency infrastructure." },
+                  { name: "Sarah Al-Rashid", role: "Chief Compliance", bio: "Former SEC advisor. Navigates regulatory frameworks across 120+ jurisdictions." },
+                  { name: "David Park", role: "Head of Growth", bio: "Scaled three crypto startups from 0 to 1M users. Data-driven growth." },
+                  { name: "Lucia Fernandez", role: "Head of Design", bio: "Apple Design Award winner. Creates intuitive trading experiences." },
+                ].map((member, i) => (
+                  <div key={i} className="p-6 rounded-2xl bg-card border border-border/40 hover-border-glow transition-all text-center">
+                    <div className="h-16 w-16 mx-auto rounded-full gradient-primary flex items-center justify-center mb-4">
+                      <span className="text-xl font-bold text-primary-foreground">{member.name.split(' ').map(n => n[0]).join('')}</span>
+                    </div>
+                    <h3 className="font-bold text-sm" style={{ fontFamily: "'Space Grotesk'" }}>{member.name}</h3>
+                    <p className="text-xs text-primary font-semibold mb-2">{member.role}</p>
+                    <p className="text-xs text-muted-foreground">{member.bio}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ 24/7 SUPPORT CENTER ═══ */}
+        <section className="py-24 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.02] via-transparent to-transparent" />
+          <div className="section-container relative">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-14">
+                <span className="section-badge">Support</span>
+                <h2 className="mt-4" style={{ fontFamily: "'Space Grotesk'" }}>
+                  Help when you <span className="text-gradient">need it.</span>
+                </h2>
+                <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+                  24/7 multilingual support from real humans. Average response time under 2 minutes.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4 mb-8">
+                {[
+                  { title: "Live Chat", desc: "Instant support from our team, available 24 hours a day, 7 days a week", stat: "<2 min", statLabel: "Avg Response" },
+                  { title: "Ticket System", desc: "Detailed technical support with full audit trail and escalation paths", stat: "<4 hrs", statLabel: "Resolution" },
+                  { title: "Knowledge Base", desc: "500+ articles, video tutorials, and step-by-step guides", stat: "500+", statLabel: "Articles" },
+                ].map((support, i) => (
+                  <div key={i} className="p-7 rounded-3xl bg-card border border-border/40 shadow-card hover-border-glow transition-all">
+                    <h3 className="font-bold text-lg mb-2" style={{ fontFamily: "'Space Grotesk'" }}>{support.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-5">{support.desc}</p>
+                    <div className="p-3 rounded-xl bg-background/50 border border-border/30 text-center">
+                      <p className="text-2xl font-bold text-gradient" style={{ fontFamily: "'Space Grotesk'" }}>{support.stat}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{support.statLabel}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="p-6 rounded-2xl bg-card border border-border/40">
+                  <h3 className="font-bold mb-4" style={{ fontFamily: "'Space Grotesk'" }}>VIP Support Tiers</h3>
+                  <div className="space-y-3">
+                    {[
+                      { tier: "Standard", features: "Live chat + email support", requirement: "All users" },
+                      { tier: "Silver", features: "Priority queue + phone support", requirement: "Hold 50K+ VNX" },
+                      { tier: "Gold", features: "Dedicated manager + instant escalation", requirement: "Hold 500K+ VNX" },
+                    ].map((vip, i) => (
+                      <div key={i} className="p-4 rounded-xl bg-background/50 border border-border/30">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-bold text-sm">{vip.tier}</span>
+                          <span className="text-[10px] text-primary font-semibold">{vip.requirement}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{vip.features}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-card border border-border/40">
+                  <h3 className="font-bold mb-4" style={{ fontFamily: "'Space Grotesk'" }}>Support Languages</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {["English", "中文", "Español", "العربية", "Français", "日本語", "한국어", "Português", "Deutsch", "Türkçe", "Русский", "हिन्दी"].map((lang, i) => (
+                      <span key={i} className="px-3 py-1.5 rounded-full bg-background/50 border border-border/30 text-xs font-medium text-muted-foreground">{lang}</span>
+                    ))}
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-border/30">
+                    <Link to="/contact">
+                      <Button variant="outline" className="w-full rounded-full hover-border-glow">Contact Support</Button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ FAQ ═══ */}
         <section className="py-24 relative">
           <div className="section-container">
             <div className="max-w-3xl mx-auto">
@@ -1193,14 +1598,14 @@ console.log(price); // 0.000542`}</code>
               </div>
               <Accordion type="single" collapsible className="space-y-3">
                 {[
-                  { q: "What is VNX token?", a: "VNX is the native utility token of the VyronexVNX ecosystem, used for trading fee discounts, staking rewards, and on-chain governance. Holders earn passive income and participate in protocol decisions." },
-                  { q: "Which blockchains are supported?", a: "We support six major networks: Ethereum, BNB Chain, Tron, Bitcoin, Fantom, and Solana — with seamless cross-chain swaps and unified balance tracking." },
-                  { q: "How do I start trading?", a: "Create an account with email or Google, verify your identity, deposit funds via crypto or fiat on-ramp, and start trading immediately. The whole process takes under 5 minutes." },
-                  { q: "What are the trading fees?", a: "Standard taker fees are 0.1%, with maker rebates available. VNX holders receive tiered discounts up to 50% off based on holdings." },
-                  { q: "Is my money safe?", a: "Yes. 95% of user assets are held in cold storage, all communications use AES-256 encryption, and we maintain a $100M insurance fund. Independent audits by CertiK, Hacken, and PeckShield." },
-                  { q: "How do staking rewards work?", a: "Stake VNX with flexible (12.5% APR) or fixed-term (up to 24.8% APR) options. Rewards are calculated continuously and distributed daily directly to your wallet." },
-                  { q: "Can I withdraw at any time?", a: "Flexible staking and spot balances can be withdrawn instantly. Fixed-term stakes unlock at the end of the lock period. There are no withdrawal fees beyond standard network gas." },
-                  { q: "Do you offer customer support?", a: "Yes — 24/7 live chat, email, and a comprehensive help center. Premium VNX tier members receive dedicated account managers." },
+                  { q: "What is VyronexVNX?", a: "VyronexVNX is a centralized cryptocurrency exchange supporting 6 blockchains with institutional-grade trading infrastructure, insured custody, and a native VNX utility token for fee discounts, staking, and governance." },
+                  { q: "Is VyronexVNX safe?", a: "Yes. 95% of user assets are held in multi-sig cold storage, all data uses AES-256 encryption, and we maintain a $100M insurance fund. We publish monthly proof-of-reserves audited by CertiK." },
+                  { q: "How do I start trading?", a: "Create an account with email or Google, complete KYC verification, deposit funds via crypto or fiat on-ramp, and start trading immediately. The whole process takes under 5 minutes." },
+                  { q: "What are the trading fees?", a: "Standard taker fees are 0.1%, with maker rebates available. VNX holders receive tiered discounts up to 50% off based on holdings and trading volume." },
+                  { q: "Which fiat currencies are supported?", a: "We support 15+ fiat currencies including USD, EUR, GBP, AUD, CAD, and more. Deposit via bank transfer, credit/debit card, Apple Pay, or wire transfer." },
+                  { q: "How do earn programs work?", a: "Choose from Flexible Savings (8.5% APR, withdraw anytime), Fixed Staking (12.5% APR), or Launchpool (up to 24.8% APR). Rewards are calculated continuously and distributed daily." },
+                  { q: "Can I withdraw at any time?", a: "Flexible savings and spot balances can be withdrawn instantly. Fixed-term stakes unlock at the end of the lock period. No withdrawal fees beyond standard network gas." },
+                  { q: "Do you offer institutional services?", a: "Yes — OTC desk for large block trades, dedicated account managers, sub-accounts, custom API limits, FIX protocol support, and regulatory-compliant reporting." },
                 ].map((faq, i) => (
                   <AccordionItem
                     key={i}
@@ -1220,7 +1625,7 @@ console.log(price); // 0.000542`}</code>
           </div>
         </section>
 
-        {/* ═══ NEWSLETTER — Full-width dramatic CTA ═══ */}
+        {/* ═══ NEWSLETTER CTA ═══ */}
         <section className="py-24 relative">
           <div className="section-container">
             <div className="max-w-4xl mx-auto">
@@ -1231,7 +1636,7 @@ console.log(price); // 0.000542`}</code>
                     Ready to start <span className="text-gradient">trading?</span>
                   </h2>
                   <p className="text-muted-foreground mb-10 max-w-md mx-auto">
-                    Join 50,000+ traders. Get the latest updates and exclusive offers.
+                    Join 50,000+ traders. Create your account in under 2 minutes.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                     <input
