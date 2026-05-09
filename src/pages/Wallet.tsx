@@ -59,6 +59,8 @@ const Wallet = () => {
     () => sortedWallets.filter((w) => EVM_CHAINS.has(w.chain)),
     [sortedWallets],
   );
+  const solanaWallet = useMemo(() => sortedWallets.find((w) => w.chain === "Solana"), [sortedWallets]);
+  const tronWallet = useMemo(() => sortedWallets.find((w) => w.chain === "Tron"), [sortedWallets]);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
@@ -211,6 +213,8 @@ const Wallet = () => {
               <div className="animate-slide-up stagger-2">
                 <ConnectExternalWallet
                   evmWallets={evmWallets}
+                  solanaWallet={solanaWallet}
+                  tronWallet={tronWallet}
                   onApply={async (walletId, address) => {
                     await updateWalletAddress.mutateAsync({ walletId, address });
                   }}
