@@ -222,8 +222,13 @@ const Wallet = () => {
                 />
               </div>
 
-              {/* VIP escalation */}
+              {/* Push notification center */}
               <div className="animate-slide-up stagger-3">
+                <NotificationCenter />
+              </div>
+
+              {/* VIP escalation */}
+              <div className="animate-slide-up stagger-4">
                 <VIPSupportEscalation vnxBalance={vnxAmount} userEmail={user.email} />
               </div>
 
