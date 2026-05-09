@@ -235,6 +235,66 @@ export const VIPSupportEscalation = ({ vnxBalance, userEmail }: Props) => {
           </div>
         </div>
 
+        {/* Live SLA countdown for active ticket */}
+        {activeTicket && (
+          <div
+            className={`mb-3 p-3 rounded-xl border ${
+              responseRemaining <= 0
+                ? "bg-destructive/10 border-destructive/40"
+                : responseProgress > 75
+                  ? "bg-[hsl(var(--vnx-gold))]/10 border-[hsl(var(--vnx-gold))]/40"
+                  : "bg-primary/5 border-primary/30"
+            }`}
+          >
+            <div className="flex items-baseline justify-between mb-1">
+              <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
+                Active Ticket · {activeTicket.queue} queue
+              </span>
+              <span
+                className={`text-[10px] uppercase tracking-wider font-bold ${
+                  responseRemaining <= 0 ? "text-destructive" : "text-primary"
+                }`}
+              >
+                {responseRemaining <= 0 ? "ESCALATED" : "AWAITING REPLY"}
+              </span>
+            </div>
+            <div className="flex items-baseline justify-between mb-1">
+              <span className="text-[10px] text-muted-foreground">First response</span>
+              <span
+                className={`font-mono text-sm font-bold ${
+                  responseRemaining <= 0 ? "text-destructive" : current.accent
+                }`}
+              >
+                {fmtCountdown(responseRemaining)}
+              </span>
+            </div>
+            <Progress
+              value={responseProgress}
+              className={`h-1 mb-2 ${responseRemaining <= 0 ? "[&>div]:bg-destructive" : ""}`}
+            />
+            <div className="flex items-baseline justify-between text-[10px]">
+              <span className="text-muted-foreground">Resolution remaining</span>
+              <span className={`font-mono ${resolutionRemaining <= 0 ? "text-destructive" : "text-foreground"}`}>
+                {fmtCountdown(resolutionRemaining)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/30">
+              <span className="font-mono text-[10px] text-muted-foreground">#{activeTicket.id.slice(0, 8)}</span>
+              <button
+                onClick={dismissTicket}
+                className="text-[10px] text-muted-foreground hover:text-foreground underline"
+              >
+                Dismiss
+              </button>
+            </div>
+            {responseRemaining <= 0 && (
+              <p className="mt-2 text-[10px] text-destructive font-bold uppercase tracking-wider">
+                Auto-escalated to next agent tier
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Tier progression */}
         {nextTier ? (
           <div className="mb-3">
