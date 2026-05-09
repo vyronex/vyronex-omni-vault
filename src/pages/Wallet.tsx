@@ -18,6 +18,7 @@ import { ChainAccountCard } from "@/components/wallet/ChainAccountCard";
 import { VaultPanel } from "@/components/wallet/VaultPanel";
 import { ConnectExternalWallet } from "@/components/wallet/ConnectExternalWallet";
 import { VIPSupportEscalation } from "@/components/wallet/VIPSupportEscalation";
+import { NotificationCenter } from "@/components/wallet/NotificationCenter";
 
 const CHAIN_ORDER = ["BNB Chain", "Ethereum", "Fantom", "Bitcoin", "Solana", "Tron"];
 const EVM_CHAINS = new Set(["BNB Chain", "Ethereum", "Fantom"]);
