@@ -80,6 +80,65 @@ export const VIPSupportEscalation = ({ vnxBalance, userEmail }: Props) => {
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  // ── Active ticket tracking + SLA countdown ──────────────────────────
+  interface ActiveTicket {
+    id: string;
+    queue: string;
+    tier: string;
+    createdAt: number; // ms
+    firstResponseSec: number;
+    resolutionSec: number;
+    status: string;
+  }
+  const [activeTicket, setActiveTicket] = useState<ActiveTicket | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+
+  // 1s ticker only while a ticket is open
+  useEffect(() => {
+    if (!activeTicket) return;
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [activeTicket]);
+
+  // Parse our subject convention: [QUEUE · TIER] ...
+  const parseSubject = (s: string) => {
+    const m = s.match(/^\[([A-Z]+)\s·\s([A-Za-z]+)\]/);
+    return m ? { queue: m[1].toLowerCase(), tier: m[2] } : null;
+  };
+
+  const tierConfigFor = (tierName: string): TierConfig =>
+    TIERS.find((t) => t.tier === tierName) ?? TIERS[0];
+
+  // Load latest open ticket on mount / when email changes
+  useEffect(() => {
+    if (!userEmail) { setActiveTicket(null); return; }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("contact_submissions")
+        .select("id, subject, status, created_at")
+        .eq("email", userEmail)
+        .neq("status", "resolved")
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (cancelled || !data?.[0]) return;
+      const row = data[0];
+      const parsed = parseSubject(row.subject);
+      if (!parsed) return;
+      const cfg = tierConfigFor(parsed.tier as Tier);
+      setActiveTicket({
+        id: row.id,
+        queue: parsed.queue,
+        tier: parsed.tier,
+        createdAt: new Date(row.created_at).getTime(),
+        firstResponseSec: cfg.firstResponseSec,
+        resolutionSec: cfg.resolutionMin * 60,
+        status: row.status,
+      });
+    })();
+    return () => { cancelled = true; };
+  }, [userEmail]);
+
   const submitTicket = async () => {
     if (!message.trim()) {
       toast.error("Please describe your issue");
@@ -92,14 +151,27 @@ export const VIPSupportEscalation = ({ vnxBalance, userEmail }: Props) => {
     setSubmitting(true);
     try {
       const subject = `[${current.queue.toUpperCase()} · ${current.tier}] Priority ticket — SLA ${formatSeconds(current.firstResponseSec)}`;
-      const { error } = await supabase.from("contact_submissions").insert({
-        name: userEmail,
-        email: userEmail,
-        subject,
-        message: `VIP Tier: ${current.tier}\nVNX Holdings: ${vnxBalance.toLocaleString()}\nQueue: ${current.queue}\nSLA First Response: ${formatSeconds(current.firstResponseSec)}\nSLA Resolution: ${formatMinutes(current.resolutionMin)}\n\n---\n${message}`,
-      });
+      const { data: inserted, error } = await supabase
+        .from("contact_submissions")
+        .insert({
+          name: userEmail,
+          email: userEmail,
+          subject,
+          message: `VIP Tier: ${current.tier}\nVNX Holdings: ${vnxBalance.toLocaleString()}\nQueue: ${current.queue}\nSLA First Response: ${formatSeconds(current.firstResponseSec)}\nSLA Resolution: ${formatMinutes(current.resolutionMin)}\n\n---\n${message}`,
+        })
+        .select("id, created_at")
+        .single();
       if (error) throw error;
       toast.success(`Ticket routed to ${current.queue} queue · ETA ${formatSeconds(current.firstResponseSec)}`);
+      setActiveTicket({
+        id: inserted.id,
+        queue: current.queue,
+        tier: current.tier,
+        createdAt: new Date(inserted.created_at).getTime(),
+        firstResponseSec: current.firstResponseSec,
+        resolutionSec: current.resolutionMin * 60,
+        status: "new",
+      });
       setMessage("");
       setOpen(false);
     } catch (err) {
@@ -109,6 +181,26 @@ export const VIPSupportEscalation = ({ vnxBalance, userEmail }: Props) => {
       setSubmitting(false);
     }
   };
+
+  // Compute live countdown
+  const elapsedSec = activeTicket ? Math.floor((now - activeTicket.createdAt) / 1000) : 0;
+  const responseRemaining = activeTicket ? activeTicket.firstResponseSec - elapsedSec : 0;
+  const resolutionRemaining = activeTicket ? activeTicket.resolutionSec - elapsedSec : 0;
+  const responseProgress = activeTicket
+    ? Math.min(100, (elapsedSec / activeTicket.firstResponseSec) * 100)
+    : 0;
+
+  const fmtCountdown = (s: number) => {
+    if (s <= 0) return "BREACHED";
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    if (s < 60) return `${s}s`;
+    if (m < 60) return `${m}m ${r.toString().padStart(2, "0")}s`;
+    const h = Math.floor(m / 60);
+    return `${h}h ${(m % 60).toString().padStart(2, "0")}m`;
+  };
+
+  const dismissTicket = () => setActiveTicket(null);
 
   return (
     <>
