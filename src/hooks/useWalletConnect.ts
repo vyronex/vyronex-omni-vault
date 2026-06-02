@@ -80,10 +80,18 @@ export const useWalletConnect = () => {
         },
       })) as unknown as WCProviderLike;
 
+      provider.on("display_uri", (...args: unknown[]) => {
+        const uri = args[0] as string | undefined;
+        if (uri) {
+          setPairingUri(uri);
+          setStatus("awaiting_approval");
+        }
+      });
       provider.on("accountsChanged", (...args: unknown[]) => {
         const accs = args[0] as string[] | undefined;
         setAccount(accs?.[0] ?? null);
         setStatus(accs?.[0] ? "connected" : "disconnected");
+        if (accs?.[0]) setPairingUri(null);
       });
       provider.on("chainChanged", (...args: unknown[]) => {
         const raw = args[0];
@@ -93,6 +101,7 @@ export const useWalletConnect = () => {
       provider.on("disconnect", () => {
         setAccount(null);
         setChainId(null);
+        setPairingUri(null);
         setStatus("disconnected");
       });
 
