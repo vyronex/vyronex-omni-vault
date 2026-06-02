@@ -19,6 +19,8 @@ const SUPPORTED_CHAINS = [56, 1, 250, 137, 42161];
 export type WalletConnectStatus =
   | "idle"
   | "initializing"
+  | "awaiting_uri"
+  | "awaiting_approval"
   | "connecting"
   | "connected"
   | "disconnected"
@@ -44,6 +46,7 @@ export const useWalletConnect = () => {
   const [account, setAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pairingUri, setPairingUri] = useState<string | null>(null);
 
   const providerRef = useRef<WCProviderLike | null>(null);
 
