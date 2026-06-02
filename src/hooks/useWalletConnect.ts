@@ -19,6 +19,8 @@ const SUPPORTED_CHAINS = [56, 1, 250, 137, 42161];
 export type WalletConnectStatus =
   | "idle"
   | "initializing"
+  | "awaiting_uri"
+  | "awaiting_approval"
   | "connecting"
   | "connected"
   | "disconnected"
@@ -44,6 +46,7 @@ export const useWalletConnect = () => {
   const [account, setAccount] = useState<string | null>(null);
   const [chainId, setChainId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pairingUri, setPairingUri] = useState<string | null>(null);
 
   const providerRef = useRef<WCProviderLike | null>(null);
 
@@ -64,7 +67,7 @@ export const useWalletConnect = () => {
         projectId,
         chains: [56],
         optionalChains: SUPPORTED_CHAINS,
-        showQrModal: true,
+        showQrModal: false,
         metadata: {
           name: "VyronexVNX",
           description: "Multi-chain CEX & Wallet",
@@ -77,10 +80,18 @@ export const useWalletConnect = () => {
         },
       })) as unknown as WCProviderLike;
 
+      provider.on("display_uri", (...args: unknown[]) => {
+        const uri = args[0] as string | undefined;
+        if (uri) {
+          setPairingUri(uri);
+          setStatus("awaiting_approval");
+        }
+      });
       provider.on("accountsChanged", (...args: unknown[]) => {
         const accs = args[0] as string[] | undefined;
         setAccount(accs?.[0] ?? null);
         setStatus(accs?.[0] ? "connected" : "disconnected");
+        if (accs?.[0]) setPairingUri(null);
       });
       provider.on("chainChanged", (...args: unknown[]) => {
         const raw = args[0];
@@ -90,6 +101,7 @@ export const useWalletConnect = () => {
       provider.on("disconnect", () => {
         setAccount(null);
         setChainId(null);
+        setPairingUri(null);
         setStatus("disconnected");
       });
 
@@ -123,18 +135,26 @@ export const useWalletConnect = () => {
     }
     const provider = providerRef.current ?? (await init());
     if (!provider) return;
-    setStatus("connecting");
+    setStatus("awaiting_uri");
     setError(null);
+    setPairingUri(null);
     try {
       await provider.connect({ optionalChains: SUPPORTED_CHAINS });
       setAccount(provider.accounts?.[0] ?? null);
       setChainId(provider.chainId ?? null);
+      setPairingUri(null);
       setStatus(provider.accounts?.[0] ? "connected" : "disconnected");
     } catch (e) {
       setStatus("error");
+      setPairingUri(null);
       setError((e as { message?: string })?.message ?? "Connection rejected");
     }
   }, [init, projectId]);
+
+  const cancelPairing = useCallback(() => {
+    setPairingUri(null);
+    setStatus("idle");
+  }, []);
 
   const disconnect = useCallback(async () => {
     try {
@@ -142,6 +162,7 @@ export const useWalletConnect = () => {
     } catch { /* ignore */ }
     setAccount(null);
     setChainId(null);
+    setPairingUri(null);
     setStatus("disconnected");
   }, []);
 
@@ -196,6 +217,8 @@ export const useWalletConnect = () => {
     account,
     chainId,
     error,
+    pairingUri,
+    cancelPairing,
     connect,
     disconnect,
     switchChain,
