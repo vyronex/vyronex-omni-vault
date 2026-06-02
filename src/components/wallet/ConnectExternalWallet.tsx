@@ -92,16 +92,20 @@ export const ConnectExternalWallet = ({
         >
           External Wallets
         </p>
-        <span className="text-[10px] text-muted-foreground">EVM · Solana · Tron</span>
+        <span className="text-[10px] text-muted-foreground">WC · EVM · Solana · Tron</span>
       </div>
 
-      <Tabs defaultValue="evm" className="w-full">
-        <TabsList className="grid grid-cols-3 h-8 mb-3">
+      <Tabs defaultValue="walletconnect" className="w-full">
+        <TabsList className="grid grid-cols-4 h-8 mb-3">
+          <TabsTrigger value="walletconnect" className="text-[11px]">WC</TabsTrigger>
           <TabsTrigger value="evm" className="text-[11px]">EVM</TabsTrigger>
           <TabsTrigger value="solana" className="text-[11px]">Solana</TabsTrigger>
           <TabsTrigger value="tron" className="text-[11px]">Tron</TabsTrigger>
         </TabsList>
 
+        <TabsContent value="walletconnect" className="mt-0">
+          <WalletConnectPanel evmWallets={evmWallets} onApply={onApply} />
+        </TabsContent>
         <TabsContent value="evm" className="mt-0">
           <EvmPanel evmWallets={evmWallets} onApply={onApply} />
         </TabsContent>
@@ -115,6 +119,7 @@ export const ConnectExternalWallet = ({
     </div>
   );
 };
+
 
 // ────────────────────────────────────────────────────────────────────
 // EVM
