@@ -12,6 +12,7 @@ import {
   LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
 import { useWalletConnect } from "@/hooks/useWalletConnect";
+import { WalletConnectPairingDialog } from "@/components/wallet/WalletConnectPairingDialog";
 
 
 // ─── Provider type defs ──────────────────────────────────────────────
