@@ -217,6 +217,8 @@ export const useWalletConnect = () => {
     account,
     chainId,
     error,
+    pairingUri,
+    cancelPairing,
     connect,
     disconnect,
     switchChain,
