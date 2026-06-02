@@ -626,8 +626,10 @@ const WalletConnectPanel = ({
   const {
     projectId, setProjectId,
     status, account, chainId, error,
+    pairingUri, cancelPairing,
     connect, disconnect, switchChain, sendTransaction,
   } = useWalletConnect();
+  const [pairOpen, setPairOpen] = useState(false);
 
   const [pidInput, setPidInput] = useState(projectId);
   const [applyChain, setApplyChain] = useState<EvmChain>("BNB Chain");
