@@ -135,18 +135,26 @@ export const useWalletConnect = () => {
     }
     const provider = providerRef.current ?? (await init());
     if (!provider) return;
-    setStatus("connecting");
+    setStatus("awaiting_uri");
     setError(null);
+    setPairingUri(null);
     try {
       await provider.connect({ optionalChains: SUPPORTED_CHAINS });
       setAccount(provider.accounts?.[0] ?? null);
       setChainId(provider.chainId ?? null);
+      setPairingUri(null);
       setStatus(provider.accounts?.[0] ? "connected" : "disconnected");
     } catch (e) {
       setStatus("error");
+      setPairingUri(null);
       setError((e as { message?: string })?.message ?? "Connection rejected");
     }
   }, [init, projectId]);
+
+  const cancelPairing = useCallback(() => {
+    setPairingUri(null);
+    setStatus("idle");
+  }, []);
 
   const disconnect = useCallback(async () => {
     try {
@@ -154,6 +162,7 @@ export const useWalletConnect = () => {
     } catch { /* ignore */ }
     setAccount(null);
     setChainId(null);
+    setPairingUri(null);
     setStatus("disconnected");
   }, []);
 
