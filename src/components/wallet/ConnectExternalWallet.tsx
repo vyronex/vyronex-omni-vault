@@ -724,19 +724,21 @@ const WalletConnectPanel = ({
     return (
       <>
         <p className="text-xs text-muted-foreground mb-3">
-          Open a QR pairing modal to connect a remote EVM wallet via WalletConnect v2.
+          Pair a mobile or hardware wallet via WalletConnect v2 — scan the QR or paste the URI.
         </p>
         <Button
           size="sm"
           className="w-full rounded-xl gradient-primary shadow-glow active-press h-10"
-          onClick={connect}
-          disabled={status === "connecting" || status === "initializing"}
+          onClick={openPairing}
+          disabled={status === "initializing" || status === "awaiting_uri" || status === "awaiting_approval"}
         >
           {status === "initializing"
             ? "Initializing…"
-            : status === "connecting"
-              ? "Awaiting wallet…"
-              : "Open WalletConnect"}
+            : status === "awaiting_uri"
+              ? "Generating code…"
+              : status === "awaiting_approval"
+                ? "Awaiting approval…"
+                : "Pair Wallet"}
         </Button>
         {error && <p className="mt-2 text-[10px] text-destructive">{error}</p>}
         <Button
@@ -746,6 +748,16 @@ const WalletConnectPanel = ({
         >
           Change Project ID
         </Button>
+
+        <WalletConnectPairingDialog
+          open={pairOpen}
+          onOpenChange={setPairOpen}
+          pairingUri={pairingUri}
+          status={status}
+          error={error}
+          onCancel={cancelAndClose}
+          onRetry={openPairing}
+        />
       </>
     );
   }
