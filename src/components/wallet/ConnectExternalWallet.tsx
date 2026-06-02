@@ -643,6 +643,21 @@ const WalletConnectPanel = ({
     if (chainId && CHAIN_BY_ID[chainId]) setApplyChain(CHAIN_BY_ID[chainId]);
   }, [chainId]);
 
+  // Auto-close pairing dialog when connected
+  useEffect(() => {
+    if (status === "connected") setPairOpen(false);
+  }, [status]);
+
+  const openPairing = async () => {
+    setPairOpen(true);
+    await connect();
+  };
+
+  const cancelAndClose = () => {
+    cancelPairing();
+    setPairOpen(false);
+  };
+
   const savePid = () => {
     const trimmed = pidInput.trim();
     if (!trimmed) return toast.error("Enter a WalletConnect Project ID");
