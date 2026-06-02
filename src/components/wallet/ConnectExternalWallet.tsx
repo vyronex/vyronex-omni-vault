@@ -598,3 +598,199 @@ const ConnectedHeader = ({
     <p className="font-mono text-xs break-all">{address}</p>
   </div>
 );
+
+// ────────────────────────────────────────────────────────────────────
+// WalletConnect v2 (multi-chain EVM dapp pairing)
+// ────────────────────────────────────────────────────────────────────
+const CHAIN_BY_ID: Record<number, EvmChain> = {
+  56: "BNB Chain",
+  1: "Ethereum",
+  250: "Fantom",
+};
+const CHAIN_LABEL: Record<number, string> = {
+  56: "BNB Chain",
+  1: "Ethereum",
+  250: "Fantom",
+  137: "Polygon",
+  42161: "Arbitrum",
+};
+
+const WalletConnectPanel = ({
+  evmWallets,
+  onApply,
+}: {
+  evmWallets: WalletSlot[];
+  onApply: Props["onApply"];
+}) => {
+  const {
+    projectId, setProjectId,
+    status, account, chainId, error,
+    connect, disconnect, switchChain, sendTransaction,
+  } = useWalletConnect();
+
+  const [pidInput, setPidInput] = useState(projectId);
+  const [applyChain, setApplyChain] = useState<EvmChain>("BNB Chain");
+  const [applying, setApplying] = useState(false);
+  const [to, setTo] = useState("");
+  const [amount, setAmount] = useState("");
+  const [sending, setSending] = useState(false);
+
+  // Auto-suggest slot matching current chain
+  useEffect(() => {
+    if (chainId && CHAIN_BY_ID[chainId]) setApplyChain(CHAIN_BY_ID[chainId]);
+  }, [chainId]);
+
+  const savePid = () => {
+    const trimmed = pidInput.trim();
+    if (!trimmed) return toast.error("Enter a WalletConnect Project ID");
+    setProjectId(trimmed);
+    toast.success("Project ID saved");
+  };
+
+  const apply = async () => {
+    if (!account) return;
+    const target = evmWallets.find((w) => w.chain === applyChain);
+    if (!target) return toast.error(`No ${applyChain} slot available`);
+    setApplying(true);
+    try {
+      await onApply(target.id, account);
+      toast.success(`Applied to ${applyChain}`);
+    } catch (err) {
+      toast.error((err as { message?: string })?.message ?? "Failed");
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const send = async () => {
+    if (!account) return;
+    const amt = parseFloat(amount);
+    if (!to.trim() || !isFinite(amt) || amt <= 0) return toast.error("Enter recipient and amount");
+    if (!/^0x[a-fA-F0-9]{40}$/.test(to.trim())) return toast.error("Invalid EVM address");
+    setSending(true);
+    try {
+      // Convert decimal ETH/BNB → wei hex (no BigInt overflow for typical values)
+      const wei = BigInt(Math.round(amt * 1e9)) * BigInt(1e9);
+      const valueHex = "0x" + wei.toString(16);
+      const hash = await sendTransaction({ to: to.trim(), valueWei: valueHex });
+      toast.success(`Tx sent · ${hash.slice(0, 10)}…`);
+      setTo(""); setAmount("");
+    } catch (err) {
+      toast.error((err as { message?: string })?.message ?? "Transaction failed");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  if (!projectId) {
+    return (
+      <>
+        <p className="text-xs text-muted-foreground mb-3">
+          Pair any mobile or hardware wallet (Trust, Rainbow, Ledger Live, Zerion…) via WalletConnect v2.
+          Paste a free WalletConnect Cloud Project ID from cloud.reown.com.
+        </p>
+        <Input
+          value={pidInput}
+          onChange={(e) => setPidInput(e.target.value)}
+          placeholder="WalletConnect Project ID"
+          className="h-9 text-xs font-mono mb-2"
+        />
+        <Button size="sm" className="w-full h-9 rounded-xl" onClick={savePid}>
+          Save Project ID
+        </Button>
+      </>
+    );
+  }
+
+  if (!account) {
+    return (
+      <>
+        <p className="text-xs text-muted-foreground mb-3">
+          Open a QR pairing modal to connect a remote EVM wallet via WalletConnect v2.
+        </p>
+        <Button
+          size="sm"
+          className="w-full rounded-xl gradient-primary shadow-glow active-press h-10"
+          onClick={connect}
+          disabled={status === "connecting" || status === "initializing"}
+        >
+          {status === "initializing"
+            ? "Initializing…"
+            : status === "connecting"
+              ? "Awaiting wallet…"
+              : "Open WalletConnect"}
+        </Button>
+        {error && <p className="mt-2 text-[10px] text-destructive">{error}</p>}
+        <Button
+          size="sm" variant="ghost"
+          className="w-full mt-2 text-[10px] h-7 text-muted-foreground"
+          onClick={() => setProjectId("")}
+        >
+          Change Project ID
+        </Button>
+      </>
+    );
+  }
+
+  const networkLabel = chainId ? (CHAIN_LABEL[chainId] ?? `Chain ${chainId}`) : null;
+
+  return (
+    <>
+      <ConnectedHeader label="WalletConnect" right={networkLabel} address={account} />
+
+      <div className="grid grid-cols-[1fr_auto] gap-2 mb-3">
+        <Select value={applyChain} onValueChange={(v) => setApplyChain(v as EvmChain)}>
+          <SelectTrigger className="h-9 text-xs"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            {EVM_CHAINS.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+          </SelectContent>
+        </Select>
+        <Button size="sm" className="h-9 rounded-xl" onClick={apply} disabled={applying}>
+          {applying ? "Applying…" : "Apply"}
+        </Button>
+      </div>
+
+      <div className="flex flex-wrap gap-1 mb-3">
+        {[56, 1, 250, 137, 42161].map((id) => (
+          <Button
+            key={id}
+            size="sm"
+            variant={chainId === id ? "default" : "outline"}
+            className="h-6 px-2 text-[10px] rounded-lg"
+            onClick={() => switchChain(id).catch((e) => toast.error(e.message))}
+          >
+            {CHAIN_LABEL[id]}
+          </Button>
+        ))}
+      </div>
+
+      <div className="border-t border-border/30 pt-3">
+        <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
+          Send Native ({chainId === 1 ? "ETH" : chainId === 56 ? "BNB" : chainId === 250 ? "FTM" : chainId === 137 ? "MATIC" : "ETH"})
+        </p>
+        <Input
+          value={to} onChange={(e) => setTo(e.target.value)}
+          placeholder="Recipient 0x…" className="h-9 text-xs mb-2 font-mono"
+        />
+        <div className="grid grid-cols-[1fr_auto] gap-2">
+          <Input
+            value={amount} onChange={(e) => setAmount(e.target.value)}
+            placeholder="0.00" inputMode="decimal" className="h-9 text-xs font-mono"
+          />
+          <Button size="sm" className="h-9 rounded-xl" onClick={send} disabled={sending}>
+            {sending ? "Sending…" : "Send"}
+          </Button>
+        </div>
+      </div>
+
+      <Button
+        size="sm" variant="ghost"
+        className="w-full mt-2 text-[11px] h-7 text-muted-foreground"
+        onClick={disconnect}
+      >
+        Disconnect
+      </Button>
+    </>
+  );
+};
+
