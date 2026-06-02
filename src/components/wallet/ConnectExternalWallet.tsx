@@ -11,6 +11,8 @@ import {
   Transaction,
   LAMPORTS_PER_SOL,
 } from "@solana/web3.js";
+import { useWalletConnect } from "@/hooks/useWalletConnect";
+
 
 // ─── Provider type defs ──────────────────────────────────────────────
 interface Eip1193Provider {
