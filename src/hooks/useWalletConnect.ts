@@ -67,7 +67,7 @@ export const useWalletConnect = () => {
         projectId,
         chains: [56],
         optionalChains: SUPPORTED_CHAINS,
-        showQrModal: true,
+        showQrModal: false,
         metadata: {
           name: "VyronexVNX",
           description: "Multi-chain CEX & Wallet",
