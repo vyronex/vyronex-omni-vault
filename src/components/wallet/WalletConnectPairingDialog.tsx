@@ -74,11 +74,57 @@ const statusMeta: Record<WalletConnectStatus, { label: string; tone: string }> =
 };
 
 export const WalletConnectPairingDialog = ({
-  open, onOpenChange, pairingUri, status, error, onCancel, onRetry,
+  open, onOpenChange, pairingUri, status, error, account, onCancel, onRetry,
 }: Props) => {
   const [qrSvg, setQrSvg] = useState<string>("");
   const [showRaw, setShowRaw] = useState(false);
+  const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
+  const seenRef = useRef<Set<TimelineKey>>(new Set());
   const meta = statusMeta[status];
+
+  const pushEvent = (e: Omit<TimelineEvent, "at"> & { at?: number }) => {
+    if (seenRef.current.has(e.key)) return;
+    seenRef.current.add(e.key);
+    setTimeline((t) => [...t, { ...e, at: e.at ?? Date.now() }]);
+  };
+
+  // Reset timeline whenever the dialog opens fresh
+  useEffect(() => {
+    if (open) {
+      seenRef.current = new Set();
+      setTimeline([]);
+      seenRef.current.add("init");
+      setTimeline([{ key: "init", label: "Pairing session started", tone: "ok", at: Date.now() }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // Track status transitions into timeline events
+  useEffect(() => {
+    if (!open) return;
+    if ((status === "awaiting_approval" || status === "connecting" || status === "connected") && pairingUri) {
+      pushEvent({ key: "uri_created", label: "Pairing URI generated", tone: "ok" });
+    }
+    if (status === "awaiting_approval") {
+      pushEvent({ key: "awaiting_scan", label: "Awaiting QR scan / deep-link", tone: "pending" });
+    }
+    if (status === "connecting") {
+      pushEvent({ key: "scanned", label: "Wallet scanned code, handshake in progress", tone: "pending" });
+    }
+    if (status === "connected") {
+      pushEvent({ key: "scanned", label: "Wallet scanned code", tone: "ok" });
+      pushEvent({
+        key: "approved",
+        label: account ? `Account approved (${account.slice(0, 6)}…${account.slice(-4)})` : "Accounts approved",
+        tone: "ok",
+      });
+      pushEvent({ key: "connected", label: "Session established", tone: "ok" });
+    }
+    if (status === "error") {
+      pushEvent({ key: "failed", label: "Pairing failed", tone: "error", detail: classifyFailure(error) });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, pairingUri, account, error, open]);
 
   useEffect(() => {
     if (!pairingUri) { setQrSvg(""); return; }
