@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,45 @@ interface Props {
   pairingUri: string | null;
   status: WalletConnectStatus;
   error: string | null;
+  account?: string | null;
   onCancel: () => void;
   onRetry: () => void;
 }
+
+type TimelineKey =
+  | "init"
+  | "uri_created"
+  | "awaiting_scan"
+  | "scanned"
+  | "approved"
+  | "connected"
+  | "failed";
+
+interface TimelineEvent {
+  key: TimelineKey;
+  label: string;
+  at: number;
+  tone: "ok" | "pending" | "error";
+  detail?: string;
+}
+
+const fmtTime = (t: number) => {
+  const d = new Date(t);
+  return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}:${d.getSeconds().toString().padStart(2, "0")}`;
+};
+
+const classifyFailure = (msg: string | null): string => {
+  if (!msg) return "Unknown failure";
+  const m = msg.toLowerCase();
+  if (m.includes("reject")) return "Connection rejected in wallet";
+  if (m.includes("expired") || m.includes("expire")) return "Pairing code expired — request a new one";
+  if (m.includes("timeout")) return "Wallet did not respond in time";
+  if (m.includes("project") && m.includes("id")) return "Invalid WalletConnect Project ID";
+  if (m.includes("network") || m.includes("fetch")) return "Network error reaching WalletConnect relay";
+  if (m.includes("user disapproved") || m.includes("user denied")) return "User denied the request";
+  if (m.includes("unsupported")) return "Wallet does not support the requested chain";
+  return msg;
+};
 
 // Common mobile wallet deep-link prefixes
 const MOBILE_WALLETS: { name: string; build: (uri: string) => string }[] = [
@@ -38,11 +74,57 @@ const statusMeta: Record<WalletConnectStatus, { label: string; tone: string }> =
 };
 
 export const WalletConnectPairingDialog = ({
-  open, onOpenChange, pairingUri, status, error, onCancel, onRetry,
+  open, onOpenChange, pairingUri, status, error, account, onCancel, onRetry,
 }: Props) => {
   const [qrSvg, setQrSvg] = useState<string>("");
   const [showRaw, setShowRaw] = useState(false);
+  const [timeline, setTimeline] = useState<TimelineEvent[]>([]);
+  const seenRef = useRef<Set<TimelineKey>>(new Set());
   const meta = statusMeta[status];
+
+  const pushEvent = (e: Omit<TimelineEvent, "at"> & { at?: number }) => {
+    if (seenRef.current.has(e.key)) return;
+    seenRef.current.add(e.key);
+    setTimeline((t) => [...t, { ...e, at: e.at ?? Date.now() }]);
+  };
+
+  // Reset timeline whenever the dialog opens fresh
+  useEffect(() => {
+    if (open) {
+      seenRef.current = new Set();
+      setTimeline([]);
+      seenRef.current.add("init");
+      setTimeline([{ key: "init", label: "Pairing session started", tone: "ok", at: Date.now() }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // Track status transitions into timeline events
+  useEffect(() => {
+    if (!open) return;
+    if ((status === "awaiting_approval" || status === "connecting" || status === "connected") && pairingUri) {
+      pushEvent({ key: "uri_created", label: "Pairing URI generated", tone: "ok" });
+    }
+    if (status === "awaiting_approval") {
+      pushEvent({ key: "awaiting_scan", label: "Awaiting QR scan / deep-link", tone: "pending" });
+    }
+    if (status === "connecting") {
+      pushEvent({ key: "scanned", label: "Wallet scanned code, handshake in progress", tone: "pending" });
+    }
+    if (status === "connected") {
+      pushEvent({ key: "scanned", label: "Wallet scanned code", tone: "ok" });
+      pushEvent({
+        key: "approved",
+        label: account ? `Account approved (${account.slice(0, 6)}…${account.slice(-4)})` : "Accounts approved",
+        tone: "ok",
+      });
+      pushEvent({ key: "connected", label: "Session established", tone: "ok" });
+    }
+    if (status === "error") {
+      pushEvent({ key: "failed", label: "Pairing failed", tone: "error", detail: classifyFailure(error) });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, pairingUri, account, error, open]);
 
   useEffect(() => {
     if (!pairingUri) { setQrSvg(""); return; }
@@ -191,6 +273,39 @@ export const WalletConnectPairingDialog = ({
             ))}
           </div>
         </div>
+
+        {/* Pairing Timeline */}
+        <div className="px-5 pb-3">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
+            Pairing Timeline
+          </p>
+          <ol className="relative border-l border-border/40 ml-2 space-y-2">
+            {timeline.map((ev) => (
+              <li key={ev.key} className="pl-3 relative">
+                <span
+                  className={`absolute -left-[5px] top-1.5 h-2 w-2 rounded-full ${
+                    ev.tone === "ok"
+                      ? "bg-emerald-400"
+                      : ev.tone === "error"
+                        ? "bg-destructive"
+                        : "bg-amber-400 animate-pulse"
+                  }`}
+                />
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-medium text-foreground">{ev.label}</span>
+                  <span className="text-[10px] font-mono text-muted-foreground">{fmtTime(ev.at)}</span>
+                </div>
+                {ev.detail && (
+                  <p className="text-[10px] text-destructive mt-0.5">{ev.detail}</p>
+                )}
+              </li>
+            ))}
+            {timeline.length === 0 && (
+              <li className="pl-3 text-[11px] text-muted-foreground">No events yet.</li>
+            )}
+          </ol>
+        </div>
+
 
         {/* Footer */}
         <div className="px-5 py-3 border-t border-border/30 flex items-center justify-between">

@@ -755,6 +755,7 @@ const WalletConnectPanel = ({
           pairingUri={pairingUri}
           status={status}
           error={error}
+          account={account}
           onCancel={cancelAndClose}
           onRetry={openPairing}
         />
