@@ -216,7 +216,7 @@ const Wallet = () => {
                 </div>
                 <div className="px-3 py-2 rounded-lg bg-background/60 border border-border/40">
                   <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">VNX Price</p>
-                  <p className="text-base font-bold font-mono mt-0.5">${vnxPrice?.priceUsd?.toFixed(4) ?? "—"}</p>
+                  <p className="text-base font-bold font-mono mt-0.5">${vnxPrice?.price?.toFixed(4) ?? "—"}</p>
                 </div>
                 <div className="px-3 py-2 rounded-lg bg-background/60 border border-border/40">
                   <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">Recent Tx</p>
