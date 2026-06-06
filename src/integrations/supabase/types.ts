@@ -246,6 +246,81 @@ export type Database = {
         }
         Relationships: []
       }
+      token_listings: {
+        Row: {
+          chain: string
+          contract_address: string
+          created_at: string
+          decimals: number
+          description: string | null
+          github: string | null
+          id: string
+          logo_url: string | null
+          project_name: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["listing_status"]
+          submitted_by: string | null
+          telegram: string | null
+          token_name: string
+          token_symbol: string
+          total_supply: number | null
+          twitter: string | null
+          updated_at: string
+          website: string | null
+          whitepaper: string | null
+        }
+        Insert: {
+          chain: string
+          contract_address: string
+          created_at?: string
+          decimals?: number
+          description?: string | null
+          github?: string | null
+          id?: string
+          logo_url?: string | null
+          project_name: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          submitted_by?: string | null
+          telegram?: string | null
+          token_name: string
+          token_symbol: string
+          total_supply?: number | null
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+          whitepaper?: string | null
+        }
+        Update: {
+          chain?: string
+          contract_address?: string
+          created_at?: string
+          decimals?: number
+          description?: string | null
+          github?: string | null
+          id?: string
+          logo_url?: string | null
+          project_name?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["listing_status"]
+          submitted_by?: string | null
+          telegram?: string | null
+          token_name?: string
+          token_symbol?: string
+          total_supply?: number | null
+          twitter?: string | null
+          updated_at?: string
+          website?: string | null
+          whitepaper?: string | null
+        }
+        Relationships: []
+      }
       trade_audit_log: {
         Row: {
           buyer_id: string
@@ -625,6 +700,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      listing_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -753,6 +829,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      listing_status: ["pending", "approved", "rejected"],
     },
   },
 } as const
