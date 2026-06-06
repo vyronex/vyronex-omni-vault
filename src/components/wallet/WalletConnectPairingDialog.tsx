@@ -274,6 +274,39 @@ export const WalletConnectPairingDialog = ({
           </div>
         </div>
 
+        {/* Pairing Timeline */}
+        <div className="px-5 pb-3">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground mb-2">
+            Pairing Timeline
+          </p>
+          <ol className="relative border-l border-border/40 ml-2 space-y-2">
+            {timeline.map((ev) => (
+              <li key={ev.key} className="pl-3 relative">
+                <span
+                  className={`absolute -left-[5px] top-1.5 h-2 w-2 rounded-full ${
+                    ev.tone === "ok"
+                      ? "bg-emerald-400"
+                      : ev.tone === "error"
+                        ? "bg-destructive"
+                        : "bg-amber-400 animate-pulse"
+                  }`}
+                />
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-medium text-foreground">{ev.label}</span>
+                  <span className="text-[10px] font-mono text-muted-foreground">{fmtTime(ev.at)}</span>
+                </div>
+                {ev.detail && (
+                  <p className="text-[10px] text-destructive mt-0.5">{ev.detail}</p>
+                )}
+              </li>
+            ))}
+            {timeline.length === 0 && (
+              <li className="pl-3 text-[11px] text-muted-foreground">No events yet.</li>
+            )}
+          </ol>
+        </div>
+
+
         {/* Footer */}
         <div className="px-5 py-3 border-t border-border/30 flex items-center justify-between">
           <p className="text-[10px] text-muted-foreground">
