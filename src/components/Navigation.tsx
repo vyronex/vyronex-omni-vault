@@ -26,6 +26,7 @@ const Navigation = () => {
     { label: "Trade", path: "/trade" },
     { label: "Futures", path: "/futures" },
     { label: "VNX", path: "/vnx" },
+    { label: "Listings", path: "/listings" },
   ];
 
   return (
