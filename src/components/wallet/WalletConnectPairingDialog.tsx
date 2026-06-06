@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -12,9 +12,45 @@ interface Props {
   pairingUri: string | null;
   status: WalletConnectStatus;
   error: string | null;
+  account?: string | null;
   onCancel: () => void;
   onRetry: () => void;
 }
+
+type TimelineKey =
+  | "init"
+  | "uri_created"
+  | "awaiting_scan"
+  | "scanned"
+  | "approved"
+  | "connected"
+  | "failed";
+
+interface TimelineEvent {
+  key: TimelineKey;
+  label: string;
+  at: number;
+  tone: "ok" | "pending" | "error";
+  detail?: string;
+}
+
+const fmtTime = (t: number) => {
+  const d = new Date(t);
+  return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}:${d.getSeconds().toString().padStart(2, "0")}`;
+};
+
+const classifyFailure = (msg: string | null): string => {
+  if (!msg) return "Unknown failure";
+  const m = msg.toLowerCase();
+  if (m.includes("reject")) return "Connection rejected in wallet";
+  if (m.includes("expired") || m.includes("expire")) return "Pairing code expired — request a new one";
+  if (m.includes("timeout")) return "Wallet did not respond in time";
+  if (m.includes("project") && m.includes("id")) return "Invalid WalletConnect Project ID";
+  if (m.includes("network") || m.includes("fetch")) return "Network error reaching WalletConnect relay";
+  if (m.includes("user disapproved") || m.includes("user denied")) return "User denied the request";
+  if (m.includes("unsupported")) return "Wallet does not support the requested chain";
+  return msg;
+};
 
 // Common mobile wallet deep-link prefixes
 const MOBILE_WALLETS: { name: string; build: (uri: string) => string }[] = [
