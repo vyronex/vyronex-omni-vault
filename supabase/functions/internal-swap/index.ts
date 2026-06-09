@@ -127,6 +127,21 @@ Deno.serve(async (req) => {
       throw creditErr;
     }
 
+    // Record swap history (settled instantly for custodial)
+    await admin.from("swap_history").insert({
+      user_id: user.id,
+      mode: "custodial",
+      from_symbol: from,
+      to_symbol: to,
+      amount_in: amount,
+      amount_out: netOut,
+      rate: fromUsd / toUsd,
+      fee_amount: feeOut,
+      fee_symbol: to,
+      route: "Custodial · CoinGecko mid-price",
+      status: "settled",
+    });
+
     return new Response(JSON.stringify({
       ok: true,
       from_symbol: from,

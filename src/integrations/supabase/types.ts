@@ -246,6 +246,84 @@ export type Database = {
         }
         Relationships: []
       }
+      swap_history: {
+        Row: {
+          amount_in: number
+          amount_out: number
+          chain_id: number | null
+          chain_name: string | null
+          created_at: string
+          error_message: string | null
+          fee_amount: number | null
+          fee_symbol: string | null
+          from_address: string | null
+          from_symbol: string
+          id: string
+          mode: string
+          price_impact: number | null
+          rate: number | null
+          route: string | null
+          signer_address: string | null
+          slippage: number | null
+          status: string
+          to_address: string | null
+          to_symbol: string
+          tx_hash: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_in: number
+          amount_out: number
+          chain_id?: number | null
+          chain_name?: string | null
+          created_at?: string
+          error_message?: string | null
+          fee_amount?: number | null
+          fee_symbol?: string | null
+          from_address?: string | null
+          from_symbol: string
+          id?: string
+          mode: string
+          price_impact?: number | null
+          rate?: number | null
+          route?: string | null
+          signer_address?: string | null
+          slippage?: number | null
+          status?: string
+          to_address?: string | null
+          to_symbol: string
+          tx_hash?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_in?: number
+          amount_out?: number
+          chain_id?: number | null
+          chain_name?: string | null
+          created_at?: string
+          error_message?: string | null
+          fee_amount?: number | null
+          fee_symbol?: string | null
+          from_address?: string | null
+          from_symbol?: string
+          id?: string
+          mode?: string
+          price_impact?: number | null
+          rate?: number | null
+          route?: string | null
+          signer_address?: string | null
+          slippage?: number | null
+          status?: string
+          to_address?: string | null
+          to_symbol?: string
+          tx_hash?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       token_listings: {
         Row: {
           chain: string
