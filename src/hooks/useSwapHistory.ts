@@ -10,6 +10,8 @@ export interface SwapRecord {
   chain_name: string | null;
   from_symbol: string;
   to_symbol: string;
+  from_address?: string | null;
+  to_address?: string | null;
   amount_in: number;
   amount_out: number;
   rate: number | null;
