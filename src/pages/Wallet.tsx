@@ -144,122 +144,137 @@ const Wallet = () => {
     : "No wallet";
 
   const sections: { key: SectionKey; label: string; count?: number | string }[] = [
-    { key: "overview", label: "Overview" },
+    { key: "overview", label: "Tokens" },
     { key: "chains", label: "Chains", count: sortedWallets.length },
-    { key: "custodial", label: "Custodial", count: balances?.length ?? 0 },
-    { key: "vault", label: "Vault" },
     { key: "activity", label: "Activity", count: transactions?.length ?? 0 },
+    { key: "vault", label: "Vault" },
+    { key: "custodial", label: "Exchange", count: balances?.length ?? 0 },
     { key: "connect", label: "Connect" },
   ];
+
+  // Unified asset list: custodial balances + on-chain native + on-chain tokens
+  type AssetRow = {
+    key: string;
+    symbol: string;
+    source: "Exchange" | string;
+    amount: number;
+    usd: number;
+    flashId?: string;
+  };
+  const assets: AssetRow[] = [];
+  (balances ?? []).forEach((b) => {
+    assets.push({
+      key: `cust-${b.id}`,
+      symbol: b.token_symbol,
+      source: "Exchange",
+      amount: Number(b.balance),
+      usd: Number(b.usd_value),
+      flashId: b.id,
+    });
+  });
+  (onChainBalances ?? []).forEach((b) => {
+    if (b.placeholder) return;
+    if (b.native.balance > 0) {
+      assets.push({
+        key: `${b.chain}-native`,
+        symbol: b.native.symbol,
+        source: b.chain,
+        amount: b.native.balance,
+        usd: chainPrices ? chainPrices.usdValue(b.native.symbol, b.native.balance) : 0,
+      });
+    }
+    b.tokens.forEach((t) => {
+      if (t.balance <= 0) return;
+      assets.push({
+        key: `${b.chain}-${t.address}`,
+        symbol: t.symbol,
+        source: b.chain,
+        amount: t.balance,
+        usd: chainPrices ? chainPrices.usdValue(t.symbol, t.balance) : 0,
+      });
+    });
+  });
+  assets.sort((a, b) => b.usd - a.usd);
 
   return (
     <PageTransition>
       <div className="min-h-screen bg-background">
         <Navigation />
 
-        {/* ═══════════ HERO BAR ═══════════ */}
-        <section className="border-b border-border/30 bg-card/20">
-          <div className="section-container py-5">
-            <div className="max-w-7xl mx-auto">
-              <div className="flex flex-col lg:flex-row lg:items-center gap-5">
-                {/* Balance hero */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-1">
-                    Total Portfolio · Live
-                  </p>
-                  <div className="flex items-baseline gap-3 flex-wrap">
-                    <h1
-                      className="text-4xl md:text-5xl font-bold font-mono leading-none"
-                      style={{ fontFamily: "'Space Grotesk', system-ui" }}
-                    >
-                      ${portfolioTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </h1>
-                    <span
-                      className={`text-sm font-bold font-mono px-2 py-0.5 rounded-md ${
-                        (vnxPrice?.change24h ?? 0) >= 0
-                          ? "bg-[hsl(var(--vnx-green))]/15 text-[hsl(var(--vnx-green))]"
-                          : "bg-destructive/15 text-destructive"
-                      }`}
-                    >
-                      VNX {(vnxPrice?.change24h ?? 0) >= 0 ? "+" : ""}{vnxPrice?.change24h?.toFixed(2) ?? "0.00"}%
-                    </span>
-                  </div>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
-                    <span>Custodial <span className="font-mono text-foreground">${custodialTotal.toFixed(2)}</span></span>
-                    <span>·</span>
-                    <span>On-chain <span className="font-mono text-foreground">${onChainTotalUsd.toFixed(2)}</span></span>
-                    <span>·</span>
-                    <span>VNX <span className="font-mono text-foreground">{vnxAmount.toLocaleString(undefined, { maximumFractionDigits: 4 })}</span></span>
-                  </div>
-                </div>
+        {/* ═══════════ WALLET HEADER (centered balance + actions) ═══════════ */}
+        <section className="border-b border-border/30 bg-gradient-to-b from-card/40 to-background">
+          <div className="section-container py-8">
+            <div className="max-w-2xl mx-auto text-center">
+              {primaryWallet && (
+                <button
+                  onClick={copyAddress}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/40 border border-border/40 hover:border-primary/40 transition-colors mb-5"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--vnx-green))]" />
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                    {primaryWallet.chain}
+                  </span>
+                  <span className="font-mono text-xs text-foreground">{shortAddress}</span>
+                  <span className="text-[9px] uppercase tracking-wider text-primary">Copy</span>
+                </button>
+              )}
 
-                {/* Primary address pill */}
-                {primaryWallet && (
-                  <button
-                    onClick={copyAddress}
-                    className="text-left px-4 py-2.5 rounded-xl bg-muted/30 border border-border/40 hover:border-primary/40 transition-colors"
-                  >
-                    <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
-                      Primary · {primaryWallet.chain}
-                    </p>
-                    <p className="font-mono text-xs mt-0.5">{shortAddress}</p>
-                    <p className="text-[9px] uppercase tracking-wider text-primary mt-0.5">Tap to copy</p>
-                  </button>
-                )}
-
-                {/* Quick actions */}
-                <div className="grid grid-cols-3 gap-2 lg:w-[280px]">
-                  <Button
-                    onClick={() => setWithdrawOpen(true)}
-                    className="rounded-xl gradient-primary shadow-glow active-press h-11 text-xs font-bold"
-                  >
-                    Send
-                  </Button>
-                  <Button
-                    onClick={() => setDepositOpen(true)}
-                    variant="outline"
-                    className="rounded-xl active-press h-11 text-xs font-bold"
-                  >
-                    Receive
-                  </Button>
-                  <Button
-                    onClick={() => setTransferOpen(true)}
-                    variant="outline"
-                    className="rounded-xl active-press h-11 text-xs font-bold"
-                  >
-                    Transfer
-                  </Button>
-                </div>
+              <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-2">
+                Total Balance
+              </p>
+              <h1
+                className="text-5xl md:text-6xl font-bold font-mono leading-none"
+                style={{ fontFamily: "'Space Grotesk', system-ui" }}
+              >
+                ${portfolioTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </h1>
+              <div className="mt-3 inline-flex items-center gap-2 flex-wrap justify-center text-[11px] text-muted-foreground">
+                <span>Exchange <span className="font-mono text-foreground">${custodialTotal.toFixed(2)}</span></span>
+                <span>·</span>
+                <span>On-chain <span className="font-mono text-foreground">${onChainTotalUsd.toFixed(2)}</span></span>
+                <span>·</span>
+                <span className={`font-mono ${(vnxPrice?.change24h ?? 0) >= 0 ? "text-[hsl(var(--vnx-green))]" : "text-destructive"}`}>
+                  VNX {(vnxPrice?.change24h ?? 0) >= 0 ? "+" : ""}{vnxPrice?.change24h?.toFixed(2) ?? "0.00"}%
+                </span>
               </div>
 
-              {/* Stat strip */}
-              <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <div className="px-3 py-2 rounded-lg bg-background/60 border border-border/40">
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">Networks</p>
-                  <p className="text-base font-bold font-mono mt-0.5">{sortedWallets.length}</p>
-                </div>
-                <div className="px-3 py-2 rounded-lg bg-background/60 border border-border/40">
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">Active</p>
-                  <p className="text-base font-bold font-mono mt-0.5 text-[hsl(var(--vnx-green))]">{activeChains}</p>
-                </div>
-                <div className="px-3 py-2 rounded-lg bg-background/60 border border-border/40">
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">VNX Price</p>
-                  <p className="text-base font-bold font-mono mt-0.5">${vnxPrice?.price?.toFixed(4) ?? "—"}</p>
-                </div>
-                <div className="px-3 py-2 rounded-lg bg-background/60 border border-border/40">
-                  <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground">Recent Tx</p>
-                  <p className="text-base font-bold font-mono mt-0.5">{transactions?.length ?? 0}</p>
-                </div>
+              <div className="mt-6 grid grid-cols-4 gap-3 max-w-md mx-auto">
+                {[
+                  { label: "Send", onClick: () => setWithdrawOpen(true), primary: true },
+                  { label: "Receive", onClick: () => setDepositOpen(true) },
+                  { label: "Swap", onClick: () => navigate("/swap") },
+                  { label: "Transfer", onClick: () => setTransferOpen(true) },
+                ].map((a) => (
+                  <button
+                    key={a.label}
+                    onClick={a.onClick}
+                    className="flex flex-col items-center gap-2 group active-press"
+                  >
+                    <span
+                      className={`h-12 w-12 rounded-full flex items-center justify-center text-[10px] font-bold uppercase tracking-wider transition-all ${
+                        a.primary
+                          ? "gradient-primary text-primary-foreground shadow-glow"
+                          : "bg-muted/40 border border-border/40 text-foreground group-hover:border-primary/40 group-hover:bg-primary/10"
+                      }`}
+                      style={{ fontFamily: "'Space Grotesk', system-ui" }}
+                    >
+                      {a.label.slice(0, 4)}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground group-hover:text-foreground">
+                      {a.label}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* ═══════════ SECTION TABS (text pills, no icons) ═══════════ */}
+        {/* ═══════════ SECTION TABS ═══════════ */}
         <div className="sticky top-[57px] z-30 border-b border-border/30 bg-background/85 backdrop-blur-xl">
           <div className="section-container">
-            <div className="max-w-7xl mx-auto overflow-x-auto">
-              <div className="flex gap-1 py-2 min-w-max">
+            <div className="max-w-3xl mx-auto overflow-x-auto">
+              <div className="flex gap-1 py-2 min-w-max justify-center">
                 {sections.map((s) => (
                   <button
                     key={s.key}
@@ -282,115 +297,92 @@ const Wallet = () => {
           </div>
         </div>
 
-        {/* ═══════════ BENTO BODY ═══════════ */}
+        {/* ═══════════ BODY ═══════════ */}
         <div className="section-container py-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-3xl mx-auto">
 
-            {/* ─── OVERVIEW: bento grid ─── */}
+            {/* ─── TOKENS: unified asset list ─── */}
             {section === "overview" && (
-              <div className="grid grid-cols-12 gap-4 animate-slide-up">
-                {/* Top chains by USD (large tile) */}
-                <div className="col-span-12 lg:col-span-8 data-card">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h2 className="text-lg font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
-                        Chain Snapshot
-                      </h2>
-                      <p className="text-[11px] text-muted-foreground">Live on-chain reads · refresh every 60s</p>
+              <div className="animate-slide-up space-y-4">
+                <div className="flex items-center justify-between px-1">
+                  <div>
+                    <h2 className="text-base font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                      Assets
+                    </h2>
+                    <p className="text-[11px] text-muted-foreground">
+                      {assets.length} {assets.length === 1 ? "holding" : "holdings"} across Exchange & on-chain
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={() => refetchOnChain()} disabled={onChainLoading} className="h-8 text-xs">
+                    {onChainLoading ? "Refreshing…" : "Refresh"}
+                  </Button>
+                </div>
+
+                {assets.length === 0 ? (
+                  <div className="data-card text-center py-16">
+                    <p className="font-bold mb-1">No assets yet</p>
+                    <p className="text-xs text-muted-foreground mb-4">
+                      Deposit to the Exchange or fund any on-chain account to get started.
+                    </p>
+                    <div className="flex justify-center gap-2">
+                      <Button size="sm" onClick={() => setDepositOpen(true)} className="gradient-primary">Receive</Button>
+                      <Button size="sm" variant="outline" onClick={() => setSection("chains")}>View Chains</Button>
                     </div>
-                    <Button size="sm" variant="outline" onClick={() => refetchOnChain()} disabled={onChainLoading} className="h-8 text-xs">
-                      {onChainLoading ? "Refreshing…" : "Refresh"}
-                    </Button>
                   </div>
-                  <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                    {sortedWallets.slice(0, 6).map((w) => (
-                      <ChainAccountCard
-                        key={w.id}
-                        walletId={w.id}
-                        chain={w.chain}
-                        address={w.address}
-                        isPrimary={!!w.is_primary}
-                        onChain={onChainByChain.get(w.chain)}
-                        loading={onChainLoading}
-                        prices={chainPrices}
-                        onSetPrimary={() => setPrimary.mutate(w.id)}
-                        onUpdateAddress={async (id, addr) => {
-                          await updateWalletAddress.mutateAsync({ walletId: id, address: addr });
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* VIP escalation tile */}
-                <div className="col-span-12 lg:col-span-4">
-                  <VIPSupportEscalation vnxBalance={vnxAmount} userEmail={user.email} />
-                </div>
-
-                {/* Custodial mini */}
-                <div className="col-span-12 md:col-span-6 lg:col-span-5 data-card">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-bold uppercase tracking-wider" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
-                      Custodial
-                    </h3>
-                    <button
-                      onClick={() => setSection("custodial")}
-                      className="text-[10px] uppercase tracking-wider font-bold text-primary"
-                    >
-                      View all
-                    </button>
-                  </div>
-                  {balances && balances.length > 0 ? (
-                    <div className="space-y-2">
-                      {balances.slice(0, 4).map((b) => (
-                        <div
-                          key={b.id}
-                          className={`flex items-center justify-between px-3 py-2 rounded-lg bg-muted/20 border border-border/30 ${
-                            flashedBalanceIds.has(b.id) ? "row-flash" : ""
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
-                              {b.token_symbol.slice(0, 3)}
-                            </span>
-                            <span className="text-xs font-semibold">{b.token_symbol}</span>
+                ) : (
+                  <div className="rounded-2xl border border-border/40 bg-card/30 divide-y divide-border/30 overflow-hidden">
+                    {assets.map((a) => (
+                      <div
+                        key={a.key}
+                        className={`flex items-center justify-between px-4 py-3.5 hover:bg-muted/20 transition-colors ${
+                          a.flashId && flashedBalanceIds.has(a.flashId) ? "row-flash" : ""
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                            <span className="text-[10px] font-bold text-primary">{a.symbol.slice(0, 4)}</span>
                           </div>
-                          <div className="text-right">
-                            <p className="text-xs font-mono font-bold">{Number(b.balance).toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
-                            <p className="text-[10px] font-mono text-muted-foreground">${Number(b.usd_value).toFixed(2)}</p>
+                          <div className="min-w-0">
+                            <p className="text-sm font-bold truncate">{a.symbol}</p>
+                            <p className="text-[10px] uppercase tracking-wider text-muted-foreground truncate">
+                              {a.source}
+                            </p>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-muted-foreground py-6 text-center">No custodial balances yet.</p>
-                  )}
-                </div>
-
-                {/* Recent activity mini */}
-                <div className="col-span-12 md:col-span-6 lg:col-span-7 data-card">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-bold uppercase tracking-wider" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
-                      Recent Activity
-                    </h3>
-                    <button
-                      onClick={() => setSection("activity")}
-                      className="text-[10px] uppercase tracking-wider font-bold text-primary"
-                    >
-                      View all
-                    </button>
+                        <div className="text-right shrink-0">
+                          <p className="text-sm font-mono font-bold">
+                            {a.amount.toLocaleString(undefined, { maximumFractionDigits: 6 })}
+                          </p>
+                          <p className="text-[11px] font-mono text-muted-foreground">
+                            ${a.usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  {transactionsLoading ? (
-                    <div className="flex justify-center py-8"><div className="h-6 w-6 border-4 border-primary border-t-transparent rounded-full animate-spin" /></div>
-                  ) : transactions && transactions.length > 0 ? (
-                    <div className="space-y-2">
-                      {transactions.slice(0, 5).map((tx) => {
+                )}
+
+                {transactions && transactions.length > 0 && (
+                  <div className="pt-2">
+                    <div className="flex items-center justify-between px-1 mb-2">
+                      <h3 className="text-sm font-bold uppercase tracking-wider" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                        Recent Activity
+                      </h3>
+                      <button
+                        onClick={() => setSection("activity")}
+                        className="text-[10px] uppercase tracking-wider font-bold text-primary"
+                      >
+                        View all
+                      </button>
+                    </div>
+                    <div className="rounded-2xl border border-border/40 bg-card/30 divide-y divide-border/30 overflow-hidden">
+                      {transactions.slice(0, 4).map((tx) => {
                         const sign = tx.tx_type === "deposit" ? "+" : tx.tx_type === "withdraw" ? "−" : "";
                         const toneTx =
                           tx.tx_type === "deposit" ? "text-[hsl(var(--vnx-green))]" :
                           tx.tx_type === "withdraw" ? "text-destructive" : "text-accent";
                         return (
-                          <div key={tx.id} className={`flex items-center justify-between px-3 py-2 rounded-lg bg-muted/20 border border-border/30 ${flashedIds.has(tx.id) ? "row-flash" : ""}`}>
+                          <div key={tx.id} className={`flex items-center justify-between px-4 py-3 ${flashedIds.has(tx.id) ? "row-flash" : ""}`}>
                             <div>
                               <p className={`text-xs font-bold capitalize ${toneTx}`}>{tx.tx_type}</p>
                               <p className="text-[10px] text-muted-foreground">{new Date(tx.created_at).toLocaleString()}</p>
@@ -407,48 +399,8 @@ const Wallet = () => {
                         );
                       })}
                     </div>
-                  ) : (
-                    <p className="text-xs text-muted-foreground py-6 text-center">No transactions yet.</p>
-                  )}
-                </div>
-
-                {/* Notifications */}
-                <div className="col-span-12 lg:col-span-6">
-                  <NotificationCenter />
-                </div>
-
-                {/* Connect external wallet */}
-                <div className="col-span-12 lg:col-span-6">
-                  <ConnectExternalWallet
-                    evmWallets={evmWallets}
-                    solanaWallet={solanaWallet}
-                    tronWallet={tronWallet}
-                    onApply={async (walletId, address) => {
-                      await updateWalletAddress.mutateAsync({ walletId, address });
-                    }}
-                  />
-                </div>
-
-                {/* Quick links */}
-                <div className="col-span-12 data-card">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2">Jump to</p>
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                    {[
-                      { label: "Trade", path: "/trade" },
-                      { label: "Spot", path: "/spot" },
-                      { label: "Futures", path: "/futures" },
-                      { label: "Stake", path: "/stake" },
-                      { label: "Markets", path: "/markets" },
-                      { label: "Listings", path: "/listings" },
-                    ].map((a) => (
-                      <Link key={a.path} to={a.path}>
-                        <Button variant="outline" size="sm" className="w-full h-9 text-xs font-bold rounded-lg hover:bg-primary/10 hover:border-primary/40">
-                          {a.label}
-                        </Button>
-                      </Link>
-                    ))}
                   </div>
-                </div>
+                )}
               </div>
             )}
 
