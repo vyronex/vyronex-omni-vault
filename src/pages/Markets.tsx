@@ -8,6 +8,7 @@ import PriceChart from "@/components/PriceChart";
 import { Card, CardContent } from "@/components/ui/card";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useMarketData, useGlobalData, useTrending } from "@/hooks/useCoinGecko";
+import { useListingPrices } from "@/hooks/useListingPrices";
 import PageTransition from "@/components/PageTransition";
 
 const Markets = () => {
@@ -16,6 +17,7 @@ const Markets = () => {
   const { data: coins, isLoading: coinsLoading } = useMarketData(20);
   const { data: globalData } = useGlobalData();
   const { data: trending } = useTrending();
+  const { data: listingPrices } = useListingPrices();
   const [chartCoinId, setChartCoinId] = useState("bitcoin");
 
   const global = globalData?.data;
