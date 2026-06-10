@@ -8,6 +8,7 @@ import PriceChart from "@/components/PriceChart";
 import { Card, CardContent } from "@/components/ui/card";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useMarketData, useGlobalData, useTrending } from "@/hooks/useCoinGecko";
+import { useListingPrices } from "@/hooks/useListingPrices";
 import PageTransition from "@/components/PageTransition";
 
 const Markets = () => {
@@ -16,6 +17,7 @@ const Markets = () => {
   const { data: coins, isLoading: coinsLoading } = useMarketData(20);
   const { data: globalData } = useGlobalData();
   const { data: trending } = useTrending();
+  const { data: listingPrices } = useListingPrices();
   const [chartCoinId, setChartCoinId] = useState("bitcoin");
 
   const global = globalData?.data;
@@ -131,6 +133,72 @@ const Markets = () => {
                     </Card>
                   );
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* Listed Tokens (community submissions) */}
+          {listingPrices && listingPrices.length > 0 && (
+            <div className="mb-10 animate-slide-up stagger-4">
+              <div className="flex items-center justify-between mb-5">
+                <h2 className="text-2xl font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                  Listed <span className="text-gradient">Tokens</span>
+                </h2>
+                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {listingPrices.length} approved · live prices
+                </span>
+              </div>
+              <div className="rounded-2xl bg-card border border-border/40 shadow-elevated overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="table-modern">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Token</th>
+                        <th>Chain</th>
+                        <th>Price</th>
+                        <th>24h %</th>
+                        <th className="hidden md:table-cell">Market Cap</th>
+                        <th className="hidden lg:table-cell">Volume (24h)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {listingPrices.map((row, i) => (
+                        <tr key={row.listing.id} className="animate-fade-in" style={{ animationDelay: `${i * 25}ms`, animationFillMode: "both" }}>
+                          <td className="text-muted-foreground">{i + 1}</td>
+                          <td>
+                            <div className="flex items-center gap-2.5">
+                              {row.listing.logo_url ? (
+                                <img src={row.listing.logo_url} alt={row.listing.token_symbol} className="w-7 h-7 rounded-full" />
+                              ) : (
+                                <span className="w-7 h-7 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center">
+                                  {row.listing.token_symbol.slice(0, 3)}
+                                </span>
+                              )}
+                              <div>
+                                <div className="font-semibold text-sm">{row.listing.token_name}</div>
+                                <div className="text-xs text-muted-foreground uppercase">{row.listing.token_symbol}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-xs text-muted-foreground">{row.listing.chain}</td>
+                          <td className="font-mono text-sm">
+                            {row.price > 0
+                              ? `$${row.price < 1 ? row.price.toPrecision(4) : row.price.toLocaleString()}`
+                              : <span className="text-muted-foreground">—</span>}
+                          </td>
+                          <td><PctBadge value={row.change24h || null} /></td>
+                          <td className="hidden md:table-cell text-muted-foreground text-sm">
+                            {row.marketCap > 0 ? `$${(row.marketCap / 1e6).toFixed(2)}M` : "—"}
+                          </td>
+                          <td className="hidden lg:table-cell text-muted-foreground text-sm">
+                            {row.volume24h > 0 ? `$${(row.volume24h / 1e3).toFixed(1)}K` : "—"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}

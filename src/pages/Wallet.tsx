@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import PageTransition from "@/components/PageTransition";
 import { DepositDialog, WithdrawDialog, TransferDialog } from "@/components/wallet/WalletActionDialogs";
 import { ChainAccountCard } from "@/components/wallet/ChainAccountCard";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { VaultPanel } from "@/components/wallet/VaultPanel";
 import { ConnectExternalWallet } from "@/components/wallet/ConnectExternalWallet";
 import { VIPSupportEscalation } from "@/components/wallet/VIPSupportEscalation";
@@ -89,6 +91,32 @@ const Wallet = () => {
   useEffect(() => {
     if (!authLoading && !user) navigate("/auth");
   }, [user, authLoading, navigate]);
+
+  // Auto-provision real on-chain addresses for any wallet still showing "pending..."
+  const queryClient = useQueryClient();
+  const [provisioning, setProvisioning] = useState(false);
+  useEffect(() => {
+    if (!user || !wallets) return;
+    const hasPending = wallets.some((w) => w.address?.startsWith("pending"));
+    if (!hasPending || provisioning) return;
+    setProvisioning(true);
+    supabase.functions
+      .invoke("provision-addresses", { body: {} })
+      .then(({ data, error }) => {
+        if (error) {
+          toast.error("Could not provision addresses");
+          return;
+        }
+        const count = data?.provisioned?.length ?? 0;
+        if (count > 0) {
+          toast.success(`Provisioned ${count} on-chain address${count === 1 ? "" : "es"}`);
+          queryClient.invalidateQueries({ queryKey: ["wallets", user.id] });
+          queryClient.invalidateQueries({ queryKey: ["onchain-balances"] });
+        }
+      })
+      .finally(() => setProvisioning(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, wallets]);
 
   if (authLoading || walletsLoading) {
     return (
