@@ -307,6 +307,54 @@ const Wallet = () => {
             {/* ─── TOKENS: unified asset list ─── */}
             {section === "overview" && (
               <div className="animate-slide-up space-y-4">
+                {/* Per-chain address summary */}
+                <div className="rounded-2xl border border-border/40 bg-card/30 overflow-hidden">
+                  <div className="px-4 py-2.5 border-b border-border/30 flex items-center justify-between">
+                    <p className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                      Your Addresses · {sortedWallets.length} chains
+                    </p>
+                    <button
+                      onClick={() => setSection("chains")}
+                      className="text-[10px] uppercase tracking-wider font-bold text-primary"
+                    >
+                      Manage
+                    </button>
+                  </div>
+                  <div className="divide-y divide-border/30">
+                    {sortedWallets.map((w) => {
+                      const pending = w.address.startsWith("pending");
+                      const short = pending
+                        ? "pending…"
+                        : `${w.address.slice(0, 8)}…${w.address.slice(-6)}`;
+                      return (
+                        <button
+                          key={w.id}
+                          onClick={() => {
+                            if (pending) { toast.error(`${w.chain} address pending`); return; }
+                            navigator.clipboard.writeText(w.address);
+                            toast.success(`${w.chain} address copied`);
+                          }}
+                          className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-muted/20 transition-colors text-left"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground w-20 shrink-0">
+                              {w.chain}
+                            </span>
+                            <span className={`font-mono text-xs truncate ${pending ? "text-muted-foreground italic" : "text-foreground"}`}>
+                              {short}
+                            </span>
+                          </div>
+                          {w.is_primary && (
+                            <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded border border-primary/40 text-primary bg-primary/10 shrink-0">
+                              Primary
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div className="flex items-center justify-between px-1">
                   <div>
                     <h2 className="text-base font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
