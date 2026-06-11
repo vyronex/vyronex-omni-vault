@@ -75,6 +75,10 @@ export const ListingApplyDialog = ({ open, onOpenChange }: Props) => {
       toast.error("Project name, symbol, token name, and contract are required");
       return;
     }
+    if (!validation?.valid) {
+      toast.error("Validate the contract on-chain before submitting");
+      return;
+    }
     try {
       await submit.mutateAsync({
         project_name: form.project_name.trim(),
