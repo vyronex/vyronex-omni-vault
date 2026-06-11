@@ -148,6 +148,7 @@ const Wallet = () => {
   const sections: { key: SectionKey; label: string; count?: number | string }[] = [
     { key: "overview", label: "Tokens" },
     { key: "chains", label: "Chains", count: sortedWallets.length },
+    { key: "tokens", label: "Token List", count: listingPrices?.length ?? 0 },
     { key: "activity", label: "Activity", count: transactions?.length ?? 0 },
     { key: "vault", label: "Vault" },
     { key: "custodial", label: "Exchange", count: balances?.length ?? 0 },
