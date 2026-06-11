@@ -33,10 +33,12 @@ serve(async (req) => {
     ];
     
     // Also allow coins/{id} and coins/{id}/market_chart patterns
-    const isAllowed = allowedEndpoints.includes(endpoint) || 
+    const isAllowed = allowedEndpoints.includes(endpoint) ||
       /^coins\/[a-z0-9-]+$/.test(endpoint) ||
       /^coins\/[a-z0-9-]+\/market_chart$/.test(endpoint) ||
-      /^coins\/[a-z0-9-]+\/tickers$/.test(endpoint);
+      /^coins\/[a-z0-9-]+\/tickers$/.test(endpoint) ||
+      /^coins\/[a-z0-9-]+\/contract\/0x[a-fA-F0-9]{40}$/.test(endpoint) ||
+      /^simple\/token_price\/[a-z0-9-]+$/.test(endpoint);
 
     if (!isAllowed) {
       return new Response(JSON.stringify({ error: "Endpoint not allowed" }), {

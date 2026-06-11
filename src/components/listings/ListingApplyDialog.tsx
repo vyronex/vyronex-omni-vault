@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useSubmitListing } from "@/hooks/useTokenListings";
+import { useValidateTokenMutation, type TokenValidation } from "@/hooks/useTokenValidation";
 
 const CHAINS = ["BNB Chain", "Ethereum", "Fantom", "Polygon", "Arbitrum", "Solana", "Tron", "Bitcoin"];
 
@@ -16,6 +17,8 @@ interface Props {
 
 export const ListingApplyDialog = ({ open, onOpenChange }: Props) => {
   const submit = useSubmitListing();
+  const validate = useValidateTokenMutation();
+  const [validation, setValidation] = useState<TokenValidation | null>(null);
   const [form, setForm] = useState({
     project_name: "",
     token_symbol: "",
@@ -33,13 +36,47 @@ export const ListingApplyDialog = ({ open, onOpenChange }: Props) => {
     logo_url: "",
   });
 
+  // Reset validation whenever chain or address change
+  useEffect(() => { setValidation(null); }, [form.chain, form.contract_address]);
+
   const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const runValidate = async () => {
+    if (!form.contract_address.trim()) {
+      toast.error("Enter a contract address first");
+      return;
+    }
+    try {
+      const v = await validate.mutateAsync({ chain: form.chain, address: form.contract_address.trim() });
+      setValidation(v);
+      if (v.valid) {
+        toast.success(`Verified on-chain: ${v.symbol}`);
+        setForm((f) => ({
+          ...f,
+          token_symbol: v.symbol ?? f.token_symbol,
+          token_name: v.name ?? f.token_name,
+          decimals: v.decimals != null ? String(v.decimals) : f.decimals,
+          total_supply: v.totalSupply && v.decimals != null
+            ? String(Number(BigInt(v.totalSupply) / BigInt(10) ** BigInt(Math.min(v.decimals, 18))))
+            : f.total_supply,
+        }));
+      } else {
+        toast.error(v.error ?? "Validation failed");
+      }
+    } catch (e) {
+      toast.error((e as Error).message ?? "Validation failed");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.project_name || !form.token_symbol || !form.token_name || !form.contract_address) {
       toast.error("Project name, symbol, token name, and contract are required");
+      return;
+    }
+    if (!validation?.valid) {
+      toast.error("Validate the contract on-chain before submitting");
       return;
     }
     try {
@@ -110,12 +147,40 @@ export const ListingApplyDialog = ({ open, onOpenChange }: Props) => {
             </div>
             <div className="sm:col-span-2">
               <Label className="text-[11px] uppercase tracking-wider">Contract Address *</Label>
-              <Input
-                value={form.contract_address}
-                onChange={update("contract_address")}
-                className="h-9 mt-1 font-mono text-xs"
-                placeholder="0x… / mint address"
-              />
+              <div className="flex gap-2 mt-1">
+                <Input
+                  value={form.contract_address}
+                  onChange={update("contract_address")}
+                  className="h-9 font-mono text-xs"
+                  placeholder="0x… / mint address"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-9 text-xs whitespace-nowrap"
+                  disabled={validate.isPending || !form.contract_address.trim()}
+                  onClick={runValidate}
+                >
+                  {validate.isPending ? "Checking…" : validation?.valid ? "Re-check" : "Validate on-chain"}
+                </Button>
+              </div>
+              {validation && (
+                <div
+                  className={`mt-2 text-[11px] px-2.5 py-2 rounded-md border ${
+                    validation.valid
+                      ? "border-[hsl(var(--vnx-green))]/40 bg-[hsl(var(--vnx-green))]/10 text-[hsl(var(--vnx-green))]"
+                      : "border-destructive/40 bg-destructive/10 text-destructive"
+                  }`}
+                >
+                  {validation.valid ? (
+                    <span>
+                      ✓ Verified · <strong>{validation.symbol}</strong> ({validation.name}) · {validation.decimals} decimals · source: {validation.source}
+                    </span>
+                  ) : (
+                    <span>✗ {validation.error}</span>
+                  )}
+                </div>
+              )}
             </div>
             <div>
               <Label className="text-[11px] uppercase tracking-wider">Decimals</Label>
@@ -169,8 +234,8 @@ export const ListingApplyDialog = ({ open, onOpenChange }: Props) => {
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={submit.isPending} className="gradient-primary shadow-glow">
-              {submit.isPending ? "Submitting…" : "Submit Application"}
+            <Button type="submit" disabled={submit.isPending || !validation?.valid} className="gradient-primary shadow-glow">
+              {submit.isPending ? "Submitting…" : validation?.valid ? "Submit Application" : "Validate contract first"}
             </Button>
           </div>
         </form>

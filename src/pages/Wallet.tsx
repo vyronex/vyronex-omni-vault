@@ -20,11 +20,12 @@ import { VaultPanel } from "@/components/wallet/VaultPanel";
 import { ConnectExternalWallet } from "@/components/wallet/ConnectExternalWallet";
 import { VIPSupportEscalation } from "@/components/wallet/VIPSupportEscalation";
 import { NotificationCenter } from "@/components/wallet/NotificationCenter";
+import { useListingPrices } from "@/hooks/useListingPrices";
 
 const CHAIN_ORDER = ["BNB Chain", "Ethereum", "Fantom", "Bitcoin", "Solana", "Tron"];
 const EVM_CHAINS = new Set(["BNB Chain", "Ethereum", "Fantom"]);
 
-type SectionKey = "overview" | "chains" | "custodial" | "vault" | "activity" | "connect";
+type SectionKey = "overview" | "chains" | "tokens" | "custodial" | "vault" | "activity" | "connect";
 
 const Wallet = () => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ const Wallet = () => {
   const { transactions, loading: transactionsLoading, flashedIds } = useTransactions();
   const setPrimary = useSetPrimaryWallet();
   const { data: chainPrices } = useChainPrices();
+  const { data: listingPrices } = useListingPrices();
 
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
@@ -146,6 +148,7 @@ const Wallet = () => {
   const sections: { key: SectionKey; label: string; count?: number | string }[] = [
     { key: "overview", label: "Tokens" },
     { key: "chains", label: "Chains", count: sortedWallets.length },
+    { key: "tokens", label: "Token List", count: listingPrices?.length ?? 0 },
     { key: "activity", label: "Activity", count: transactions?.length ?? 0 },
     { key: "vault", label: "Vault" },
     { key: "custodial", label: "Exchange", count: balances?.length ?? 0 },
@@ -304,6 +307,54 @@ const Wallet = () => {
             {/* ─── TOKENS: unified asset list ─── */}
             {section === "overview" && (
               <div className="animate-slide-up space-y-4">
+                {/* Per-chain address summary */}
+                <div className="rounded-2xl border border-border/40 bg-card/30 overflow-hidden">
+                  <div className="px-4 py-2.5 border-b border-border/30 flex items-center justify-between">
+                    <p className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                      Your Addresses · {sortedWallets.length} chains
+                    </p>
+                    <button
+                      onClick={() => setSection("chains")}
+                      className="text-[10px] uppercase tracking-wider font-bold text-primary"
+                    >
+                      Manage
+                    </button>
+                  </div>
+                  <div className="divide-y divide-border/30">
+                    {sortedWallets.map((w) => {
+                      const pending = w.address.startsWith("pending");
+                      const short = pending
+                        ? "pending…"
+                        : `${w.address.slice(0, 8)}…${w.address.slice(-6)}`;
+                      return (
+                        <button
+                          key={w.id}
+                          onClick={() => {
+                            if (pending) { toast.error(`${w.chain} address pending`); return; }
+                            navigator.clipboard.writeText(w.address);
+                            toast.success(`${w.chain} address copied`);
+                          }}
+                          className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-muted/20 transition-colors text-left"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground w-20 shrink-0">
+                              {w.chain}
+                            </span>
+                            <span className={`font-mono text-xs truncate ${pending ? "text-muted-foreground italic" : "text-foreground"}`}>
+                              {short}
+                            </span>
+                          </div>
+                          {w.is_primary && (
+                            <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded border border-primary/40 text-primary bg-primary/10 shrink-0">
+                              Primary
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div className="flex items-center justify-between px-1">
                   <div>
                     <h2 className="text-base font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
@@ -404,7 +455,92 @@ const Wallet = () => {
               </div>
             )}
 
+            {/* ─── TOKEN LIST (approved listings) ─── */}
+            {section === "tokens" && (
+              <div className="data-card animate-slide-up">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 className="text-lg font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                      Listed Tokens
+                    </h2>
+                    <p className="text-[11px] text-muted-foreground">
+                      {listingPrices?.length ?? 0} approved · live prices · per-chain contracts
+                    </p>
+                  </div>
+                </div>
+                {!listingPrices || listingPrices.length === 0 ? (
+                  <div className="text-center py-12 text-muted-foreground text-sm">
+                    No approved listings yet.
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-border/40 bg-card/30 divide-y divide-border/30 overflow-hidden">
+                    {listingPrices.map((row) => {
+                      const addr = row.listing.contract_address;
+                      const short = addr ? `${addr.slice(0, 6)}…${addr.slice(-4)}` : "—";
+                      const tone = row.change24h >= 0 ? "text-[hsl(var(--vnx-green))]" : "text-destructive";
+                      const srcStyle =
+                        row.source === "coingecko"
+                          ? "border-[hsl(var(--vnx-green))]/40 text-[hsl(var(--vnx-green))]"
+                          : row.source === "dexscreener"
+                          ? "border-accent/40 text-accent"
+                          : "border-border/40 text-muted-foreground";
+                      return (
+                        <div
+                          key={row.listing.id}
+                          className="flex items-center justify-between px-4 py-3 hover:bg-muted/20 transition-colors gap-3"
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            {row.listing.logo_url ? (
+                              <img src={row.listing.logo_url} alt={row.listing.token_symbol} className="h-9 w-9 rounded-full" />
+                            ) : (
+                              <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
+                                <span className="text-[10px] font-bold text-primary">{row.listing.token_symbol.slice(0, 4)}</span>
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <p className="text-sm font-bold">{row.listing.token_symbol}</p>
+                              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                                <span className="uppercase tracking-wider">{row.listing.chain}</span>
+                                <span>·</span>
+                                <button
+                                  className="font-mono hover:text-primary truncate max-w-[140px]"
+                                  title={addr}
+                                  onClick={() => {
+                                    if (!addr) return;
+                                    navigator.clipboard.writeText(addr);
+                                    toast.success("Contract copied");
+                                  }}
+                                >
+                                  {short}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <p className="text-sm font-mono font-bold">
+                              {row.price > 0
+                                ? `$${row.price < 1 ? row.price.toPrecision(4) : row.price.toLocaleString()}`
+                                : "—"}
+                            </p>
+                            <div className="flex items-center justify-end gap-1.5 mt-0.5">
+                              <span className={`text-[10px] font-mono font-bold ${tone}`}>
+                                {row.change24h >= 0 ? "+" : ""}{row.change24h?.toFixed(2)}%
+                              </span>
+                              <span className={`text-[8px] uppercase tracking-wider font-bold px-1 py-0.5 rounded border ${srcStyle}`}>
+                                {row.source === "none" ? "—" : row.source}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
             {/* ─── CHAINS ─── */}
+
+
             {section === "chains" && (
               <div className="data-card animate-slide-up">
                 <div className="flex items-center justify-between mb-4">

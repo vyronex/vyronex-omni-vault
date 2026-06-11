@@ -155,47 +155,75 @@ const Markets = () => {
                       <tr>
                         <th>#</th>
                         <th>Token</th>
-                        <th>Chain</th>
+                        <th>Chain · Contract</th>
                         <th>Price</th>
                         <th>24h %</th>
+                        <th>Source</th>
                         <th className="hidden md:table-cell">Market Cap</th>
                         <th className="hidden lg:table-cell">Volume (24h)</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {listingPrices.map((row, i) => (
-                        <tr key={row.listing.id} className="animate-fade-in" style={{ animationDelay: `${i * 25}ms`, animationFillMode: "both" }}>
-                          <td className="text-muted-foreground">{i + 1}</td>
-                          <td>
-                            <div className="flex items-center gap-2.5">
-                              {row.listing.logo_url ? (
-                                <img src={row.listing.logo_url} alt={row.listing.token_symbol} className="w-7 h-7 rounded-full" />
-                              ) : (
-                                <span className="w-7 h-7 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center">
-                                  {row.listing.token_symbol.slice(0, 3)}
-                                </span>
-                              )}
-                              <div>
-                                <div className="font-semibold text-sm">{row.listing.token_name}</div>
-                                <div className="text-xs text-muted-foreground uppercase">{row.listing.token_symbol}</div>
+                      {listingPrices.map((row, i) => {
+                        const short = row.listing.contract_address
+                          ? `${row.listing.contract_address.slice(0, 6)}…${row.listing.contract_address.slice(-4)}`
+                          : "—";
+                        const srcStyle =
+                          row.source === "coingecko"
+                            ? "border-[hsl(var(--vnx-green))]/40 text-[hsl(var(--vnx-green))]"
+                            : row.source === "dexscreener"
+                            ? "border-accent/40 text-accent"
+                            : "border-border/40 text-muted-foreground";
+                        return (
+                          <tr key={row.listing.id} className="animate-fade-in" style={{ animationDelay: `${i * 25}ms`, animationFillMode: "both" }}>
+                            <td className="text-muted-foreground">{i + 1}</td>
+                            <td>
+                              <div className="flex items-center gap-2.5">
+                                {row.listing.logo_url ? (
+                                  <img src={row.listing.logo_url} alt={row.listing.token_symbol} className="w-7 h-7 rounded-full" />
+                                ) : (
+                                  <span className="w-7 h-7 rounded-full bg-primary/10 text-primary text-[10px] font-bold flex items-center justify-center">
+                                    {row.listing.token_symbol.slice(0, 3)}
+                                  </span>
+                                )}
+                                <div>
+                                  <div className="font-semibold text-sm">{row.listing.token_name}</div>
+                                  <div className="text-xs text-muted-foreground uppercase">{row.listing.token_symbol}</div>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                          <td className="text-xs text-muted-foreground">{row.listing.chain}</td>
-                          <td className="font-mono text-sm">
-                            {row.price > 0
-                              ? `$${row.price < 1 ? row.price.toPrecision(4) : row.price.toLocaleString()}`
-                              : <span className="text-muted-foreground">—</span>}
-                          </td>
-                          <td><PctBadge value={row.change24h || null} /></td>
-                          <td className="hidden md:table-cell text-muted-foreground text-sm">
-                            {row.marketCap > 0 ? `$${(row.marketCap / 1e6).toFixed(2)}M` : "—"}
-                          </td>
-                          <td className="hidden lg:table-cell text-muted-foreground text-sm">
-                            {row.volume24h > 0 ? `$${(row.volume24h / 1e3).toFixed(1)}K` : "—"}
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="text-xs">
+                              <div className="text-muted-foreground">{row.listing.chain}</div>
+                              <button
+                                className="font-mono text-[10px] text-foreground/70 hover:text-primary"
+                                title={row.listing.contract_address}
+                                onClick={() => {
+                                  navigator.clipboard.writeText(row.listing.contract_address);
+                                }}
+                              >
+                                {short}
+                              </button>
+                            </td>
+                            <td className="font-mono text-sm">
+                              {row.price > 0
+                                ? `$${row.price < 1 ? row.price.toPrecision(4) : row.price.toLocaleString()}`
+                                : <span className="text-muted-foreground">—</span>}
+                            </td>
+                            <td><PctBadge value={row.change24h || null} /></td>
+                            <td>
+                              <span className={`text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded border ${srcStyle}`}>
+                                {row.source === "none" ? "unverified" : row.source}
+                              </span>
+                            </td>
+                            <td className="hidden md:table-cell text-muted-foreground text-sm">
+                              {row.marketCap > 0 ? `$${(row.marketCap / 1e6).toFixed(2)}M` : "—"}
+                            </td>
+                            <td className="hidden lg:table-cell text-muted-foreground text-sm">
+                              {row.volume24h > 0 ? `$${(row.volume24h / 1e3).toFixed(1)}K` : "—"}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
