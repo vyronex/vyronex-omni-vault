@@ -234,8 +234,8 @@ export const ListingApplyDialog = ({ open, onOpenChange }: Props) => {
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={submit.isPending} className="gradient-primary shadow-glow">
-              {submit.isPending ? "Submitting…" : "Submit Application"}
+            <Button type="submit" disabled={submit.isPending || !validation?.valid} className="gradient-primary shadow-glow">
+              {submit.isPending ? "Submitting…" : validation?.valid ? "Submit Application" : "Validate contract first"}
             </Button>
           </div>
         </form>
