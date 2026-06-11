@@ -538,6 +538,7 @@ const Wallet = () => {
                 )}
               </div>
             )}
+            {/* ─── CHAINS ─── */}
 
 
             {section === "chains" && (
