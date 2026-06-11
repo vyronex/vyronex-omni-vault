@@ -147,12 +147,40 @@ export const ListingApplyDialog = ({ open, onOpenChange }: Props) => {
             </div>
             <div className="sm:col-span-2">
               <Label className="text-[11px] uppercase tracking-wider">Contract Address *</Label>
-              <Input
-                value={form.contract_address}
-                onChange={update("contract_address")}
-                className="h-9 mt-1 font-mono text-xs"
-                placeholder="0x… / mint address"
-              />
+              <div className="flex gap-2 mt-1">
+                <Input
+                  value={form.contract_address}
+                  onChange={update("contract_address")}
+                  className="h-9 font-mono text-xs"
+                  placeholder="0x… / mint address"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-9 text-xs whitespace-nowrap"
+                  disabled={validate.isPending || !form.contract_address.trim()}
+                  onClick={runValidate}
+                >
+                  {validate.isPending ? "Checking…" : validation?.valid ? "Re-check" : "Validate on-chain"}
+                </Button>
+              </div>
+              {validation && (
+                <div
+                  className={`mt-2 text-[11px] px-2.5 py-2 rounded-md border ${
+                    validation.valid
+                      ? "border-[hsl(var(--vnx-green))]/40 bg-[hsl(var(--vnx-green))]/10 text-[hsl(var(--vnx-green))]"
+                      : "border-destructive/40 bg-destructive/10 text-destructive"
+                  }`}
+                >
+                  {validation.valid ? (
+                    <span>
+                      ✓ Verified · <strong>{validation.symbol}</strong> ({validation.name}) · {validation.decimals} decimals · source: {validation.source}
+                    </span>
+                  ) : (
+                    <span>✗ {validation.error}</span>
+                  )}
+                </div>
+              )}
             </div>
             <div>
               <Label className="text-[11px] uppercase tracking-wider">Decimals</Label>
