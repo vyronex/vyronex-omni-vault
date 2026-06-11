@@ -17,6 +17,8 @@ interface Props {
 
 export const ListingApplyDialog = ({ open, onOpenChange }: Props) => {
   const submit = useSubmitListing();
+  const validate = useValidateTokenMutation();
+  const [validation, setValidation] = useState<TokenValidation | null>(null);
   const [form, setForm] = useState({
     project_name: "",
     token_symbol: "",
@@ -34,8 +36,38 @@ export const ListingApplyDialog = ({ open, onOpenChange }: Props) => {
     logo_url: "",
   });
 
+  // Reset validation whenever chain or address change
+  useEffect(() => { setValidation(null); }, [form.chain, form.contract_address]);
+
   const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const runValidate = async () => {
+    if (!form.contract_address.trim()) {
+      toast.error("Enter a contract address first");
+      return;
+    }
+    try {
+      const v = await validate.mutateAsync({ chain: form.chain, address: form.contract_address.trim() });
+      setValidation(v);
+      if (v.valid) {
+        toast.success(`Verified on-chain: ${v.symbol}`);
+        setForm((f) => ({
+          ...f,
+          token_symbol: v.symbol ?? f.token_symbol,
+          token_name: v.name ?? f.token_name,
+          decimals: v.decimals != null ? String(v.decimals) : f.decimals,
+          total_supply: v.totalSupply && v.decimals != null
+            ? String(Number(BigInt(v.totalSupply) / BigInt(10) ** BigInt(Math.min(v.decimals, 18))))
+            : f.total_supply,
+        }));
+      } else {
+        toast.error(v.error ?? "Validation failed");
+      }
+    } catch (e) {
+      toast.error((e as Error).message ?? "Validation failed");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
