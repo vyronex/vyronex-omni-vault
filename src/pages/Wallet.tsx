@@ -20,11 +20,12 @@ import { VaultPanel } from "@/components/wallet/VaultPanel";
 import { ConnectExternalWallet } from "@/components/wallet/ConnectExternalWallet";
 import { VIPSupportEscalation } from "@/components/wallet/VIPSupportEscalation";
 import { NotificationCenter } from "@/components/wallet/NotificationCenter";
+import { useListingPrices } from "@/hooks/useListingPrices";
 
 const CHAIN_ORDER = ["BNB Chain", "Ethereum", "Fantom", "Bitcoin", "Solana", "Tron"];
 const EVM_CHAINS = new Set(["BNB Chain", "Ethereum", "Fantom"]);
 
-type SectionKey = "overview" | "chains" | "custodial" | "vault" | "activity" | "connect";
+type SectionKey = "overview" | "chains" | "tokens" | "custodial" | "vault" | "activity" | "connect";
 
 const Wallet = () => {
   const navigate = useNavigate();
