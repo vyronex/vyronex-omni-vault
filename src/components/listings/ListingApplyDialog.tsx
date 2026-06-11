@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useSubmitListing } from "@/hooks/useTokenListings";
+import { useValidateTokenMutation, type TokenValidation } from "@/hooks/useTokenValidation";
 
 const CHAINS = ["BNB Chain", "Ethereum", "Fantom", "Polygon", "Arbitrum", "Solana", "Tron", "Bitcoin"];
 
