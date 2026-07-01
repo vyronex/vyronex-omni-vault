@@ -239,7 +239,7 @@ const Markets = () => {
                             <td className="font-mono text-sm">
                               {row.price > 0
                                 ? `$${row.price < 1 ? row.price.toPrecision(4) : row.price.toLocaleString()}`
-                                : <span className="text-muted-foreground">—</span>}
+                                : <span className="text-muted-foreground italic text-xs" title="No live quote from CoinGecko or DexScreener">Unavailable</span>}
                             </td>
                             <td><PctBadge value={row.change24h || null} /></td>
                             <td>
