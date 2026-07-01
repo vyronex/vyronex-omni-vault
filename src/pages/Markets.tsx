@@ -158,14 +158,28 @@ const Markets = () => {
           {/* Listed Tokens (community submissions) */}
           {listingPrices && listingPrices.length > 0 && (
             <div className="mb-10 animate-slide-up stagger-4">
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center justify-between mb-5 gap-3 flex-wrap">
                 <h2 className="text-2xl font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
                   Listed <span className="text-gradient">Tokens</span>
                 </h2>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  {listingPrices.length} approved · live prices
-                </span>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {listingPrices.length} approved
+                  </span>
+                  <PriceFreshness
+                    label="Listed prices"
+                    updatedAt={listingsQuery.dataUpdatedAt}
+                    error={listingsQuery.error}
+                    isFetching={listingsQuery.isFetching}
+                    onRetry={() => listingsQuery.refetch()}
+                  />
+                </div>
               </div>
+              {listingsQuery.error && (
+                <div className="mb-3 p-3 rounded-lg border border-destructive/30 bg-destructive/5 text-xs text-destructive">
+                  Price feed unreachable — showing last known values where available. Prices marked <strong>unverified</strong> could not be resolved from CoinGecko or DexScreener and are intentionally blanked rather than shown stale.
+                </div>
+              )}
               <div className="rounded-2xl bg-card border border-border/40 shadow-elevated overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="table-modern">
