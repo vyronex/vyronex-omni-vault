@@ -745,6 +745,149 @@ export type Database = {
         }
         Relationships: []
       }
+      withdrawal_confirmations: {
+        Row: {
+          attempts: number
+          code_hash: string
+          created_at: string
+          expires_at: string
+          id: string
+          request_id: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          attempts?: number
+          code_hash: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          request_id: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          attempts?: number
+          code_hash?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          request_id?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "withdrawal_confirmations_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "withdrawal_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      withdrawal_limits: {
+        Row: {
+          chain: string
+          created_at: string
+          daily_limit: number
+          id: string
+          is_enabled: boolean
+          min_amount: number
+          network_fee: number
+          token_symbol: string
+          updated_at: string
+        }
+        Insert: {
+          chain: string
+          created_at?: string
+          daily_limit?: number
+          id?: string
+          is_enabled?: boolean
+          min_amount?: number
+          network_fee?: number
+          token_symbol: string
+          updated_at?: string
+        }
+        Update: {
+          chain?: string
+          created_at?: string
+          daily_limit?: number
+          id?: string
+          is_enabled?: boolean
+          min_amount?: number
+          network_fee?: number
+          token_symbol?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          broadcast_at: string | null
+          chain: string
+          completed_at: string | null
+          created_at: string
+          failure_reason: string | null
+          fee: number
+          id: string
+          ip_address: string | null
+          net_amount: number
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          to_address: string
+          token_symbol: string
+          tx_hash: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          broadcast_at?: string | null
+          chain: string
+          completed_at?: string | null
+          created_at?: string
+          failure_reason?: string | null
+          fee?: number
+          id?: string
+          ip_address?: string | null
+          net_amount: number
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          to_address: string
+          token_symbol: string
+          tx_hash?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          broadcast_at?: string | null
+          chain?: string
+          completed_at?: string | null
+          created_at?: string
+          failure_reason?: string | null
+          fee?: number
+          id?: string
+          ip_address?: string | null
+          net_amount?: number
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          to_address?: string
+          token_symbol?: string
+          tx_hash?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
