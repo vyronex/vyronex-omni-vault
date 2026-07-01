@@ -11,13 +11,19 @@ import { useMarketData, useGlobalData, useTrending } from "@/hooks/useCoinGecko"
 import { useListingPrices } from "@/hooks/useListingPrices";
 import PageTransition from "@/components/PageTransition";
 
+import PriceFreshness from "@/components/PriceFreshness";
+
 const Markets = () => {
   const navigate = useNavigate();
-  const { data: vnxPrice } = useVNXPrice();
-  const { data: coins, isLoading: coinsLoading } = useMarketData(20);
+  const vnxQuery = useVNXPrice();
+  const vnxPrice = vnxQuery.data;
+  const marketsQuery = useMarketData(20);
+  const coins = marketsQuery.data;
+  const coinsLoading = marketsQuery.isLoading;
   const { data: globalData } = useGlobalData();
   const { data: trending } = useTrending();
-  const { data: listingPrices } = useListingPrices();
+  const listingsQuery = useListingPrices();
+  const listingPrices = listingsQuery.data;
   const [chartCoinId, setChartCoinId] = useState("bitcoin");
 
   const global = globalData?.data;
@@ -70,8 +76,15 @@ const Markets = () => {
 
           {/* VNX Featured */}
           <div className="mb-10 animate-slide-up stagger-2">
-            <div className="flex items-center gap-3 mb-5">
+            <div className="flex items-center gap-3 mb-5 flex-wrap">
               <span className="section-badge">Featured</span>
+              <PriceFreshness
+                label="VNX price"
+                updatedAt={vnxQuery.dataUpdatedAt}
+                error={vnxQuery.error}
+                isFetching={vnxQuery.isFetching}
+                onRetry={() => vnxQuery.refetch()}
+              />
             </div>
             <div className="hover-lift">
               <PriceCard
@@ -81,6 +94,11 @@ const Markets = () => {
                 change24h={vnxPrice?.change24h || 0}
                 volume={vnxPrice?.volume24h ? `$${(vnxPrice.volume24h / 1000).toFixed(1)}K` : "$0"}
               />
+              {vnxQuery.error && !vnxPrice?.price && (
+                <p className="mt-2 text-xs text-destructive">
+                  Live VNX price unavailable — upstream DEX APIs did not respond. Retrying automatically.
+                </p>
+              )}
             </div>
           </div>
 
@@ -140,14 +158,28 @@ const Markets = () => {
           {/* Listed Tokens (community submissions) */}
           {listingPrices && listingPrices.length > 0 && (
             <div className="mb-10 animate-slide-up stagger-4">
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center justify-between mb-5 gap-3 flex-wrap">
                 <h2 className="text-2xl font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
                   Listed <span className="text-gradient">Tokens</span>
                 </h2>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  {listingPrices.length} approved · live prices
-                </span>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {listingPrices.length} approved
+                  </span>
+                  <PriceFreshness
+                    label="Listed prices"
+                    updatedAt={listingsQuery.dataUpdatedAt}
+                    error={listingsQuery.error}
+                    isFetching={listingsQuery.isFetching}
+                    onRetry={() => listingsQuery.refetch()}
+                  />
+                </div>
               </div>
+              {listingsQuery.error && (
+                <div className="mb-3 p-3 rounded-lg border border-destructive/30 bg-destructive/5 text-xs text-destructive">
+                  Price feed unreachable — showing last known values where available. Prices marked <strong>unverified</strong> could not be resolved from CoinGecko or DexScreener and are intentionally blanked rather than shown stale.
+                </div>
+              )}
               <div className="rounded-2xl bg-card border border-border/40 shadow-elevated overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="table-modern">
@@ -207,7 +239,7 @@ const Markets = () => {
                             <td className="font-mono text-sm">
                               {row.price > 0
                                 ? `$${row.price < 1 ? row.price.toPrecision(4) : row.price.toLocaleString()}`
-                                : <span className="text-muted-foreground">—</span>}
+                                : <span className="text-muted-foreground italic text-xs" title="No live quote from CoinGecko or DexScreener">Unavailable</span>}
                             </td>
                             <td><PctBadge value={row.change24h || null} /></td>
                             <td>
@@ -233,9 +265,23 @@ const Markets = () => {
 
           {/* Live Market Table */}
           <div className="mb-10 animate-slide-up stagger-5">
-            <h2 className="text-2xl font-bold mb-5" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
-              Top <span className="text-gradient">Assets</span>
-            </h2>
+            <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+              <h2 className="text-2xl font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                Top <span className="text-gradient">Assets</span>
+              </h2>
+              <PriceFreshness
+                label="CoinGecko"
+                updatedAt={marketsQuery.dataUpdatedAt}
+                error={marketsQuery.error}
+                isFetching={marketsQuery.isFetching}
+                onRetry={() => marketsQuery.refetch()}
+              />
+            </div>
+            {marketsQuery.error && !coins && (
+              <div className="mb-3 p-3 rounded-lg border border-destructive/30 bg-destructive/5 text-xs text-destructive">
+                Market data feed is currently unreachable. We won't display stale prices — please retry in a moment.
+              </div>
+            )}
             <div className="rounded-2xl bg-card border border-border/40 shadow-elevated overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="table-modern">
