@@ -11,13 +11,19 @@ import { useMarketData, useGlobalData, useTrending } from "@/hooks/useCoinGecko"
 import { useListingPrices } from "@/hooks/useListingPrices";
 import PageTransition from "@/components/PageTransition";
 
+import PriceFreshness from "@/components/PriceFreshness";
+
 const Markets = () => {
   const navigate = useNavigate();
-  const { data: vnxPrice } = useVNXPrice();
-  const { data: coins, isLoading: coinsLoading } = useMarketData(20);
+  const vnxQuery = useVNXPrice();
+  const vnxPrice = vnxQuery.data;
+  const marketsQuery = useMarketData(20);
+  const coins = marketsQuery.data;
+  const coinsLoading = marketsQuery.isLoading;
   const { data: globalData } = useGlobalData();
   const { data: trending } = useTrending();
-  const { data: listingPrices } = useListingPrices();
+  const listingsQuery = useListingPrices();
+  const listingPrices = listingsQuery.data;
   const [chartCoinId, setChartCoinId] = useState("bitcoin");
 
   const global = globalData?.data;
