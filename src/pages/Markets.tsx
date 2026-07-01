@@ -265,9 +265,23 @@ const Markets = () => {
 
           {/* Live Market Table */}
           <div className="mb-10 animate-slide-up stagger-5">
-            <h2 className="text-2xl font-bold mb-5" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
-              Top <span className="text-gradient">Assets</span>
-            </h2>
+            <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+              <h2 className="text-2xl font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                Top <span className="text-gradient">Assets</span>
+              </h2>
+              <PriceFreshness
+                label="CoinGecko"
+                updatedAt={marketsQuery.dataUpdatedAt}
+                error={marketsQuery.error}
+                isFetching={marketsQuery.isFetching}
+                onRetry={() => marketsQuery.refetch()}
+              />
+            </div>
+            {marketsQuery.error && !coins && (
+              <div className="mb-3 p-3 rounded-lg border border-destructive/30 bg-destructive/5 text-xs text-destructive">
+                Market data feed is currently unreachable. We won't display stale prices — please retry in a moment.
+              </div>
+            )}
             <div className="rounded-2xl bg-card border border-border/40 shadow-elevated overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="table-modern">
