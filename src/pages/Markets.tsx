@@ -76,8 +76,15 @@ const Markets = () => {
 
           {/* VNX Featured */}
           <div className="mb-10 animate-slide-up stagger-2">
-            <div className="flex items-center gap-3 mb-5">
+            <div className="flex items-center gap-3 mb-5 flex-wrap">
               <span className="section-badge">Featured</span>
+              <PriceFreshness
+                label="VNX price"
+                updatedAt={vnxQuery.dataUpdatedAt}
+                error={vnxQuery.error}
+                isFetching={vnxQuery.isFetching}
+                onRetry={() => vnxQuery.refetch()}
+              />
             </div>
             <div className="hover-lift">
               <PriceCard
@@ -87,6 +94,11 @@ const Markets = () => {
                 change24h={vnxPrice?.change24h || 0}
                 volume={vnxPrice?.volume24h ? `$${(vnxPrice.volume24h / 1000).toFixed(1)}K` : "$0"}
               />
+              {vnxQuery.error && !vnxPrice?.price && (
+                <p className="mt-2 text-xs text-destructive">
+                  Live VNX price unavailable — upstream DEX APIs did not respond. Retrying automatically.
+                </p>
+              )}
             </div>
           </div>
 
