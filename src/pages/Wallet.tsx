@@ -674,8 +674,12 @@ const Wallet = () => {
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <p>No transactions yet</p>
-                  </div>
-                )}
+                <div className="mt-6 pt-6 border-t border-border/30">
+                  <h3 className="text-sm font-bold mb-3 uppercase tracking-wider" style={{ fontFamily: "'Space Grotesk', system-ui" }}>Withdrawal Requests</h3>
+                  <WithdrawalHistory />
+                </div>
+              </div>
+            )}
               </div>
             )}
 
