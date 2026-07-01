@@ -12,7 +12,9 @@ import { useSetPrimaryWallet } from "@/hooks/useSetPrimaryWallet";
 import { useChainPrices } from "@/hooks/useChainPrices";
 import { toast } from "sonner";
 import PageTransition from "@/components/PageTransition";
-import { DepositDialog, WithdrawDialog, TransferDialog } from "@/components/wallet/WalletActionDialogs";
+import { DepositDialog, TransferDialog } from "@/components/wallet/WalletActionDialogs";
+import { WithdrawDialogV2 } from "@/components/wallet/WithdrawDialogV2";
+import { WithdrawalHistory } from "@/components/wallet/WithdrawalHistory";
 import { ChainAccountCard } from "@/components/wallet/ChainAccountCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -672,8 +674,12 @@ const Wallet = () => {
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <p>No transactions yet</p>
-                  </div>
-                )}
+                <div className="mt-6 pt-6 border-t border-border/30">
+                  <h3 className="text-sm font-bold mb-3 uppercase tracking-wider" style={{ fontFamily: "'Space Grotesk', system-ui" }}>Withdrawal Requests</h3>
+                  <WithdrawalHistory />
+                </div>
+              </div>
+            )}
               </div>
             )}
 
@@ -706,7 +712,7 @@ const Wallet = () => {
           walletAddress={primaryWallet?.address || ""}
           walletChain={primaryWallet?.chain || "BNB Chain"}
         />
-        <WithdrawDialog open={withdrawOpen} onOpenChange={setWithdrawOpen} />
+        <WithdrawDialogV2 open={withdrawOpen} onOpenChange={setWithdrawOpen} />
         <TransferDialog open={transferOpen} onOpenChange={setTransferOpen} />
       </div>
     </PageTransition>

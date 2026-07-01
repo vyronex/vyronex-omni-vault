@@ -23,6 +23,7 @@ import CoinDetail from "./pages/CoinDetail";
 import VNXToken from "./pages/VNXToken";
 import NotFound from "./pages/NotFound";
 import Listings from "./pages/Listings";
+import AdminWithdrawals from "./pages/AdminWithdrawals";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const AnimatedRoutes = () => {
         <Route path="/blog" element={<Blog />} />
         <Route path="/vnx" element={<VNXToken />} />
         <Route path="/listings" element={<Listings />} />
+        <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
