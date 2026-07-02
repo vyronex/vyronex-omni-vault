@@ -18,16 +18,34 @@ import PriceFreshness from "@/components/PriceFreshness";
 
 const Markets = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const vnxQuery = useVNXPrice();
   const vnxPrice = vnxQuery.data;
   const marketsQuery = useMarketData(20);
   const coins = marketsQuery.data;
   const coinsLoading = marketsQuery.isLoading;
-  const { data: globalData } = useGlobalData();
+  const globalQuery = useGlobalData();
+  const { data: globalData } = globalQuery;
   const { data: trending } = useTrending();
   const listingsQuery = useListingPrices();
   const listingPrices = listingsQuery.data;
   const [chartCoinId, setChartCoinId] = useState("bitcoin");
+
+  const refreshing =
+    vnxQuery.isFetching ||
+    marketsQuery.isFetching ||
+    listingsQuery.isFetching ||
+    globalQuery.isFetching;
+
+  const handleRefreshAll = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["vnx-price"] }),
+      queryClient.invalidateQueries({ queryKey: ["coingecko-markets"] }),
+      queryClient.invalidateQueries({ queryKey: ["coingecko-global"] }),
+      queryClient.invalidateQueries({ queryKey: ["coingecko-trending"] }),
+      queryClient.invalidateQueries({ queryKey: ["listing-prices"] }),
+    ]);
+  };
 
   const global = globalData?.data;
   const trendingCoins = trending?.coins?.slice(0, 6) || [];
@@ -49,11 +67,27 @@ const Markets = () => {
         <div className="absolute inset-0 gradient-hero" />
         <div className="page-header-content">
           <div className="max-w-6xl mx-auto animate-slide-up">
-            <span className="section-badge">Real-Time</span>
-            <h1 className="page-title">
-              <span className="text-gradient">Markets</span>
-            </h1>
-            <p className="page-subtitle">Real-time cryptocurrency market data powered by CoinGecko</p>
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <span className="section-badge">Real-Time</span>
+                <h1 className="page-title">
+                  <span className="text-gradient">Markets</span>
+                </h1>
+                <p className="page-subtitle">Real-time cryptocurrency market data powered by CoinGecko</p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefreshAll}
+                disabled={refreshing}
+                className="rounded-full border-border/40 bg-card/50 hover:bg-card hover:border-primary/30 shrink-0"
+              >
+                {refreshing && (
+                  <span className="mr-2 h-3.5 w-3.5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                )}
+                <span className="text-sm font-semibold">{refreshing ? "Refreshing…" : "Refresh all"}</span>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
