@@ -23,6 +23,8 @@ import { ConnectExternalWallet } from "@/components/wallet/ConnectExternalWallet
 import { VIPSupportEscalation } from "@/components/wallet/VIPSupportEscalation";
 import { NotificationCenter } from "@/components/wallet/NotificationCenter";
 import { useListingPrices } from "@/hooks/useListingPrices";
+import { useMarketData } from "@/hooks/useCoinGecko";
+
 
 const CHAIN_ORDER = ["BNB Chain", "Ethereum", "Fantom", "Bitcoin", "Solana", "Tron"];
 const EVM_CHAINS = new Set(["BNB Chain", "Ethereum", "Fantom"]);
@@ -38,6 +40,8 @@ const Wallet = () => {
   const setPrimary = useSetPrimaryWallet();
   const { data: chainPrices } = useChainPrices();
   const { data: listingPrices } = useListingPrices();
+  const { data: topMarket, isLoading: topMarketLoading } = useMarketData(40, 1);
+
 
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
@@ -491,9 +495,77 @@ const Wallet = () => {
                     })}
                   </div>
                 )}
+
+                {/* Top 40 by market cap */}
+                <div className="mt-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <h3 className="text-base font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
+                        Coin Market · Top 40
+                      </h3>
+                      <p className="text-[11px] text-muted-foreground">
+                        Live prices from CoinGecko · updated every 60s
+                      </p>
+                    </div>
+                  </div>
+                  {topMarketLoading && !topMarket ? (
+                    <div className="flex justify-center py-10">
+                      <div className="h-6 w-6 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  ) : !topMarket || topMarket.length === 0 ? (
+                    <div className="text-center py-10 text-muted-foreground text-sm">
+                      Market data unavailable. Try again shortly.
+                    </div>
+                  ) : (
+                    <div className="rounded-2xl border border-border/40 bg-card/30 divide-y divide-border/30 overflow-hidden">
+                      {topMarket.slice(0, 40).map((c: any, i: number) => {
+                        const change = c.price_change_percentage_24h ?? 0;
+                        const tone = change >= 0 ? "text-[hsl(var(--vnx-green))]" : "text-destructive";
+                        const price = Number(c.current_price ?? 0);
+                        return (
+                          <div
+                            key={c.id}
+                            className="flex items-center justify-between px-4 py-3 hover:bg-muted/20 transition-colors gap-3"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span className="text-[10px] font-mono text-muted-foreground w-5 shrink-0 text-right">
+                                {i + 1}
+                              </span>
+                              {c.image ? (
+                                <img src={c.image} alt={c.symbol} className="h-8 w-8 rounded-full" />
+                              ) : (
+                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <span className="text-[10px] font-bold text-primary">
+                                    {String(c.symbol ?? "").slice(0, 3).toUpperCase()}
+                                  </span>
+                                </div>
+                              )}
+                              <div className="min-w-0">
+                                <p className="text-sm font-bold uppercase">{c.symbol}</p>
+                                <p className="text-[10px] text-muted-foreground truncate">{c.name}</p>
+                              </div>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <p className="text-sm font-mono font-bold">
+                                {price > 0
+                                  ? `$${price < 1 ? price.toPrecision(4) : price.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
+                                  : "—"}
+                              </p>
+                              <p className={`text-[10px] font-mono font-bold ${tone}`}>
+                                {change >= 0 ? "+" : ""}{change.toFixed(2)}%
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
             {/* ─── CHAINS ─── */}
+
+
 
 
             {section === "chains" && (
