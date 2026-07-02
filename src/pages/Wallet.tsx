@@ -40,6 +40,8 @@ const Wallet = () => {
   const setPrimary = useSetPrimaryWallet();
   const { data: chainPrices } = useChainPrices();
   const { data: listingPrices } = useListingPrices();
+  const { data: topMarket, isLoading: topMarketLoading } = useMarketData(40, 1);
+
 
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
