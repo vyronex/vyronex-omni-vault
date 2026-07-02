@@ -23,6 +23,8 @@ import { ConnectExternalWallet } from "@/components/wallet/ConnectExternalWallet
 import { VIPSupportEscalation } from "@/components/wallet/VIPSupportEscalation";
 import { NotificationCenter } from "@/components/wallet/NotificationCenter";
 import { useListingPrices } from "@/hooks/useListingPrices";
+import { useMarketData } from "@/hooks/useCoinGecko";
+
 
 const CHAIN_ORDER = ["BNB Chain", "Ethereum", "Fantom", "Bitcoin", "Solana", "Tron"];
 const EVM_CHAINS = new Set(["BNB Chain", "Ethereum", "Fantom"]);
