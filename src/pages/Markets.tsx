@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import PriceCard from "@/components/PriceCard";
 import StatsCard from "@/components/StatsCard";
 import PriceChart from "@/components/PriceChart";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useMarketData, useGlobalData, useTrending } from "@/hooks/useCoinGecko";
 import { useListingPrices } from "@/hooks/useListingPrices";
 import PageTransition from "@/components/PageTransition";
 
 import PriceFreshness from "@/components/PriceFreshness";
+
 
 const Markets = () => {
   const navigate = useNavigate();
