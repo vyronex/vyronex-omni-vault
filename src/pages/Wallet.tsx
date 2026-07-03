@@ -43,6 +43,16 @@ const Wallet = () => {
   const { data: listingPrices } = useListingPrices();
   const { data: topMarket, isLoading: topMarketLoading } = useMarketData(40, 1);
 
+  const filteredTopMarket = useMemo(() => {
+    if (!topMarket) return [];
+    const q = tokenSearch.trim().toLowerCase();
+    if (!q) return topMarket;
+    return topMarket.filter((c: any) =>
+      String(c.name ?? "").toLowerCase().includes(q) ||
+      String(c.symbol ?? "").toLowerCase().includes(q)
+    );
+  }, [topMarket, tokenSearch]);
+
 
   const [depositOpen, setDepositOpen] = useState(false);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
