@@ -778,6 +778,7 @@ const Wallet = () => {
         />
         <WithdrawDialogV2 open={withdrawOpen} onOpenChange={setWithdrawOpen} />
         <TransferDialog open={transferOpen} onOpenChange={setTransferOpen} />
+        <TokenDetailDrawer coin={detailCoin} open={detailOpen} onOpenChange={setDetailOpen} />
       </div>
     </PageTransition>
   );
