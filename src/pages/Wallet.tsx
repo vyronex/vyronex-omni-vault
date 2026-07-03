@@ -593,7 +593,7 @@ const Wallet = () => {
                                 {change >= 0 ? "+" : ""}{change.toFixed(2)}%
                               </p>
                             </div>
-                          </div>
+                          </button>
                         );
                       })}
                     </div>
