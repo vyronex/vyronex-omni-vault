@@ -48,6 +48,7 @@ const Wallet = () => {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
   const [section, setSection] = useState<SectionKey>("overview");
+  const [tokenSearch, setTokenSearch] = useState("");
 
   const addressEntries = useMemo(
     () => wallets?.map((w) => ({ chain: w.chain, address: w.address })) ?? [],
