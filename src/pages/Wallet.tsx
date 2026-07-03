@@ -50,6 +50,16 @@ const Wallet = () => {
   const [section, setSection] = useState<SectionKey>("overview");
   const [tokenSearch, setTokenSearch] = useState("");
 
+  const filteredTopMarket = useMemo(() => {
+    if (!topMarket) return [];
+    const q = tokenSearch.trim().toLowerCase();
+    if (!q) return topMarket;
+    return topMarket.filter((c: any) =>
+      String(c.name ?? "").toLowerCase().includes(q) ||
+      String(c.symbol ?? "").toLowerCase().includes(q)
+    );
+  }, [topMarket, tokenSearch]);
+
   const addressEntries = useMemo(
     () => wallets?.map((w) => ({ chain: w.chain, address: w.address })) ?? [],
     [wallets],
