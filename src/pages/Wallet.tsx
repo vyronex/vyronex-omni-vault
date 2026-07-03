@@ -50,6 +50,8 @@ const Wallet = () => {
   const [transferOpen, setTransferOpen] = useState(false);
   const [section, setSection] = useState<SectionKey>("overview");
   const [tokenSearch, setTokenSearch] = useState("");
+  const [detailCoin, setDetailCoin] = useState<TokenDetailCoin | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   const filteredTopMarket = useMemo(() => {
     if (!topMarket) return [];
