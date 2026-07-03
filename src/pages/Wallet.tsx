@@ -25,6 +25,7 @@ import { VIPSupportEscalation } from "@/components/wallet/VIPSupportEscalation";
 import { NotificationCenter } from "@/components/wallet/NotificationCenter";
 import { useListingPrices } from "@/hooks/useListingPrices";
 import { useMarketData } from "@/hooks/useCoinGecko";
+import { TokenDetailDrawer, type TokenDetailCoin } from "@/components/wallet/TokenDetailDrawer";
 
 
 const CHAIN_ORDER = ["BNB Chain", "Ethereum", "Fantom", "Bitcoin", "Solana", "Tron"];
