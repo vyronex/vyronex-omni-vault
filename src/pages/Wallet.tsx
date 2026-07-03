@@ -559,9 +559,11 @@ const Wallet = () => {
                         const tone = change >= 0 ? "text-[hsl(var(--vnx-green))]" : "text-destructive";
                         const price = Number(c.current_price ?? 0);
                         return (
-                          <div
+                          <button
+                            type="button"
                             key={c.id}
-                            className="flex items-center justify-between px-4 py-3 hover:bg-muted/20 transition-colors gap-3"
+                            onClick={() => { setDetailCoin(c as TokenDetailCoin); setDetailOpen(true); }}
+                            className="w-full text-left flex items-center justify-between px-4 py-3 hover:bg-muted/20 transition-colors gap-3 focus:outline-none focus:bg-muted/30"
                           >
                             <div className="flex items-center gap-3 min-w-0">
                               <span className="text-[10px] font-mono text-muted-foreground w-5 shrink-0 text-right">
