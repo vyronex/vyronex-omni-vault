@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useAuth } from "@/hooks/useAuth";
 import { useWallets } from "@/hooks/useWallets";
@@ -47,6 +48,17 @@ const Wallet = () => {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
   const [section, setSection] = useState<SectionKey>("overview");
+  const [tokenSearch, setTokenSearch] = useState("");
+
+  const filteredTopMarket = useMemo(() => {
+    if (!topMarket) return [];
+    const q = tokenSearch.trim().toLowerCase();
+    if (!q) return topMarket;
+    return topMarket.filter((c: any) =>
+      String(c.name ?? "").toLowerCase().includes(q) ||
+      String(c.symbol ?? "").toLowerCase().includes(q)
+    );
+  }, [topMarket, tokenSearch]);
 
   const addressEntries = useMemo(
     () => wallets?.map((w) => ({ chain: w.chain, address: w.address })) ?? [],
@@ -498,7 +510,7 @@ const Wallet = () => {
 
                 {/* Top 40 by market cap */}
                 <div className="mt-6">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
                     <div>
                       <h3 className="text-base font-bold" style={{ fontFamily: "'Space Grotesk', system-ui" }}>
                         Coin Market · Top 40
@@ -506,6 +518,23 @@ const Wallet = () => {
                       <p className="text-[11px] text-muted-foreground">
                         Live prices from CoinGecko · updated every 60s
                       </p>
+                    </div>
+                    <div className="relative w-full sm:w-56">
+                      <Input
+                        type="text"
+                        placeholder="Search coin or symbol"
+                        value={tokenSearch}
+                        onChange={(e) => setTokenSearch(e.target.value)}
+                        className="h-9 text-xs pr-8"
+                      />
+                      {tokenSearch && (
+                        <button
+                          onClick={() => setTokenSearch("")}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground hover:text-foreground"
+                        >
+                          Clear
+                        </button>
+                      )}
                     </div>
                   </div>
                   {topMarketLoading && !topMarket ? (
@@ -516,9 +545,13 @@ const Wallet = () => {
                     <div className="text-center py-10 text-muted-foreground text-sm">
                       Market data unavailable. Try again shortly.
                     </div>
+                  ) : filteredTopMarket.length === 0 ? (
+                    <div className="text-center py-10 text-muted-foreground text-sm">
+                      No coins match “{tokenSearch}”.
+                    </div>
                   ) : (
                     <div className="rounded-2xl border border-border/40 bg-card/30 divide-y divide-border/30 overflow-hidden">
-                      {topMarket.slice(0, 40).map((c: any, i: number) => {
+                      {filteredTopMarket.slice(0, 40).map((c: any, i: number) => {
                         const change = c.price_change_percentage_24h ?? 0;
                         const tone = change >= 0 ? "text-[hsl(var(--vnx-green))]" : "text-destructive";
                         const price = Number(c.current_price ?? 0);
