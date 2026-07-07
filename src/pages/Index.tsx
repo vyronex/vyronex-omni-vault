@@ -11,6 +11,7 @@ import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollRevealContainer } from "@/hooks/useScrollReveal";
 import { motion } from "framer-motion";
+import heroBgVideo from "@/assets/hero-bg.mp4.asset.json";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
