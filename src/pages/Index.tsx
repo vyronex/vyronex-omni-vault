@@ -11,6 +11,7 @@ import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollRevealContainer } from "@/hooks/useScrollReveal";
 import { motion } from "framer-motion";
+import heroBgVideo from "@/assets/hero-bg.mp4.asset.json";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -38,13 +39,20 @@ const Index = () => {
 
         {/* ═══ HERO — Cinematic centered layout ═══ */}
         <section className="relative overflow-hidden min-h-[95vh] flex flex-col items-center justify-center">
-          <div className="absolute inset-0 pointer-events-none">
-            <motion.div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] md:w-[700px] md:h-[700px] rounded-full"
-              style={{ background: 'radial-gradient(circle, hsl(0 84% 55% / 0.12) 0%, hsl(25 95% 55% / 0.06) 40%, transparent 70%)' }}
-              animate={{ scale: [1, 1.15, 1], rotate: [0, 180, 360] }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          <div className="absolute inset-0 -z-20">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              poster="/placeholder.svg"
+              className="absolute inset-0 w-full h-full object-cover"
+              src={heroBgVideo.url}
             />
+          </div>
+          <div className="absolute inset-0 -z-10 bg-black/40 pointer-events-none" />
+          <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-[20%] left-[15%] w-1 h-1 rounded-full bg-primary/40 animate-pulse" />
             <div className="absolute top-[30%] right-[20%] w-1.5 h-1.5 rounded-full bg-accent/30 animate-pulse" style={{ animationDelay: '1s' }} />
             <div className="absolute bottom-[25%] left-[25%] w-1 h-1 rounded-full bg-primary/30 animate-pulse" style={{ animationDelay: '2s' }} />
