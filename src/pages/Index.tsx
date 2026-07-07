@@ -51,7 +51,7 @@ const Index = () => {
               src={heroBgVideo.url}
             />
           </div>
-          <div className="absolute inset-0 -z-10 bg-black/40 pointer-events-none" />
+          <div className="absolute inset-0 -z-10 bg-black/15 pointer-events-none" />
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-[20%] left-[15%] w-1 h-1 rounded-full bg-primary/40 animate-pulse" />
             <div className="absolute top-[30%] right-[20%] w-1.5 h-1.5 rounded-full bg-accent/30 animate-pulse" style={{ animationDelay: '1s' }} />
