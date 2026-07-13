@@ -48,7 +48,7 @@ const Index = () => {
             src={heroBgVideo.url}
           />
         </div>
-        <div className="fixed inset-0 -z-10 bg-black/20 pointer-events-none" />
+        <div className="fixed inset-0 -z-10 bg-black/65 pointer-events-none" />
 
         <Navigation />
 
