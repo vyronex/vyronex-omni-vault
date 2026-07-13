@@ -34,22 +34,7 @@ const Index = () => {
 
   return (
     <PageTransition>
-      <div ref={scrollRef} className="relative min-h-screen">
-        {/* ═══ FULL-PAGE VIDEO BACKGROUND ═══ */}
-        <div className="fixed inset-0 -z-20">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            poster="/placeholder.svg"
-            className="absolute inset-0 w-full h-full object-cover"
-            src={heroBgVideo.url}
-          />
-        </div>
-        <div className="fixed inset-0 -z-10 bg-black/95 pointer-events-none" />
-
+      <div ref={scrollRef} className="relative min-h-screen bg-background">
         <Navigation />
 
         {/* ═══ HERO — Cinematic centered layout ═══ */}
