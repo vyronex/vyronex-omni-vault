@@ -34,26 +34,26 @@ const Index = () => {
 
   return (
     <PageTransition>
-      <div ref={scrollRef} className="relative min-h-screen">
-        {/* ═══ FULL-PAGE VIDEO BACKGROUND ═══ */}
-        <div className="fixed inset-0 -z-20">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            poster="/placeholder.svg"
-            className="absolute inset-0 w-full h-full object-cover"
-            src={heroBgVideo.url}
-          />
-        </div>
-        <div className="fixed inset-0 -z-10 bg-black/95 pointer-events-none" />
-
+      <div ref={scrollRef} className="relative min-h-screen bg-background">
         <Navigation />
 
         {/* ═══ HERO — Cinematic centered layout ═══ */}
         <section className="relative overflow-hidden min-h-[95vh] flex flex-col items-center justify-center">
+          {/* HERO VIDEO BACKGROUND */}
+          <div className="absolute inset-0 -z-20">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              poster="/placeholder.svg"
+              className="absolute inset-0 w-full h-full object-cover"
+              src={heroBgVideo.url}
+            />
+          </div>
+          <div className="absolute inset-0 -z-10 bg-black/95 pointer-events-none" />
+
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-[20%] left-[15%] w-1 h-1 rounded-full bg-primary/40 animate-pulse" />
             <div className="absolute top-[30%] right-[20%] w-1.5 h-1.5 rounded-full bg-accent/30 animate-pulse" style={{ animationDelay: '1s' }} />
