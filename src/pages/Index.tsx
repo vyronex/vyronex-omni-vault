@@ -910,117 +910,140 @@ const res = await fetch('https://api.vyronexvnx.com/v1/order', {
           <div className="absolute inset-0 bg-gradient-to-l from-primary/[0.04] to-transparent" />
           <div className="section-container relative">
             <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-2 gap-16 items-center">
-                <div className="relative order-2 lg:order-1">
-                  <div className="mx-auto w-[240px] md:w-[270px] relative animate-float">
-                    <div className="rounded-[2.5rem] border-[5px] border-border/30 bg-card shadow-elevated overflow-hidden aspect-[9/19]">
-                      <div className="h-full w-full p-4 flex flex-col">
-                        <div className="flex justify-between items-center mb-3 px-1">
-                          <span className="text-[10px] font-semibold">9:41</span>
-                          <div className="flex gap-1">
-                            <div className="w-3 h-2 rounded-sm bg-foreground/40" />
-                            <div className="w-3 h-2 rounded-sm bg-foreground/40" />
-                            <div className="w-5 h-2 rounded-sm bg-primary" />
+              <div className="grid lg:grid-cols-2 gap-16 items-center no-center">
+                {/* Left: Refined Phone Mockup */}
+                <div className="relative order-2 lg:order-1 flex justify-center">
+                  <div className="absolute w-64 h-64 bg-primary/20 rounded-full blur-[100px] -z-10" />
+                  <div className="relative w-[300px] h-[600px] bg-card rounded-[3rem] p-3 border-4 border-border/50 shadow-elevated overflow-hidden animate-float">
+                    {/* Inner Screen */}
+                    <div className="w-full h-full bg-background rounded-[2.2rem] overflow-hidden flex flex-col">
+                      {/* Notch */}
+                      <div className="h-6 w-full flex justify-center">
+                        <div className="h-4 w-24 bg-card rounded-b-xl" />
+                      </div>
+                      {/* App Content */}
+                      <div className="p-5 flex-1 flex flex-col gap-6">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center">
+                              <span className="text-primary-foreground font-bold text-xs">V</span>
+                            </div>
+                            <span className="text-xs font-bold">VyronexVNX</span>
+                          </div>
+                          <div className="w-8 h-8 rounded-lg bg-secondary/50 flex items-center justify-center">
+                            <div className="w-4 h-4 border-2 border-muted-foreground/50 rounded-sm" />
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="h-7 w-7 rounded-lg gradient-primary flex items-center justify-center">
-                            <span className="text-primary-foreground font-bold text-xs">V</span>
+                        {/* Balance Card */}
+                        <div className="gradient-primary rounded-2xl p-5 shadow-lg">
+                          <p className="text-primary-foreground/70 text-xs uppercase tracking-wider font-semibold">Total Balance</p>
+                          <p className="text-2xl font-bold text-primary-foreground mt-1">$42,850.24</p>
+                          <div className="mt-4 flex gap-2">
+                            <div className="h-1.5 w-full bg-primary-foreground/20 rounded-full overflow-hidden">
+                              <div className="h-full w-2/3 bg-primary-foreground rounded-full" />
+                            </div>
                           </div>
-                          <span className="text-xs font-bold">VyronexVNX</span>
                         </div>
-                        <div className="p-3 rounded-xl gradient-primary mb-3">
-                          <p className="text-[10px] text-primary-foreground/80">Total Balance</p>
-                          <p className="text-lg font-bold text-primary-foreground">$24,856.40</p>
-                          <p className="text-[10px] text-primary-foreground/80 mt-0.5">+5.23% today</p>
-                        </div>
-                        <div className="grid grid-cols-4 gap-2 mb-3">
-                          {["Send", "Trade", "Earn", "Buy"].map(a => (
-                            <div key={a} className="text-center">
-                              <div className="h-8 w-8 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-1">
-                                <div className="h-3 w-3 rounded-full bg-primary/40" />
+                        {/* Action Buttons */}
+                        <div className="grid grid-cols-3 gap-3">
+                          {[
+                            { label: "Send", shape: "arrow-up" },
+                            { label: "Receive", shape: "arrow-down" },
+                            { label: "Trade", shape: "circle" },
+                          ].map((a) => (
+                            <div key={a.label} className="flex flex-col items-center gap-2">
+                              <div className="w-12 h-12 rounded-2xl bg-secondary border border-border flex items-center justify-center">
+                                {a.shape === "arrow-up" && <div className="w-5 h-5 border-t-2 border-r-2 border-primary rotate-[-45deg]" />}
+                                {a.shape === "arrow-down" && <div className="w-5 h-5 border-b-2 border-l-2 border-primary rotate-[-45deg]" />}
+                                {a.shape === "circle" && <div className="w-5 h-5 rounded-full border-2 border-primary" />}
                               </div>
-                              <p className="text-[8px] text-muted-foreground">{a}</p>
+                              <span className="text-[10px] text-muted-foreground">{a.label}</span>
                             </div>
                           ))}
                         </div>
-                        <div className="space-y-2 flex-1">
+                        {/* Asset List */}
+                        <div className="flex flex-col gap-4 mt-2">
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs font-bold text-foreground">Assets</span>
+                            <span className="text-[10px] text-primary">See all</span>
+                          </div>
                           {[
-                            { sym: "BTC", val: "$68,240", pct: "+2.1%" },
-                            { sym: "ETH", val: "$3,520", pct: "+1.8%" },
-                            { sym: "VNX", val: "$0.00054", pct: "+5.2%" },
-                          ].map(c => (
-                            <div key={c.sym} className="flex justify-between items-center p-2 rounded-lg bg-background/50">
-                              <div className="flex items-center gap-2">
-                                <div className="h-6 w-6 rounded-full gradient-primary flex items-center justify-center">
-                                  <span className="text-[8px] font-bold text-primary-foreground">{c.sym[0]}</span>
-                                </div>
-                                <span className="text-[10px] font-semibold">{c.sym}</span>
+                            { sym: "BTC", name: "Bitcoin", val: "$64,231", pct: "+2.4%", up: true },
+                            { sym: "ETH", name: "Ethereum", val: "$3,421", pct: "-1.2%", up: false },
+                            { sym: "VNX", name: "Vyronex", val: "$0.00054", pct: "+5.2%", up: true },
+                          ].map((c) => (
+                            <div key={c.sym} className="flex items-center gap-3 bg-secondary/50 p-3 rounded-xl border border-border/50">
+                              <div className="h-8 w-8 rounded-full gradient-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
+                                {c.sym[0]}
+                              </div>
+                              <div className="flex-1">
+                                <div className="text-xs font-bold text-foreground">{c.name}</div>
+                                <div className="text-[10px] text-muted-foreground">{c.sym}</div>
                               </div>
                               <div className="text-right">
-                                <p className="text-[10px] font-semibold">{c.val}</p>
-                                <p className="text-[8px] text-[hsl(var(--vnx-green))]">{c.pct}</p>
+                                <div className="text-xs font-bold text-foreground">{c.val}</div>
+                                <div className={`text-[10px] ${c.up ? "text-[hsl(var(--vnx-green))]" : "text-destructive"}`}>{c.pct}</div>
                               </div>
                             </div>
                           ))}
                         </div>
                       </div>
+                      {/* Bottom Bar */}
+                      <div className="h-12 border-t border-border flex justify-around items-center px-6 bg-background/80 backdrop-blur-md">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+                      </div>
                     </div>
-                    <div className="absolute -inset-6 bg-[radial-gradient(circle_at_50%_50%,hsl(0_84%_55%/0.15),transparent_60%)] -z-10 blur-xl" />
                   </div>
                 </div>
 
-                <div className="order-1 lg:order-2">
-                  <span className="section-badge">Mobile</span>
-                  <h2 className="mt-4 text-4xl md:text-5xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>
-                    Trade from<br />
-                    <span className="text-gradient">anywhere.</span>
+                {/* Right: Content */}
+                <div className="order-1 lg:order-2 text-center lg:text-left">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-widest mb-6">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                    </span>
+                    Vyronex App
+                  </div>
+                  <h2 className="!text-4xl md:!text-5xl font-bold !text-left leading-tight" style={{ fontFamily: "'Space Grotesk'" }}>
+                    Trade Anytime.<br />
+                    <span className="text-gradient">Everywhere.</span>
                   </h2>
-                  <p className="text-muted-foreground mt-4 mb-8 text-lg max-w-md leading-relaxed">
-                    Full exchange functionality in your pocket. Execute trades, manage your portfolio, and earn rewards on the go.
+                  <p className="text-muted-foreground mt-4 mb-8 text-lg max-w-md leading-relaxed !text-left">
+                    Experience the power of the most advanced crypto exchange in the palm of your hand. Secure, fast, and remarkably intuitive.
                   </p>
-                  <div className="space-y-3 mb-8">
+                  <div className="space-y-4 mb-8">
                     {[
-                      "Real-time price alerts and push notifications",
-                      "Biometric authentication for secure access",
-                      "One-tap trading with customizable shortcuts",
-                      "Portfolio analytics and P&L tracking",
+                      "Biometric security & cold storage integration",
+                      "Real-time market tracking & instant alerts",
+                      "Zero-fee internal transfers & instant swaps",
                     ].map((feature, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className="h-1.5 w-1.5 rounded-full bg-primary/60 shrink-0" />
+                      <div key={i} className="flex items-center gap-4 justify-center lg:justify-start">
+                        <div className="flex-none h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        </div>
                         <p className="text-sm text-muted-foreground">{feature}</p>
                       </div>
                     ))}
                   </div>
-                  <div className="flex gap-3 flex-wrap">
-                    <a href="#" className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-foreground text-background hover:opacity-90 transition-opacity active-press">
-                      <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current"><path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.32 2.32-1.55 4.3-3.74 4.25z"/></svg>
+                  <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
+                    <a href="#" className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-card border border-border hover:bg-secondary/80 transition-colors active-press">
+                      <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.06.75.79.02 1.99-.81 3.56-.69 1.86.13 3.27.8 4.07 1.95-3.4 2.03-2.85 6.35.53 7.74-.7 1.77-1.65 3.52-3.22 5.22zM12.03 7.25c-.08-2.69 2.2-4.99 4.85-5.18.36 3.19-3.05 5.53-4.85 5.18z"/></svg>
                       <div className="text-left">
-                        <div className="text-[10px] leading-none opacity-70">Download on the</div>
-                        <div className="text-sm font-semibold leading-tight">App Store</div>
+                        <div className="text-[10px] uppercase text-muted-foreground font-bold tracking-tighter">Download on the</div>
+                        <div className="text-sm font-bold leading-tight">App Store</div>
                       </div>
                     </a>
-                    <a href="#" className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-foreground text-background hover:opacity-90 transition-opacity active-press">
-                      <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current"><path d="M3.18 23.49c-.41-.2-.68-.6-.68-1.04V1.55c0-.44.27-.84.68-1.04l11.3 11.49L3.18 23.49zm1.4-22.2L15.58 12 4.58 22.71V1.29zm.72-.3L17.16 10.6l-2.83 2.89L5.3.99zM17.89 11.27l2.6 1.5c.65.37.65 1.1 0 1.47l-2.6 1.5-3.14-2.23 3.14-2.24zM5.3 23.01l12.86-7.43-2.58-2.58L5.3 23.01z"/></svg>
+                    <a href="#" className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-card border border-border hover:bg-secondary/80 transition-colors active-press">
+                      <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current"><path d="M3.18 23.49c-.41-.2-.68-.6-.68-1.04V1.55c0-.44.27-.84.68-1.04l11.3 11.49L3.18 23.49zm1.4-22.2L15.58 12 4.58 22.71V1.29zm.72-.3L17.16 10.6l-2.83 2.89L5.3.99zM17.89 11.27l2.6 1.5c.65.37.65 1.1 0 1.47l-2.6 1.5-3.14-2.23 3.14-2.24zM5.3 23.01l12.86-7.43-2.58-2.58L5.3 23.01z"/></svg>
                       <div className="text-left">
-                        <div className="text-[10px] leading-none opacity-70">GET IT ON</div>
-                        <div className="text-sm font-semibold leading-tight">Google Play</div>
+                        <div className="text-[10px] uppercase text-muted-foreground font-bold tracking-tighter">GET IT ON</div>
+                        <div className="text-sm font-bold leading-tight">Google Play</div>
                       </div>
                     </a>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 mt-8">
-                    <div className="text-center">
-                      <div className="text-xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>100K+</div>
-                      <p className="text-xs text-muted-foreground">Downloads</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>4.8</div>
-                      <p className="text-xs text-muted-foreground">Rating</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-xl font-bold" style={{ fontFamily: "'Space Grotesk'" }}>&lt;50ms</div>
-                      <p className="text-xs text-muted-foreground">Latency</p>
-                    </div>
                   </div>
                 </div>
               </div>
