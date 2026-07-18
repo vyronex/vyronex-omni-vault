@@ -962,8 +962,8 @@ const res = await fetch('https://api.vyronexvnx.com/v1/order', {
                           ))}
                         </div>
                         {/* Asset List */}
-                        <div className="flex flex-col gap-4 mt-2">
-                          <div className="flex justify-between items-center">
+                        <div className="flex flex-col gap-4 mt-2 w-full">
+                          <div className="flex w-full justify-between items-center">
                             <span className="text-xs font-bold text-foreground">Assets</span>
                             <span className="text-[10px] text-primary">See all</span>
                           </div>
