@@ -1008,9 +1008,9 @@ const res = await fetch('https://api.vyronexvnx.com/v1/order', {
                     </span>
                     Vyronex App
                   </div>
-                  <h2 className="!text-4xl md:!text-5xl font-bold !text-left leading-tight" style={{ fontFamily: "'Space Grotesk'" }}>
+                  <h2 className="!text-4xl md:!text-5xl font-bold leading-tight" style={{ fontFamily: "'Space Grotesk'", lineHeight: 1.1 }}>
                     Trade Anytime.<br />
-                    <span className="text-gradient">Everywhere.</span>
+                    <span className="text-gradient !text-4xl md:!text-5xl">Everywhere.</span>
                   </h2>
                   <p className="text-muted-foreground mt-4 mb-8 text-lg max-w-md leading-relaxed !text-left">
                     Experience the power of the most advanced crypto exchange in the palm of your hand. Secure, fast, and remarkably intuitive.
