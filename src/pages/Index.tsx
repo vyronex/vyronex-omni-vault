@@ -11,7 +11,11 @@ import { useVNXPrice } from "@/hooks/useVNXPrice";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollRevealContainer } from "@/hooks/useScrollReveal";
 import { motion } from "framer-motion";
+import { QRCodeSVG } from "qrcode.react";
 import heroBgVideo from "@/assets/hero-bg.mp4.asset.json";
+
+const APP_STORE_URL = "https://apps.apple.com/app/vyronex-vnx/id1234567890";
+const GOOGLE_PLAY_URL = "https://play.google.com/store/apps/details?id=com.vyronex.vnx";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
