@@ -1068,20 +1068,36 @@ const res = await fetch('https://api.vyronexvnx.com/v1/order', {
                     ))}
                   </div>
                   <div className="flex gap-4 flex-wrap justify-center lg:justify-start">
-                    <a href="#" className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-card border border-border hover:bg-secondary/80 transition-colors active-press">
-                      <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.06.75.79.02 1.99-.81 3.56-.69 1.86.13 3.27.8 4.07 1.95-3.4 2.03-2.85 6.35.53 7.74-.7 1.77-1.65 3.52-3.22 5.22zM12.03 7.25c-.08-2.69 2.2-4.99 4.85-5.18.36 3.19-3.05 5.53-4.85 5.18z"/></svg>
-                      <div className="text-left">
-                        <div className="text-[10px] uppercase text-muted-foreground font-bold tracking-tighter">Download on the</div>
-                        <div className="text-sm font-bold leading-tight">App Store</div>
+                    <div className="flex items-center gap-3">
+                      <a href={APP_STORE_URL} className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-card border border-border hover:bg-secondary/80 transition-colors active-press">
+                        <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.06.75.79.02 1.99-.81 3.56-.69 1.86.13 3.27.8 4.07 1.95-3.4 2.03-2.85 6.35.53 7.74-.7 1.77-1.65 3.52-3.22 5.22zM12.03 7.25c-.08-2.69 2.2-4.99 4.85-5.18.36 3.19-3.05 5.53-4.85 5.18z"/></svg>
+                        <div className="text-left">
+                          <div className="text-[10px] uppercase text-muted-foreground font-bold tracking-tighter">Download on the</div>
+                          <div className="text-sm font-bold leading-tight">App Store</div>
+                        </div>
+                      </a>
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="p-2 rounded-xl bg-card border border-border">
+                          <QRCodeSVG value={APP_STORE_URL} size={64} fgColor="#ffffff" bgColor="transparent" />
+                        </div>
+                        <span className="text-[9px] text-muted-foreground uppercase tracking-wider font-bold">Scan</span>
                       </div>
-                    </a>
-                    <a href="#" className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-card border border-border hover:bg-secondary/80 transition-colors active-press">
-                      <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current"><path d="M3.18 23.49c-.41-.2-.68-.6-.68-1.04V1.55c0-.44.27-.84.68-1.04l11.3 11.49L3.18 23.49zm1.4-22.2L15.58 12 4.58 22.71V1.29zm.72-.3L17.16 10.6l-2.83 2.89L5.3.99zM17.89 11.27l2.6 1.5c.65.37.65 1.1 0 1.47l-2.6 1.5-3.14-2.23 3.14-2.24zM5.3 23.01l12.86-7.43-2.58-2.58L5.3 23.01z"/></svg>
-                      <div className="text-left">
-                        <div className="text-[10px] uppercase text-muted-foreground font-bold tracking-tighter">GET IT ON</div>
-                        <div className="text-sm font-bold leading-tight">Google Play</div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <a href={GOOGLE_PLAY_URL} className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-card border border-border hover:bg-secondary/80 transition-colors active-press">
+                        <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current"><path d="M3.18 23.49c-.41-.2-.68-.6-.68-1.04V1.55c0-.44.27-.84.68-1.04l11.3 11.49L3.18 23.49zm1.4-22.2L15.58 12 4.58 22.71V1.29zm.72-.3L17.16 10.6l-2.83 2.89L5.3.99zM17.89 11.27l2.6 1.5c.65.37.65 1.1 0 1.47l-2.6 1.5-3.14-2.23 3.14-2.24zM5.3 23.01l12.86-7.43-2.58-2.58L5.3 23.01z"/></svg>
+                        <div className="text-left">
+                          <div className="text-[10px] uppercase text-muted-foreground font-bold tracking-tighter">GET IT ON</div>
+                          <div className="text-sm font-bold leading-tight">Google Play</div>
+                        </div>
+                      </a>
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="p-2 rounded-xl bg-card border border-border">
+                          <QRCodeSVG value={GOOGLE_PLAY_URL} size={64} fgColor="#ffffff" bgColor="transparent" />
+                        </div>
+                        <span className="text-[9px] text-muted-foreground uppercase tracking-wider font-bold">Scan</span>
                       </div>
-                    </a>
+                    </div>
                   </div>
                 </div>
               </div>
