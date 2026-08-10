@@ -110,7 +110,7 @@ export default function Overview() {
           className="xl:col-span-2"
           title="Portfolio performance"
           subtitle={`${range} change ${rangeChange >= 0 ? "+" : "-"}${fmtUsd(Math.abs(rangeChange))} (${fmtPct(rangePct)})`}
-          actions={<Segmented size="sm" options={RANGES} value={range} onChange={setRange} />}
+          actions={<Segmented<Range> size="sm" options={RANGES} value={range} onChange={setRange} />}
         >
           <div className="h-[260px] w-full">
             <ResponsiveContainer width="100%" height="100%">
