@@ -24,6 +24,8 @@ import VNXToken from "./pages/VNXToken";
 import NotFound from "./pages/NotFound";
 import Listings from "./pages/Listings";
 import AdminWithdrawals from "./pages/AdminWithdrawals";
+import ExchangeShell from "./components/exchange/ExchangeShell";
+import ExchangeOverview from "./pages/exchange/Overview";
 
 const queryClient = new QueryClient();
 
