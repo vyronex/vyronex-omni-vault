@@ -24,6 +24,8 @@ import VNXToken from "./pages/VNXToken";
 import NotFound from "./pages/NotFound";
 import Listings from "./pages/Listings";
 import AdminWithdrawals from "./pages/AdminWithdrawals";
+import ExchangeShell from "./components/exchange/ExchangeShell";
+import ExchangeOverview from "./pages/exchange/Overview";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +54,9 @@ const AnimatedRoutes = () => {
         <Route path="/vnx" element={<VNXToken />} />
         <Route path="/listings" element={<Listings />} />
         <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
+        <Route path="/app" element={<ExchangeShell />}>
+          <Route index element={<ExchangeOverview />} />
+        </Route>
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
