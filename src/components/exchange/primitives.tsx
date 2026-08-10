@@ -375,7 +375,7 @@ export function DataTable<T>({
           <tbody>
             {view.map((row, i) => (
               <tr
-                key={rowKey ? rowKey(row, i) : (row.id ?? i)}
+                key={rowKey ? rowKey(row, i) : ((row as { id?: string })?.id ?? i)}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
                 className={cn("border-b border-border/60 last:border-0", onRowClick && "cursor-pointer hover:bg-secondary/60")}
               >
