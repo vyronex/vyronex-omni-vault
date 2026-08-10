@@ -54,6 +54,9 @@ const AnimatedRoutes = () => {
         <Route path="/vnx" element={<VNXToken />} />
         <Route path="/listings" element={<Listings />} />
         <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
+        <Route path="/app" element={<ExchangeShell />}>
+          <Route index element={<ExchangeOverview />} />
+        </Route>
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
