@@ -432,3 +432,58 @@
     @apply text-4xl md:text-5xl font-bold text-gradient;
   }
 }
+
+/* ============================================================
+   Exchange dashboard scope — institutional palette.
+   Overrides the marketing-site tokens inside the app shell only.
+   ============================================================ */
+.ex-scope {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 3.5%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 5%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 0% 8%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 8%;
+  --muted-foreground: 240 4% 65%;
+  --accent: 0 0% 10%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 0 0% 12%;
+  --input: 0 0% 12%;
+  --ring: 221 83% 53%;
+  --radius: 0.75rem;
+  --success: 152 60% 42%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --elevated: 0 0% 6%;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Neutralise the global marketing typography constraints in the app shell */
+.ex-scope :is(h1, h2, h3, h4, h5, h6) {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  font-size: inherit !important;
+  text-align: left !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.015em;
+}
+.ex-scope :is(p, span, li, a, label, input, textarea, select, button, td, th) {
+  font-size: inherit !important;
+  text-align: inherit !important;
+}
+.ex-scope .tabular {
+  font-variant-numeric: tabular-nums;
+}
