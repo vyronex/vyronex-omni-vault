@@ -296,7 +296,7 @@ export interface Column<T> {
   hideOn?: "sm" | "md" | "lg";
 }
 
-export function DataTable<T extends { id?: string }>({
+export function DataTable<T>({
   columns,
   rows,
   loading,
