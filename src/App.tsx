@@ -26,6 +26,8 @@ import Listings from "./pages/Listings";
 import AdminWithdrawals from "./pages/AdminWithdrawals";
 import ExchangeShell from "./components/exchange/ExchangeShell";
 import ExchangeOverview from "./pages/exchange/Overview";
+import ExchangeMarkets from "./pages/exchange/Markets";
+import ExchangeTrade from "./pages/exchange/Trade";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +58,8 @@ const AnimatedRoutes = () => {
         <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
         <Route path="/app" element={<ExchangeShell />}>
           <Route index element={<ExchangeOverview />} />
+          <Route path="markets" element={<ExchangeMarkets />} />
+          <Route path="trade" element={<ExchangeTrade />} />
         </Route>
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />

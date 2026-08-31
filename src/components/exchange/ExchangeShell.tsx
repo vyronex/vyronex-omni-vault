@@ -2,7 +2,8 @@ import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Badge, Btn, TextInput } from "@/components/exchange/primitives";
-import { MARKETS, NOTIFICATIONS, fmtUsd, pairOf, useTickers } from "@/exchange/data";
+import { NOTIFICATIONS, fmtUsd, pairOf, useTickers } from "@/exchange/data";
+import VnxMark from "@/components/exchange/VnxMark";
 import { toast } from "sonner";
 
 export const NAV_GROUPS: { label: string; items: { label: string; to: string }[] }[] = [
@@ -96,15 +97,16 @@ function GlobalSearch() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const ref = useOutside<HTMLDivElement>(() => setOpen(false));
+  const { list } = useTickers();
 
   const results = useMemo(() => {
     const term = q.trim().toLowerCase();
     if (!term) return { markets: [], pages: [] };
     return {
-      markets: MARKETS.filter((m) => m.symbol.toLowerCase().includes(term) || m.name.toLowerCase().includes(term)).slice(0, 5),
+      markets: list.filter((m) => m.symbol.toLowerCase().includes(term) || m.name.toLowerCase().includes(term)).slice(0, 5),
       pages: ALL_ITEMS.filter((i) => i.label.toLowerCase().includes(term)).slice(0, 4),
     };
-  }, [q]);
+  }, [list, q]);
 
   const empty = q.trim() && !results.markets.length && !results.pages.length;
 
@@ -231,7 +233,7 @@ export default function ExchangeShell() {
           </button>
 
           <Link to="/app" className="flex shrink-0 items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-[12px] font-bold text-primary-foreground">V</span>
+            <VnxMark size={28} />
             <span className="hidden text-[14px] font-semibold tracking-tight sm:block">Vyronex</span>
             <Badge tone="accent" className="hidden sm:inline-flex">
               Pro
