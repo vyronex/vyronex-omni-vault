@@ -1,18 +1,14 @@
-/**
- * Exchange data layer.
- *
- * Architecture note: every consumer reads through these hooks so that the
- * simulated feed below can be swapped for a real REST + WebSocket transport
- * without touching UI code. `subscribeTicker` mirrors a WS subscription
- * contract (subscribe -> callback -> unsubscribe).
- */
-import { useEffect, useMemo, useRef, useState } from "react";
+/** Shared exchange data layer backed by the project's live market proxy. */
+import { useMemo, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCoinGeckoData } from "@/hooks/useCoinGecko";
 
 export type Side = "buy" | "sell";
 export type OrderStatus = "open" | "partially_filled" | "filled" | "canceled";
 export type TxStatus = "completed" | "pending" | "processing" | "failed";
 
 export interface MarketAsset {
+  id: string;
   symbol: string;
   name: string;
   price: number;
@@ -22,81 +18,109 @@ export interface MarketAsset {
   volume24h: number;
   marketCap: number;
   category: ("spot" | "futures" | "new")[];
+  lastUpdatedAt: number;
 }
-
-const SEED: Omit<MarketAsset, "high24h" | "low24h">[] = [
-  { symbol: "BTC", name: "Bitcoin", price: 96420.15, change24h: 2.41, volume24h: 42_180_000_000, marketCap: 1_910_000_000_000, category: ["spot", "futures"] },
-  { symbol: "ETH", name: "Ethereum", price: 3364.88, change24h: 3.12, volume24h: 18_940_000_000, marketCap: 404_000_000_000, category: ["spot", "futures"] },
-  { symbol: "USDT", name: "Tether", price: 1.0, change24h: 0.01, volume24h: 61_200_000_000, marketCap: 138_000_000_000, category: ["spot"] },
-  { symbol: "USDC", name: "USD Coin", price: 0.9998, change24h: -0.01, volume24h: 9_120_000_000, marketCap: 42_000_000_000, category: ["spot"] },
-  { symbol: "BNB", name: "BNB", price: 712.44, change24h: -1.18, volume24h: 2_140_000_000, marketCap: 103_000_000_000, category: ["spot", "futures"] },
-  { symbol: "SOL", name: "Solana", price: 198.32, change24h: 5.64, volume24h: 5_410_000_000, marketCap: 94_000_000_000, category: ["spot", "futures"] },
-  { symbol: "XRP", name: "XRP", price: 2.28, change24h: -2.74, volume24h: 4_880_000_000, marketCap: 130_000_000_000, category: ["spot", "futures"] },
-  { symbol: "ADA", name: "Cardano", price: 0.912, change24h: 1.02, volume24h: 1_120_000_000, marketCap: 32_000_000_000, category: ["spot"] },
-  { symbol: "AVAX", name: "Avalanche", price: 38.91, change24h: 4.18, volume24h: 780_000_000, marketCap: 15_800_000_000, category: ["spot", "futures"] },
-  { symbol: "DOGE", name: "Dogecoin", price: 0.3216, change24h: -3.91, volume24h: 3_010_000_000, marketCap: 47_000_000_000, category: ["spot", "futures"] },
-  { symbol: "LINK", name: "Chainlink", price: 22.14, change24h: 6.72, volume24h: 940_000_000, marketCap: 13_900_000_000, category: ["spot"] },
-  { symbol: "TON", name: "Toncoin", price: 5.41, change24h: -0.62, volume24h: 320_000_000, marketCap: 13_400_000_000, category: ["spot", "new"] },
-  { symbol: "ARB", name: "Arbitrum", price: 0.812, change24h: -5.44, volume24h: 260_000_000, marketCap: 3_400_000_000, category: ["spot", "new"] },
-  { symbol: "SUI", name: "Sui", price: 4.02, change24h: 8.31, volume24h: 1_640_000_000, marketCap: 11_600_000_000, category: ["spot", "new", "futures"] },
-  { symbol: "OP", name: "Optimism", price: 1.71, change24h: -4.02, volume24h: 210_000_000, marketCap: 2_900_000_000, category: ["spot", "new"] },
-];
-
-export const MARKETS: MarketAsset[] = SEED.map((m) => ({
-  ...m,
-  high24h: m.price * (1 + Math.abs(m.change24h) / 100 + 0.004),
-  low24h: m.price * (1 - Math.abs(m.change24h) / 100 - 0.004),
-}));
 
 export const QUOTE = "USDT";
 export const pairOf = (s: string) => `${s}/${QUOTE}`;
 
-/* ---------------------------------------------------------------- feed --- */
+/* ----------------------------------------------------------- live markets --- */
 
-type TickerListener = (m: Record<string, MarketAsset>) => void;
-const listeners = new Set<TickerListener>();
-const state: Record<string, MarketAsset> = Object.fromEntries(MARKETS.map((m) => [m.symbol, { ...m }]));
-let timer: ReturnType<typeof setInterval> | null = null;
+type CoinGeckoMarket = {
+  id: string;
+  symbol: string;
+  name: string;
+  current_price: number | null;
+  price_change_percentage_24h: number | null;
+  high_24h: number | null;
+  low_24h: number | null;
+  total_volume: number | null;
+  market_cap: number | null;
+  last_updated: string;
+};
 
-function tick() {
-  for (const s of Object.keys(state)) {
-    const a = state[s];
-    if (a.symbol === "USDT" || a.symbol === "USDC") continue;
-    const drift = (Math.random() - 0.5) * 0.0016;
-    a.price = +(a.price * (1 + drift)).toFixed(a.price > 100 ? 2 : 4);
-    a.change24h = +(a.change24h + drift * 60).toFixed(2);
-    a.high24h = Math.max(a.high24h, a.price);
-    a.low24h = Math.min(a.low24h, a.price);
-  }
-  listeners.forEach((l) => l({ ...state }));
-}
+const FUTURES_SYMBOLS = new Set(["BTC", "ETH", "BNB", "SOL", "XRP", "AVAX", "DOGE"]);
 
-/** Mirrors a WebSocket ticker subscription. Replace body with a real socket. */
-export function subscribeTicker(cb: TickerListener) {
-  listeners.add(cb);
-  cb({ ...state });
-  if (!timer) timer = setInterval(tick, 1500);
-  return () => {
-    listeners.delete(cb);
-    if (listeners.size === 0 && timer) {
-      clearInterval(timer);
-      timer = null;
-    }
+function mapMarket(market: CoinGeckoMarket): MarketAsset | null {
+  if (!market.id || !market.symbol || market.current_price == null) return null;
+  const symbol = market.symbol.toUpperCase();
+  return {
+    id: market.id,
+    symbol,
+    name: market.name,
+    price: market.current_price,
+    change24h: market.price_change_percentage_24h ?? 0,
+    high24h: market.high_24h ?? market.current_price,
+    low24h: market.low_24h ?? market.current_price,
+    volume24h: market.total_volume ?? 0,
+    marketCap: market.market_cap ?? 0,
+    category: FUTURES_SYMBOLS.has(symbol) ? ["spot", "futures"] : ["spot"],
+    lastUpdatedAt: Date.parse(market.last_updated) || Date.now(),
   };
 }
 
 export function useTickers() {
-  const [map, setMap] = useState<Record<string, MarketAsset>>(state);
-  const [connected, setConnected] = useState(false);
-  useEffect(() => {
-    const off = subscribeTicker((m) => {
-      setMap(m);
-      setConnected(true);
-    });
-    return off;
-  }, []);
-  const list = useMemo(() => Object.values(map), [map]);
-  return { map, list, connected };
+  const query = useQuery<CoinGeckoMarket[]>({
+    queryKey: ["exchange-live-markets"],
+    queryFn: async () => {
+      const data = await fetchCoinGeckoData(
+        "coins/markets",
+        "vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h",
+      );
+      if (!Array.isArray(data)) throw new Error("Live market feed returned an invalid response");
+      return data;
+    },
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
+  const list = useMemo(() => (query.data ?? []).map(mapMarket).filter((m): m is MarketAsset => m !== null), [query.data]);
+  const map = useMemo(() => Object.fromEntries(list.map((market) => [market.symbol, market])), [list]);
+  return { map, list, connected: list.length > 0 && !query.isError, loading: query.isLoading, error: query.error };
+}
+
+/* ------------------------------------------------------------- live chart --- */
+
+export type Candle = { t: number; o: number; h: number; l: number; c: number; v: number };
+type ChartPoint = [number, number];
+
+const CHART_DAYS: Record<string, number> = { "1m": 1, "5m": 1, "15m": 2, "1H": 7, "4H": 30, "1D": 180, "1W": 365 };
+
+export function useLiveCandles(coinId: string | undefined, interval: string) {
+  return useQuery<Candle[]>({
+    queryKey: ["exchange-live-candles", coinId, interval],
+    enabled: !!coinId,
+    queryFn: async () => {
+      if (!coinId) throw new Error("A market is required for chart data");
+      const response = await fetchCoinGeckoData(
+        `coins/${coinId}/market_chart`,
+        `vs_currency=usd&days=${CHART_DAYS[interval] ?? 7}`,
+      ) as { prices?: ChartPoint[]; total_volumes?: ChartPoint[] };
+      const prices = response.prices ?? [];
+      if (prices.length < 2) throw new Error("Live chart feed returned no usable prices");
+      const volumes = response.total_volumes ?? [];
+      const volumeByTime = new Map(volumes.map(([time, value]) => [time, value]));
+      const count = Math.min(90, prices.length - 1);
+      const bucketSize = Math.max(1, Math.floor(prices.length / count));
+      const candles: Candle[] = [];
+      for (let start = Math.max(0, prices.length - count * bucketSize); start < prices.length; start += bucketSize) {
+        const bucket = prices.slice(start, Math.min(start + bucketSize, prices.length));
+        const values = bucket.map(([, value]) => value);
+        const previous = prices[Math.max(0, start - 1)]?.[1] ?? values[0];
+        const close = values.at(-1) ?? previous;
+        candles.push({
+          t: bucket[0]?.[0] ?? start,
+          o: previous,
+          h: Math.max(...values),
+          l: Math.min(...values),
+          c: close,
+          v: bucket.reduce((sum, [time]) => sum + (volumeByTime.get(time) ?? 0), 0),
+        });
+      }
+      return candles;
+    },
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
 }
 
 export function usePrevious<T>(value: T) {

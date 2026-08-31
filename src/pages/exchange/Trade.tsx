@@ -16,12 +16,10 @@ import {
   TextInput,
 } from "@/components/exchange/primitives";
 import {
-  MARKETS,
   OPEN_ORDERS,
   OrderRow,
   Side,
   TRADE_HISTORY,
-  buildCandles,
   buildDepth,
   buildRecentTrades,
   fmtCompact,
@@ -29,6 +27,7 @@ import {
   fmtNum,
   fmtUsd,
   pairOf,
+  useLiveCandles,
   useTickers,
 } from "@/exchange/data";
 import { cn } from "@/lib/utils";
@@ -72,12 +71,12 @@ export default function ExchangeTrade() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [symbol]);
 
-  const candles = useMemo(() => buildCandles(price || 100, 90, symbol.charCodeAt(0)), [symbol, interval, price ? Math.round(price) : 0]);
+  const { data: candles = [], isLoading: candlesLoading, isError: candlesError } = useLiveCandles(market?.id, interval);
   const depth = useMemo(() => buildDepth(price || 100), [price ? Math.round(price * 100) / 100 : 0]);
   const trades = useMemo(() => buildRecentTrades(price || 100), [price ? Math.round(price) : 0]);
 
   const pairList = useMemo(
-    () => MARKETS.filter((m) => m.symbol !== "USDT" && (!search || m.symbol.toLowerCase().includes(search.toLowerCase()))).map((m) => map[m.symbol] ?? m),
+    () => Object.values(map).filter((m) => m.symbol !== "USDT" && (!search || m.symbol.toLowerCase().includes(search.toLowerCase()) || m.name.toLowerCase().includes(search.toLowerCase()))),
     [map, search],
   );
 
@@ -219,7 +218,13 @@ export default function ExchangeTrade() {
                 </button>
               ))}
             </div>
-            <CandleChart candles={candles} indicators={indicators} height={360} />
+            {candlesLoading ? (
+              <div className="flex h-[360px] items-center justify-center text-[12px] text-muted-foreground">Loading live candles…</div>
+            ) : candlesError || candles.length === 0 ? (
+              <div className="flex h-[360px] items-center justify-center text-[12px] text-muted-foreground">Live chart data is temporarily unavailable.</div>
+            ) : (
+              <CandleChart candles={candles} indicators={indicators} height={360} />
+            )}
           </Panel>
         </div>
 
