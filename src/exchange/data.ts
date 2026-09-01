@@ -1,5 +1,5 @@
 /** Shared exchange data layer backed by the project's live market proxy. */
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoinGeckoData } from "@/hooks/useCoinGecko";
 
@@ -204,8 +204,6 @@ export function buildSeries(range: Range, base: number, seed = 7) {
   out[out.length - 1].v = base;
   return out;
 }
-
-export interface Candle { t: number; o: number; h: number; l: number; c: number; v: number }
 
 export function buildCandles(base: number, count = 80, seed = 3): Candle[] {
   const r = rng(seed);
