@@ -1,0 +1,5 @@
+- [ ] Audit current exchange pages, routes, hooks, and backend migrations/functions
+- [ ] Replace demo exchange data with authenticated live backend account state and live exchange market feeds
+- [ ] Build Assets, Deposit, Withdraw, Transactions, Orders, and Earn pages with shared live state
+- [ ] Wire trade/order actions and withdrawals to backend persistence and refresh dependent views
+- [ ] Validate build and key preview flows
