@@ -1,11 +1,6 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
-import { z } from "https://esm.sh/zod@3.23.8";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+import { createClient } from "npm:@supabase/supabase-js@2";
+import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { z } from "npm:zod@3.23.8";
 
 const BodySchema = z.object({
   token_symbol: z.string().min(1).max(10),
@@ -43,12 +38,22 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_ANON_KEY")!,
       { global: { headers: { Authorization: authHeader } } },
     );
-    const { data: { user } } = await anon.auth.getUser();
+    const { data: { user }, error: authError } = await anon.auth.getUser();
+    if (authError) console.error("withdraw-request auth validation failed", authError.message);
     if (!user) return json({ error: "Not authenticated" }, 401);
 
-    const parsed = BodySchema.safeParse(await req.json());
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return json({ error: "Request body must be valid JSON" }, 400);
+    }
+    const parsed = BodySchema.safeParse(body);
     if (!parsed.success) return json({ error: parsed.error.flatten().fieldErrors }, 400);
-    const { token_symbol, chain, amount, to_address } = parsed.data;
+    const token_symbol = parsed.data.token_symbol.trim().toUpperCase();
+    const chain = parsed.data.chain.trim();
+    const amount = parsed.data.amount;
+    const to_address = parsed.data.to_address.trim();
 
     const pattern = addressPatterns[chain];
     if (pattern && !pattern.test(to_address.trim())) {
@@ -56,12 +61,13 @@ Deno.serve(async (req) => {
     }
 
     // Limits
-    const { data: limit } = await supabase
+    const { data: limit, error: limitError } = await supabase
       .from("withdrawal_limits")
       .select("*")
-      .eq("token_symbol", token_symbol.toUpperCase())
+      .eq("token_symbol", token_symbol)
       .eq("chain", chain)
       .maybeSingle();
+    if (limitError) return json({ error: `Unable to load withdrawal limits: ${limitError.message}` }, 500);
     if (!limit || !limit.is_enabled) {
       return json({ error: `Withdrawals disabled for ${token_symbol} on ${chain}` }, 400);
     }
@@ -75,23 +81,27 @@ Deno.serve(async (req) => {
 
     // Daily limit check
     const dayAgo = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
-    const { data: recent } = await supabase
+    const { data: recent, error: recentError } = await supabase
       .from("withdrawal_requests")
       .select("amount")
       .eq("user_id", user.id)
-      .eq("token_symbol", token_symbol.toUpperCase())
+      .eq("token_symbol", token_symbol)
       .gte("created_at", dayAgo)
       .not("status", "in", "(cancelled,rejected,failed)");
+    if (recentError) return json({ error: `Unable to check withdrawal limits: ${recentError.message}` }, 500);
     const used = (recent ?? []).reduce((s, r) => s + Number(r.amount), 0);
     if (used + amount > Number(limit.daily_limit)) {
       return json({ error: `Daily limit ${limit.daily_limit} ${token_symbol} exceeded` }, 400);
     }
 
-    // Debit balance (lock funds)
+    // Debit balance using the guarded four-argument overload. Passing the
+    // optional trade id explicitly avoids selecting the legacy three-argument
+    // overload, which does not enforce non-negative balances.
     const { error: debitErr } = await supabase.rpc("update_balance", {
       p_user_id: user.id,
-      p_token_symbol: token_symbol.toUpperCase(),
+      p_token_symbol: token_symbol,
       p_amount: -Math.abs(amount),
+      p_trade_id: null,
     });
     if (debitErr) return json({ error: debitErr.message }, 400);
 
@@ -101,7 +111,7 @@ Deno.serve(async (req) => {
       .from("withdrawal_requests")
       .insert({
         user_id: user.id,
-        token_symbol: token_symbol.toUpperCase(),
+        token_symbol,
         chain,
         amount,
         fee,
@@ -116,8 +126,9 @@ Deno.serve(async (req) => {
       // Refund
       await supabase.rpc("update_balance", {
         p_user_id: user.id,
-        p_token_symbol: token_symbol.toUpperCase(),
+        p_token_symbol: token_symbol,
         p_amount: Math.abs(amount),
+        p_trade_id: null,
       });
       return json({ error: wrErr?.message ?? "Failed to create request" }, 500);
     }
@@ -127,12 +138,22 @@ Deno.serve(async (req) => {
     const code_hash = await sha256(`${wr.id}:${code}`);
     const expires_at = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
-    await supabase.from("withdrawal_confirmations").insert({
+    const { error: confirmationError } = await supabase.from("withdrawal_confirmations").insert({
       request_id: wr.id,
       user_id: user.id,
       code_hash,
       expires_at,
     });
+    if (confirmationError) {
+      await supabase.from("withdrawal_requests").delete().eq("id", wr.id);
+      await supabase.rpc("update_balance", {
+        p_user_id: user.id,
+        p_token_symbol: token_symbol,
+        p_amount: Math.abs(amount),
+        p_trade_id: null,
+      });
+      return json({ error: `Failed to create confirmation: ${confirmationError.message}` }, 500);
+    }
 
     // NOTE: No email provider configured — code is returned to client.
     // Add Resend/SendGrid secret to email instead.

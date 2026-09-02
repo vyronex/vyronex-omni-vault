@@ -31,6 +31,21 @@ export interface WithdrawalLimit {
   is_enabled: boolean;
 }
 
+const readFunctionError = async (error: unknown): Promise<string> => {
+  const fallback = error instanceof Error ? error.message : "Withdrawal request failed";
+  const response = (error as { context?: Response } | null)?.context;
+  if (!response) return fallback;
+
+  try {
+    const payload = await response.clone().json() as { error?: unknown };
+    if (typeof payload.error === "string") return payload.error;
+    if (payload.error && typeof payload.error === "object") return JSON.stringify(payload.error);
+  } catch {
+    // Keep the SDK's message when the response is not JSON.
+  }
+  return fallback;
+};
+
 export const useWithdrawalLimits = () =>
   useQuery({
     queryKey: ["withdrawal_limits"],
@@ -87,7 +102,7 @@ export const useWithdrawActions = () => {
       token_symbol: string; chain: string; amount: number; to_address: string;
     }) => {
       const { data, error } = await supabase.functions.invoke("withdraw-request", { body: input });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(await readFunctionError(error));
       if ((data as any)?.error) throw new Error(typeof (data as any).error === "string" ? (data as any).error : "Validation failed");
       return data as { request_id: string; fee: number; net_amount: number; expires_at: string; dev_code?: string };
     },
@@ -101,7 +116,7 @@ export const useWithdrawActions = () => {
   const confirm = useMutation({
     mutationFn: async (input: { request_id: string; code: string }) => {
       const { data, error } = await supabase.functions.invoke("withdraw-confirm", { body: input });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(await readFunctionError(error));
       if ((data as any)?.error) throw new Error((data as any).error);
       return data;
     },
