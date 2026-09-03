@@ -71,9 +71,7 @@ Deno.serve(async (req) => {
     if (!limit || !limit.is_enabled) {
       return json({ error: `Withdrawals disabled for ${token_symbol} on ${chain}` }, 400);
     }
-    if (amount < Number(limit.min_amount)) {
-      return json({ error: `Minimum withdrawal is ${limit.min_amount} ${token_symbol}` }, 400);
-    }
+    // No minimum withdrawal amount enforced.
 
     const fee = Number(limit.network_fee);
     const net = amount - fee;
