@@ -64,7 +64,7 @@ export const WithdrawDialogV2 = ({ open, onOpenChange }: Props) => {
   const amt = parseFloat(amount) || 0;
   const fee = Number(currentLimit?.network_fee ?? 0);
   const net = Math.max(0, amt - fee);
-  const belowMin = currentLimit && amt < Number(currentLimit.min_amount);
+  
 
   const handleReview = () => {
     const err = validateAddress(address, chain);
@@ -73,7 +73,7 @@ export const WithdrawDialogV2 = ({ open, onOpenChange }: Props) => {
     if (!currentLimit) { toast.error("Select a supported token/network"); return; }
     if (!currentLimit.is_enabled) { toast.error("Withdrawals disabled for this pair"); return; }
     if (!isFinite(amt) || amt <= 0) { toast.error("Enter a valid amount"); return; }
-    if (belowMin) { toast.error(`Minimum ${currentLimit.min_amount} ${token}`); return; }
+    
     if (net <= 0) { toast.error("Amount must exceed network fee"); return; }
     setStep("review");
   };
@@ -169,7 +169,7 @@ export const WithdrawDialogV2 = ({ open, onOpenChange }: Props) => {
               <Input type="number" step="0.0001" value={amount} onChange={(e) => setAmount(e.target.value)} className="font-mono" placeholder="0.00" />
               {currentLimit && (
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Min {currentLimit.min_amount} · Daily cap {currentLimit.daily_limit} {token} · Fee {currentLimit.network_fee} {token}
+                  No minimum · Daily cap {currentLimit.daily_limit} {token} · Fee {currentLimit.network_fee} {token}
                 </p>
               )}
             </div>
