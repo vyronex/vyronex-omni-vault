@@ -204,6 +204,90 @@ export type Database = {
         }
         Relationships: []
       }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      referral_relationships: {
+        Row: {
+          id: string
+          joined_at: string
+          referral_code: string
+          referred_user_id: string
+          referrer_id: string
+          status: string
+          total_commission: number
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          referral_code: string
+          referred_user_id: string
+          referrer_id: string
+          status?: string
+          total_commission?: number
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          referral_code?: string
+          referred_user_id?: string
+          referrer_id?: string
+          status?: string
+          total_commission?: number
+        }
+        Relationships: []
+      }
+      referral_rewards: {
+        Row: {
+          amount: number
+          created_at: string
+          event_type: string
+          id: string
+          referred_user_id: string | null
+          referrer_id: string
+          status: string
+          token_symbol: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          event_type?: string
+          id?: string
+          referred_user_id?: string | null
+          referrer_id: string
+          status?: string
+          token_symbol?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          event_type?: string
+          id?: string
+          referred_user_id?: string | null
+          referrer_id?: string
+          status?: string
+          token_symbol?: string
+        }
+        Relationships: []
+      }
       staking_records: {
         Row: {
           amount: number
@@ -893,6 +977,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_referral_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
