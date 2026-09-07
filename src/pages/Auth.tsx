@@ -57,7 +57,7 @@ const Auth = () => {
       }
 
       toast.success("Welcome!");
-      navigate("/dashboard");
+      navigate("/app");
     } catch (error: any) {
       toast.error(error.message || "Google sign-in failed");
     } finally {

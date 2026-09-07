@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
 export interface WithdrawalRequest {
   id: string;
@@ -62,6 +63,22 @@ export const useWithdrawalLimits = () =>
 
 export const useMyWithdrawals = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`withdrawals-${user.id}`)
+      .on("postgres_changes", {
+        event: "*",
+        schema: "public",
+        table: "withdrawal_requests",
+        filter: `user_id=eq.${user.id}`,
+      }, () => queryClient.invalidateQueries({ queryKey: ["withdrawals", user.id] }))
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user, queryClient]);
+
   return useQuery({
     queryKey: ["withdrawals", user?.id],
     enabled: !!user,
