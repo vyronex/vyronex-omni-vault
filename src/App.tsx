@@ -28,6 +28,12 @@ import ExchangeShell from "./components/exchange/ExchangeShell";
 import ExchangeOverview from "./pages/exchange/Overview";
 import ExchangeMarkets from "./pages/exchange/Markets";
 import ExchangeTrade from "./pages/exchange/Trade";
+import ExchangeAssets from "./pages/exchange/Assets";
+import ExchangeDeposit from "./pages/exchange/Deposit";
+import ExchangeWithdraw from "./pages/exchange/Withdraw";
+import ExchangeTransactions from "./pages/exchange/Transactions";
+import ExchangeOrders from "./pages/exchange/Orders";
+import ExchangeEarn from "./pages/exchange/Earn";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +66,12 @@ const AnimatedRoutes = () => {
           <Route index element={<ExchangeOverview />} />
           <Route path="markets" element={<ExchangeMarkets />} />
           <Route path="trade" element={<ExchangeTrade />} />
+          <Route path="assets" element={<ExchangeAssets />} />
+          <Route path="deposit" element={<ExchangeDeposit />} />
+          <Route path="withdraw" element={<ExchangeWithdraw />} />
+          <Route path="transactions" element={<ExchangeTransactions />} />
+          <Route path="orders" element={<ExchangeOrders />} />
+          <Route path="earn" element={<ExchangeEarn />} />
         </Route>
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />

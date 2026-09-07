@@ -5,6 +5,7 @@ import { Badge, Btn, TextInput } from "@/components/exchange/primitives";
 import { NOTIFICATIONS, fmtUsd, pairOf, useTickers } from "@/exchange/data";
 import VnxMark from "@/components/exchange/VnxMark";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 export const NAV_GROUPS: { label: string; items: { label: string; to: string }[] }[] = [
   {
@@ -216,9 +217,18 @@ export default function ExchangeShell() {
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, loading: authLoading, signOut } = useAuth();
   const unread = notifications.filter((n) => !n.read).length;
 
   useEffect(() => setMobileNav(false), [location.pathname]);
+
+  useEffect(() => {
+    if (!authLoading && !user) navigate("/auth", { replace: true });
+  }, [authLoading, navigate, user]);
+
+  if (authLoading || !user) {
+    return <div className="ex-scope flex min-h-screen items-center justify-center text-[12px] text-muted-foreground">Loading account…</div>;
+  }
 
   return (
     <div className="ex-scope min-h-screen">
@@ -328,8 +338,8 @@ export default function ExchangeShell() {
               {(close) => (
                 <div>
                   <div className="border-b border-border px-2.5 py-2">
-                    <p className="text-[12px] font-medium">trader@vyronex.io</p>
-                    <p className="mt-0.5 text-[11px] text-muted-foreground">UID 88214003 · Verified Level 2</p>
+                    <p className="truncate text-[12px] font-medium">{user.email}</p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground">Signed-in exchange account</p>
                   </div>
                   <MenuItem
                     onClick={() => {
@@ -357,8 +367,9 @@ export default function ExchangeShell() {
                   </MenuItem>
                   <MenuItem
                     tone="danger"
-                    onClick={() => {
+                    onClick={async () => {
                       close();
+                      await signOut();
                       toast.success("Signed out");
                       navigate("/");
                     }}
@@ -397,8 +408,8 @@ export default function ExchangeShell() {
           <SidebarNav />
           <div className="mt-6 border-t border-border pt-3">
             <div className="rounded-lg border border-border bg-card px-3 py-2.5">
-              <p className="text-[12px] font-medium">trader@vyronex.io</p>
-              <p className="mt-0.5 text-[10px] text-muted-foreground">UID 88214003</p>
+              <p className="truncate text-[12px] font-medium">{user.email}</p>
+              <p className="mt-0.5 text-[10px] text-muted-foreground">Signed-in account</p>
               <div className="mt-2 flex flex-wrap gap-1">
                 <Badge tone="success">Verified L2</Badge>
                 <Badge tone="accent">VIP 1</Badge>
@@ -409,7 +420,8 @@ export default function ExchangeShell() {
                 Settings
               </NavLink>
               <button
-                onClick={() => {
+                onClick={async () => {
+                  await signOut();
                   toast.success("Signed out");
                   navigate("/");
                 }}

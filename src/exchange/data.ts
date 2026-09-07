@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoinGeckoData } from "@/hooks/useCoinGecko";
+import { useOrders } from "@/hooks/useOrders";
+import { useWallets } from "@/hooks/useWallets";
 
 export type Side = "buy" | "sell";
 export type OrderStatus = "open" | "partially_filled" | "filled" | "canceled";
@@ -150,19 +152,42 @@ export const HOLDINGS: Holding[] = [
 
 export function usePortfolio() {
   const { map } = useTickers();
+  const { balances } = useWallets();
+  const { orders } = useOrders();
   return useMemo(() => {
-    const rows = HOLDINGS.map((h) => {
-      const m = map[h.symbol];
-      const price = m?.price ?? 0;
-      const value = price * h.total;
+    const grouped = new Map<string, number>();
+    (balances ?? []).forEach((balance) => {
+      grouped.set(balance.token_symbol, (grouped.get(balance.token_symbol) ?? 0) + Number(balance.balance));
+    });
+
+    const reserved = new Map<string, number>();
+    (orders ?? [])
+      .filter((order) => ["open", "partially_filled"].includes(order.status))
+      .forEach((order) => {
+        const pair = order.trading_pairs as { base_token: string; quote_token: string } | null;
+        if (!pair) return;
+        const symbol = order.side === "buy" ? pair.quote_token : pair.base_token;
+        const amount = order.side === "buy"
+          ? Number(order.price) * Number(order.remaining_quantity)
+          : Number(order.remaining_quantity);
+        reserved.set(symbol, (reserved.get(symbol) ?? 0) + amount);
+      });
+
+    const rows = Array.from(grouped.entries()).map(([symbol, total]) => {
+      const m = map[symbol];
+      const price = m?.price ?? (symbol === "USDT" || symbol === "USDC" ? 1 : 0);
+      const inOrders = reserved.get(symbol) ?? 0;
+      const value = price * total;
       return {
-        ...h,
-        name: m?.name ?? h.symbol,
+        symbol,
+        total,
+        inOrders,
+        name: m?.name ?? symbol,
         price,
         change24h: m?.change24h ?? 0,
-        available: h.total - h.inOrders,
+        available: Math.max(0, total - inOrders),
         value,
-        inOrdersValue: h.inOrders * price,
+        inOrdersValue: inOrders * price,
       };
     });
     const total = rows.reduce((s, r) => s + r.value, 0);
